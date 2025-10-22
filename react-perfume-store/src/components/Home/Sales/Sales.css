@@ -1,0 +1,81 @@
+.best-sellers {
+    background: linear-gradient(135deg, var(--dark-gray), var(--black));
+    color: var(--white);
+    overflow: hidden;
+}
+
+.best-sellers .section-title,
+.best-sellers .section-subtitle {
+    color: var(--white);
+}
+
+.bestsellers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 25px;
+}
+
+.bestseller-item {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    transition: var(--transition);
+    position: relative;
+}
+
+.bestseller-item:hover {
+    transform: translateY(-10px);
+    border-color: var(--primary-gold);
+    box-shadow: 0 20px 60px rgba(212, 175, 55, 0.3);
+}
+
+.bestseller-rank {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: var(--primary-gold);
+    color: var(--black);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 700;
+    z-index: 5;
+}
+
+.bestseller-image {
+    height: 250px;
+    background-size: cover !important;
+    background-position: center !important;
+}
+
+.bestseller-content {
+    padding: 30px;
+    text-align: center;
+}
+
+.bestseller-content h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    margin-bottom: 15px;
+    color: var(--primary-gold);
+}
+
+.bestseller-content p {
+    font-size: 14px;
+    margin-bottom: 20px;
+    opacity: 0.8;
+}
+
+.bestseller-content .price {
+    display: block;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 25px;
+}

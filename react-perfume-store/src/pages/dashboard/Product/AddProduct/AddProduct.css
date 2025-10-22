@@ -1,0 +1,96 @@
+
+
+.add-product-section {
+  max-width: min(700px, 100vw - 2rem);
+  margin: 0 auto;
+  padding: 1rem;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Title */
+.add-product-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+/* Form */
+.add-product-section .add-product-form {
+  background-color: var(--white);
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Form Group */
+.add-product-section .form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.add-product-section .form-group label {
+  margin-bottom: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.form-group input,
+.form-group textarea {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid rgba(37, 99, 235, 0.3);
+  border-radius: 0.25rem;
+  outline: none;
+  transition: var(--transition);
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 5px rgba(37, 99, 235, 0.3);
+}
+
+/* Grid for price/discount */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+/* Buttons */
+.submit-btn {
+  background-color: rgba(37, 99, 235, 0.3);
+  color: var(--dark-gray);
+  border: 1px solid var(--primary-blue);
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.submit-btn:hover {
+  background-color: var(--primary-blue-hover);
+}
+
+/* File Inputs */
+input[type="file"] {
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  background-color: var(--gray-bg);
+  border: 1px solid var(--gray-border);
+}
+
+input[type="file"]:hover {
+  background-color: #e5e7eb;
+}
+
+/* Responsive */
+@media(max-width: 640px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,48 @@
+.why-choose-us {
+    background: var(--dark-gray);
+    color: var(--white);
+    overflow: hidden;
+}
+
+.why-choose-us .section-title,
+.why-choose-us .section-subtitle {
+    color: var(--white);
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 25px;
+}
+
+.feature-card {
+    text-align: center;
+    padding: 20px 30px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    transition: var(--transition);
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--primary-gold);
+}
+
+.feature-icon {
+    font-size: 50px;
+    margin-bottom: 20px;
+}
+
+.feature-card h3 {
+    font-size: 22px;
+    margin-bottom: 15px;
+    color: var(--primary-gold);
+}
+
+.feature-card p {
+    font-size: 14px;
+    opacity: 0.8;
+    line-height: 1.6;
+}

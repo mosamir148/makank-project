@@ -1,0 +1,17 @@
+.dashboard-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-main {
+  display: flex;
+  position: relative;
+  flex: 1;
+}
+
+.dashboard-content {
+  padding: 2rem 4vw;
+  flex: 1;
+  background-color: var(--light-gray);
+  overflow: hidden;
+}

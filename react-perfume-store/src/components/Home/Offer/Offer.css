@@ -1,0 +1,82 @@
+.special-offers {
+    background: linear-gradient(135deg, #f8f8f8, #ffffff);
+    padding: 0px 0;
+    overflow: hidden;
+}
+
+.offers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));    
+    gap: 25px;
+}
+
+.offer-card {
+    background: var(--white);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    transition: var(--transition);
+    position: relative;
+}
+
+.offer-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+.offer-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: #e74c3c;
+    color: white;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    z-index: 5;
+    border-radius: 25px;
+    box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+}
+
+.offer-image {
+    height: 280px;
+    background-size: cover !important;
+    background-position: center !important;
+}
+
+.offer-content {
+    padding: 30px;
+}
+
+.offer-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: var(--dark-gray);
+}
+
+.offer-description {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.offer-price {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.old-price {
+    font-size: 18px;
+    color: #999;
+    text-decoration: line-through;
+}
+
+.new-price {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--primary-gold);
+}

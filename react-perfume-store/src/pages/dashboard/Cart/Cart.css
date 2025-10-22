@@ -1,0 +1,214 @@
+:root {
+  --primary-gold: #d4af37;
+  --dark-gold: #b8960f;
+  --black: #000000;
+  --dark-gray: #1a1a1a;
+  --medium-gray: #2a2a2a;
+  --light-gray: #f5f5f5;
+  --white: #ffffff;
+  --transition: all 0.3s ease;
+}
+
+/* ========== MAIN CONTAINER ========== */
+.orders-container {
+  padding: 2rem;
+  background: var(--light-gray);
+  min-height: 100vh;
+  font-family: "Poppins", sans-serif;
+  color: var(--dark-gray);
+}
+
+.orders-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--dark-gray);
+}
+
+/* ========== TABLE ========== */
+.orders-table-container {
+  overflow-x: auto;
+  background: var(--white);
+  border-radius: 1rem;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
+}
+
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.orders-table thead {
+  background: linear-gradient(to right, var(--primary-gold), var(--dark-gold));
+  color: var(--black);
+}
+
+.orders-table th,
+.orders-table td {
+  padding: 0.9rem 1rem;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.orders-table th {
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.orders-table tbody tr {
+  transition: var(--transition);
+}
+
+.orders-table tbody tr:hover {
+  background: var(--light-gray);
+}
+
+/* ========== CELL BUTTONS ========== */
+.cell-flex {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.show-btn {
+  border: none;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.75rem;
+  border-radius: 0.3rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.show-btn.blue {
+  background: #e0edff;
+  color: #1e40af;
+}
+
+.show-btn.blue:hover {
+  background: #c7dbff;
+}
+
+.show-btn.green {
+  background: #e8fff3;
+  color: #047857;
+}
+
+.show-btn.green:hover {
+  background: #c6ffe3;
+}
+
+/* ========== STATUS ========== */
+.status-select {
+  border: none;
+  padding: 0.4rem 0.7rem;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status-select.pending {
+  background: #fff4ce;
+  color: #a16207;
+}
+
+.status-select.complete {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.status-select.failed {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+/* ========== DELETE BUTTON ========== */
+.delete-btn {
+  background: var(--primary-gold);
+  color: var(--black);
+  border: none;
+  padding: 0.4rem 0.9rem;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.delete-btn:hover {
+  background: var(--dark-gold);
+  color: var(--white);
+}
+
+/* ========== MODALS ========== */
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 85%;
+  max-width: 400px;
+  background: var(--white);
+  border-radius: 1rem;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.15);
+  padding: 1.5rem;
+  z-index: 1000;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.modal-header h3 {
+  font-size: 1.2rem;
+  color: var(--dark-gray);
+  font-weight: 600;
+}
+
+.modal-header button {
+  border: none;
+  background: none;
+  font-size: 1.3rem;
+  cursor: pointer;
+  color: var(--medium-gray);
+}
+
+.modal-body {
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap; 
+}
+
+.modal-body img {
+  width: 80px;
+  height: 80px;
+  border-radius: 999px;
+  object-fit: cover;
+  margin-bottom: 1rem;
+}
+
+.modal-body p {
+  margin-bottom: 0.5rem;
+  color: var(--dark-gray);
+  font-size: 0.9rem;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+  .orders-container {
+    padding: 1rem;
+  }
+
+  .orders-title {
+    font-size: 1.6rem;
+  }
+
+  .orders-table th,
+  .orders-table td {
+    padding: 0.7rem;
+    font-size: 0.85rem;
+  }
+}
