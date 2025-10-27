@@ -61,7 +61,7 @@
 }
 
 .orders-table tbody tr:hover {
-  background: var(--light-gray);
+  background: var(--dark-gold);
 }
 
 /* ========== CELL BUTTONS ========== */

@@ -15,7 +15,7 @@
 .footer-section h3 {
     font-family: 'Playfair Display', serif;
     font-size: 24px;
-    color: var(--primary-gold);
+    color: var(--dark-gold);
     margin-bottom: 20px;
 }
 
@@ -30,6 +30,7 @@
     opacity: 0.8;
     line-height: 1.8;
     margin-bottom: 20px;
+    color: var(--dark-gold);
 }
 
 .footer-section ul {
@@ -38,10 +39,11 @@
 
 .footer-section ul li {
     margin-bottom: 12px;
+    color: var(--dark-gold);
 }
 
 .footer-section ul li a {
-    color: var(--white);
+    color: var(--dark-gold);
     text-decoration: none;
     opacity: 0.8;
     transition: var(--transition);

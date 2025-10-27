@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 import { Routes, Route } from 'react-router-dom'
 import Home from './pages/Home/Home'
@@ -18,8 +18,29 @@ import UpdateProduct from './pages/dashboard/Product/UpdateProduct/UpdateProduct
 import Cart from './pages/dashboard/Cart/Cart'
 import YourCart from './pages/Cart/YourCart'
 import OverView from './pages/dashboard/OverView/OverView'
+import Wish from './pages/dashboard/Wish/Wish'
+import Loading from './components/Loading/Loading'
+import logo from './assets/Logo.jpg'
+import Without from './pages/dashboard/Without/Without'
 
 function App() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(()=>{
+    setTimeout(()=>{
+      setLoading(false)
+    },2000)
+    return () => clearTimeout();
+  },[])
+
+   if (loading) {
+    return (
+      <div className="splash-loading">
+        <img src={logo} alt="Logo" className="splash-logo" />
+        <Loading />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -38,6 +59,10 @@ function App() {
               <Route path='products/update-product/:id' element={<UpdateProduct />} />
               
               <Route path='carts' element={<Cart />} />
+
+              <Route path='wish' element={<Wish />} />
+
+              <Route path='without' element={<Without />} />
               
               </Route>
             

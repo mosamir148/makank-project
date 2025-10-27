@@ -1,5 +1,5 @@
 .special-offers {
-    background: linear-gradient(135deg, #f8f8f8, #ffffff);
+    background: var(--light-gray);
     padding: 0px 0;
     overflow: hidden;
 }

@@ -6,15 +6,18 @@ import { Link } from "react-router-dom";
 import "./AllProduct.css";
 import { productsContext } from "../../../../context/GetProducts";
 import { BASE_URL } from "../../../../assets/url";
+import Loading from "../../../../components/Loading/Loading";
 
 const AllProduct = () => {
   const { product, setProducts } = useContext(productsContext);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(true);
 
   const fetchProducts = async (page = 1) => {
     try {
       const res = await axios.get(`${BASE_URL}/product?page=${page}&limit=10`);
+      setLoading(false)
       setProducts(res.data.products);
       setTotalPages(Math.ceil(res.data.totalCount / 10));
     } catch (err) {
@@ -28,47 +31,47 @@ const AllProduct = () => {
 
   const DelteProduct = async (id) => {
     const result = await Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      title: "هل أنت متأكد؟",
+      text: "لن تتمكن من التراجع عن هذا!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
+      confirmButtonText: "نعم، احذف المنتج!",
+      cancelButtonText: "إلغاء",
     });
 
     if (result.isConfirmed) {
       try {
         await axios.delete(`${BASE_URL}/product/${id}`, { withCredentials: true });
         setProducts(product.filter((item) => item._id !== id));
-        toast.success("Product Deleted Successfully!");
-        Swal.fire("Deleted!", "Your product has been deleted.", "success");
+        toast.success("تم حذف المنتج بنجاح!");
+        Swal.fire("تم الحذف!", "تم حذف المنتج بنجاح.", "success");
       } catch (err) {
         console.log(err);
-        toast.error("Failed to delete product!");
+        toast.error("فشل في حذف المنتج!");
       }
     }
   };
 
+  if( loading ) return <Loading />
+
   return (
     <section className="all-products-section">
       <div className="all-products-header">
-        <h2>All Products</h2>
-        <div className="all-products-search">
-          <input type="search" placeholder="Search products..." />
-        </div>
+        <h2>جميع المنتجات</h2>
       </div>
 
       <div className="all-products-table-container">
         <table className="all-products-table">
           <thead>
             <tr>
-              <th>Image</th>
-              <th>Name</th>
-              <th>Price</th>
-              <th>Discount</th>
-              <th>Category</th>
-              <th className="text-center">Actions</th>
+              <th>الصورة</th>
+              <th>الاسم</th>
+              <th>السعر</th>
+              <th>الخصم</th>
+              <th>القسم</th>
+              <th className="text-center">الإجراءات</th>
             </tr>
           </thead>
           <tbody>
@@ -90,13 +93,13 @@ const AllProduct = () => {
                   <td>{item.category}</td>
                   <td className="text-center">
                     <Link className="edit-btn" to={`update-product/${item._id}`}>
-                      Edit
+                      تعديل
                     </Link>
                     <button className="delete-btn" onClick={() => DelteProduct(item._id)}>
-                      Delete
+                      حذف
                     </button>
                     <Link className="show-btn" to={`/product/${item._id}`}>
-                      Show
+                      عرض
                     </Link>
                   </td>
                 </tr>
@@ -104,7 +107,7 @@ const AllProduct = () => {
             ) : (
               <tr>
                 <td colSpan="6" className="text-center text-gray-500 py-4">
-                  No products found
+                  لا توجد منتجات
                 </td>
               </tr>
             )}
@@ -117,16 +120,16 @@ const AllProduct = () => {
           disabled={currentPage === 1}
           onClick={() => setCurrentPage((prev) => prev - 1)}
         >
-          Prev
+          السابق
         </button>
         <span>
-          Page {currentPage} of {totalPages >= 1 ? totalPages : 0}
+          الصفحة {currentPage} من {totalPages >= 1 ? totalPages : 0}
         </span>
         <button
           disabled={currentPage === totalPages}
           onClick={() => setCurrentPage((prev) => prev + 1)}
         >
-          Next
+          التالي
         </button>
       </div>
     </section>

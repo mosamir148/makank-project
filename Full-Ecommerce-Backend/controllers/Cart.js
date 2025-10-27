@@ -9,15 +9,15 @@ exports.addToCart = async (req, res) => {
       return res.status(400).json({ message: "userId and productId are required" });
     }
 
-    // حاول نلاقي المنتج لنفس المستخدم
+
     let cartItem = await Cart.findOne({ user: userId, product: productId });
 
     if (cartItem) {
-      // لو موجود، زود الكمية
+
       cartItem.quantity += quantity || 1;
       await cartItem.save();
     } else {
-      // لو مش موجود، اعمله create
+
       cartItem = await Cart.create({
         user: userId,
         product: productId,
@@ -26,7 +26,7 @@ exports.addToCart = async (req, res) => {
       });
     }
 
-    // رجع بيانات المنتج واليوزر
+
     await cartItem.populate("product");
     await cartItem.populate("user", "username email phone");
 
@@ -34,7 +34,7 @@ exports.addToCart = async (req, res) => {
   } catch (error) {
     console.error("addToCart error:", error);
 
-    // لو المشكلة بسبب duplicate index
+
     if (error.code === 11000) {
       return res.status(400).json({ message: "This product is already in the cart" });
     }
@@ -43,7 +43,7 @@ exports.addToCart = async (req, res) => {
   }
 };
 
-// 🟢 عرض كل المنتجات في كرت مستخدم معين
+
 exports.getUserCart = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -60,7 +60,7 @@ exports.getUserCart = async (req, res) => {
 };
 
 
-// 🟢 عرض كل الكروت (للأدمن فقط)
+
 exports.getAllCarts = async (req, res) => {
   try {
     const carts = await Cart.find()
@@ -73,7 +73,7 @@ exports.getAllCarts = async (req, res) => {
   }
 };
 
-// 🟢 تحديث الكمية
+
 exports.updateCartItem = async (req, res) => {
   try {
     const { id } = req.params; 

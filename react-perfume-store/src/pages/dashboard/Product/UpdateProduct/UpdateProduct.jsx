@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import "./UpdateProduct.css";
 import { BASE_URL } from "../../../../assets/url";
+import Loading from "../../../../components/Loading/Loading";
 
 const UpdateProduct = () => {
   const { id } = useParams();
@@ -57,7 +58,7 @@ const UpdateProduct = () => {
         withCredentials: true,
       });
 
-      toast.success("Product updated successfully!");
+      toast.success("تم تحديث المنتج بنجاح!");
       navigate("/dashboard/products");
       window.location.reload();
     } catch (err) {
@@ -65,41 +66,41 @@ const UpdateProduct = () => {
     }
   };
 
-  if (!product) return <p className="loading">Loading...</p>;
+  if (!product) return <Loading />;
 
   return (
     <section className="update-section">
-      <h2 className="update-title">Update Product</h2>
+      <h2 className="update-title">تحديث المنتج</h2>
 
       <form className="update-form" onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>Product Name</label>
+          <label>اسم المنتج</label>
           <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
         </div>
 
         <div className="form-row">
           <div className="form-group">
-            <label>Price</label>
+            <label>السعر</label>
             <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} required />
           </div>
           <div className="form-group">
-            <label>Discount</label>
+            <label>الخصم</label>
             <input type="number" value={discount} onChange={(e) => setDiscount(e.target.value)} />
           </div>
         </div>
 
         <div className="form-group">
-          <label>Category</label>
+          <label>القسم</label>
           <input type="text" value={category} onChange={(e) => setCategory(e.target.value)} required />
         </div>
 
         <div className="form-group">
-          <label>Brand</label>
+          <label>الماركة</label>
           <input type="text" value={brand} onChange={(e) => setBrand(e.target.value)} required />
         </div>
 
         <div className="form-group">
-          <label>Description</label>
+          <label>الوصف</label>
           <textarea
             rows="4"
             value={description}
@@ -108,12 +109,12 @@ const UpdateProduct = () => {
         </div>
 
         <div className="form-group">
-          <label>Main Image</label>
+          <label>الصورة الرئيسية</label>
           <input type="file" accept="image/*" onChange={(e) => setImage(e.target.files[0])} />
         </div>
 
         <div className="form-group">
-          <label>Gallery Images</label>
+          <label>صور المعرض</label>
           <input
             type="file"
             accept="image/*"
@@ -125,7 +126,7 @@ const UpdateProduct = () => {
           />
         </div>
 
-        <button type="submit" className="submit-btn">Update Product</button>
+        <button type="submit" className="submit-btn">تحديث المنتج</button>
       </form>
     </section>
   );

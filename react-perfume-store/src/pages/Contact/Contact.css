@@ -39,7 +39,7 @@
   font-family: 'Playfair Display', serif;
   font-size: 36px;
   margin-bottom: 30px;
-  color: var(--dark-gray);
+  color: var(--dark-gold);
 }
 
 .contact-form {
@@ -53,7 +53,7 @@
   display: block;
   margin-bottom: 8px;
   font-weight: 600;
-  color: var(--dark-gray);
+  color: var(--beige);
 }
 
 .contact-form input,
@@ -89,7 +89,8 @@
   align-items: start;
   gap: 20px;
   padding: 25px;
-  background: var(--light-gray);
+  background: var(--black);
+  border: 1px solid var(--primary-gold);
   border-radius: 15px;
   margin-bottom: 20px;
 }
@@ -111,7 +112,7 @@
 }
 
 .contact-info .info-box div:last-child p {
-  color: #666;
+  color: var(--beige);
   line-height: 1.6;
   text-wrap: balance;
 }
@@ -148,9 +149,14 @@
 /* FAQ Section */
 .faq-section {
   padding: 100px 0;
-  background: var(--light-gray);
+    background: var(--black);
 }
-
+.faq-section h2{
+  color: var(--primary-gold);
+}
+.faq-section p{
+   color: var(--beige);
+}
 .faq-section .accordion-item {
   margin-bottom: 20px;
   border: 1px solid #e0e0e0;

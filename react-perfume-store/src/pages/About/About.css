@@ -36,12 +36,12 @@
 .story-section h2{
     font-size: clamp(28px, 5vw, 36px);
     margin-bottom: 20px;
-    color: var(--dark-gray);
+    color: var(--primary-gold);
 }
 .story-section p {
   font-size: 17px;
   line-height: 1.9;
-  color: #555;
+  color: var(--beige);
   margin-bottom: 20px;
 }
 
@@ -97,12 +97,12 @@
 .vision-section h2{
     font-size: clamp(28px, 5vw, 36px);
     margin-top: 20px;
-    color: var(--dark-gray);
+    color: var(--primary-gold);
 }
 .vision-section p{
     font-size: 17px;
     line-height: 1.9;
-    color: #555;
+     color: var(--beige);
     margin-bottom: 20px;
 }
 

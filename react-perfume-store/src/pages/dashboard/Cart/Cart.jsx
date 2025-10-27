@@ -11,12 +11,14 @@ const Cart = () => {
   const [product, setProduct] = useState([]);
   const [selectUser, setSelectUser] = useState(false);
   const [selectProduct, setSelectProduct] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   // GET ORDERS
   const getOrders = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/cart/all`, { withCredentials: true });
       setOrder(res.data);
+      console.log(res.data)
     } catch (err) {
       console.log(err);
     }

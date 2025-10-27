@@ -1,114 +1,263 @@
+// OverView.jsx
 import "./OverView.css";
 import React, { useEffect, useState } from "react";
-import { FaUsers, FaBox, FaShoppingCart } from "react-icons/fa";
 import axios from "axios";
 import { BASE_URL } from "../../../assets/url";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+  LineChart,
+  Line,
+} from "recharts";
+import Loading from "../../../components/Loading/Loading";
+
+const COLORS = ["#FACC15", "#22C55E", "#EF4444"];
 
 const OverView = () => {
-  const [products, setProducts] = useState([]);
-  const [users, setUsers] = useState([]);
-  const [order, setOrder] = useState([]);
-  const [pendingOrders, setPendingOrders] = useState([]);
-  const [failedOrders, setFailedOrders] = useState([]);
-  const [successOrders, setSuccessOrders] = useState([]);
-  const [comments, setComments] = useState([]);
+  const [data, setData] = useState({
+    users: [],
+    products: 0,
+    orders: [],
+    comments: [],
+    wishlists: [],
+    withoutUsers: [],
+    withoutProducts: [],
+    withoutStats: { Pending: 0, Complete: 0, Failed: 0 },
+  });
 
-  // GET USERS
-  const GetUsers = async () => {
-    try {
-      const res = await axios.get(`${BASE_URL}/user/getUsers`, { withCredentials: true });
-      setUsers(res.data.Users);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  // GET COMMENTS
-  const getComments = async () => {
-    try {
-      const res = await axios.get(`${BASE_URL}/comment/all`, { withCredentials: true });
-      setComments(res.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  // GET ORDERS
-  const getOrders = async () => {
-    try {
-      const res = await axios.get(`${BASE_URL}/cart/all`, { withCredentials: true });
-      setOrder(res.data);
-      setPendingOrders(res.data.filter((o) => o.status === "Pending"));
-      setFailedOrders(res.data.filter((o) => o.status === "Failed"));
-      setSuccessOrders(res.data.filter((o) => o.status === "Complete"));
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  // GET PRODUCTS
-  const getAllProducts = async () => {
-    try {
-      const res = await axios.get(`${BASE_URL}/product`, { withCredentials: true });
-      setProducts(res.data.totalProducts);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  const [pending, setPending] = useState(0);
+  const [failed, setFailed] = useState(0);
+  const [success, setSuccess] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    GetUsers();
-    getComments();
-    getOrders();
-    getAllProducts();
+    const fetchAll = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const results = await Promise.allSettled([
+          axios.get(`${BASE_URL}/user/getUsers`, { withCredentials: true }),
+          axios.get(`${BASE_URL}/product`, { withCredentials: true }),
+          axios.get(`${BASE_URL}/cart/all`, { withCredentials: true }),
+          axios.get(`${BASE_URL}/wish/all`, { withCredentials: true }),
+          axios.get(`${BASE_URL}/without/getWithoutUsers`, { withCredentials: true }),
+        ]);
+
+        const [usersRes, productsRes, ordersRes, wishRes, withoutRes] = results;
+
+        const usersList =
+          usersRes?.status === "fulfilled" && usersRes.value?.data?.Users
+            ? usersRes.value.data.Users
+            : [];
+
+        const totalProducts =
+          productsRes?.status === "fulfilled" && productsRes.value?.data
+            ? productsRes.value.data.totalProducts ?? productsRes.value.data.products?.length ?? 0
+            : 0;
+
+        const allOrders =
+          ordersRes?.status === "fulfilled" && Array.isArray(ordersRes.value.data)
+            ? ordersRes.value.data
+            : [];
+
+        const wishlists =
+          wishRes?.status === "fulfilled" && Array.isArray(wishRes.value.data)
+            ? wishRes.value.data
+            : [];
+
+        const withoutUsers =
+          withoutRes?.status === "fulfilled" && Array.isArray(withoutRes.value.data)
+            ? withoutRes.value.data
+            : [];
+
+        let withoutProducts = [];
+        withoutUsers.forEach(u => {
+          if (u.products && u.products.length) {
+            u.products.forEach(p => {
+              withoutProducts.push({ ...p, user: u.username });
+            });
+          }
+        });
+
+        const pendingOrders = allOrders.filter(o => o && o.status === "Pending").length;
+        const failedOrders = allOrders.filter(o => o && o.status === "Failed").length;
+        const successOrders = allOrders.filter(o => o && o.status === "Complete").length;
+
+        const withoutPending = withoutProducts.filter(p => p.status === "Pending").length;
+        const withoutComplete = withoutProducts.filter(p => p.status === "Complete").length;
+        const withoutFailed = withoutProducts.filter(p => p.status === "Failed").length;
+
+        setData({
+          users: usersList,
+          products: totalProducts,
+          orders: allOrders,
+          comments: [],
+          wishlists,
+          withoutUsers,
+          withoutProducts,
+          withoutStats: {
+            Pending: withoutPending,
+            Complete: withoutComplete,
+            Failed: withoutFailed,
+          },
+        });
+
+        setPending(pendingOrders + withoutPending);
+        setFailed(failedOrders + withoutFailed);
+        setSuccess(successOrders + withoutComplete);
+
+      } catch (err) {
+        console.error("❌ Unexpected fetch error:", err);
+        setError("حدث خطأ أثناء جلب البيانات. تحقق من الكونسول للمزيد.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAll();
   }, []);
 
+  const summaryData = [
+    { name: "المستخدمون", value: data.users.length },
+    { name: "المنتجات", value: data.products },
+    { name: "إجمالي الطلبات", value: data.orders.length },
+    { name: "طلبات بدون تسجيل", value: data.withoutProducts?.length || 0 },
+    { name: "الطلبات المسجلة", value: (data.orders.length - (data.withoutProducts?.length || 0)) },
+    { name: "قائمة الرغبات", value: data.wishlists.length },
+  ];
+
+  const ordersData = [
+    { name: "مكتملة", value: success },
+    { name: "قيد الانتظار", value: pending },
+    { name: "فاشلة", value: failed },
+  ];
+
+  if (loading) return <Loading />;
+
+  if (error) {
+    return (
+      <div className="overview-wrapper">
+        <h2 className="overview-heading">📊 لوحة تحليلات المتجر</h2>
+        <div className="error">{error}</div>
+      </div>
+    );
+  }
+
   return (
-    <div className="overview-container">
-      <h2 className="overview-title">Dashboard Overview</h2>
+    <div className="overview-wrapper">
+      <h2 className="overview-heading">📊 لوحة تحليلات المتجر</h2>
 
-      <div className="overview-grid">
-        <div className="overview-card">
-          <div className="icon gold"><FaUsers size={22} /></div>
-          <p>Total Users</p>
-          <h3>{users.length}</h3>
+      {/* Top small stats */}
+      <div className="stats-grid">
+        {summaryData.map((item, i) => (
+          <div key={i} className="stat-card">
+            <p className="stat-title">{item.name}</p>
+            <h3 className="stat-value">{item.value}</h3>
+          </div>
+        ))}
+      </div>
+
+      {/* charts */}
+      <div className="charts-grid">
+        <div className="chart-card">
+          <h3>ملخص المتجر</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={summaryData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis allowDecimals={false} />
+              <Tooltip />
+              <Bar dataKey="value" fill="#FACC15" barSize={40} />
+            </BarChart>
+          </ResponsiveContainer>
+
+          <table className="overview-table">
+            <thead>
+              <tr>
+                <th>الفئة</th>
+                <th>العدد</th>
+              </tr>
+            </thead>
+            <tbody>
+              {summaryData.map((it, idx) => (
+                <tr key={idx}>
+                  <td>{it.name}</td>
+                  <td>{it.value}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
 
-        <div className="overview-card">
-          <div className="icon gold"><FaBox size={22} /></div>
-          <p>Total Products</p>
-          <h3>{products}</h3>
-        </div>
+        <div className="chart-card">
+          <h3>حالة الطلبات (بما في ذلك الطلبات بدون تسجيل)</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={ordersData}
+                cx="50%"
+                cy="50%"
+                outerRadius={90}
+                dataKey="value"
+                label={({ name, value }) => `${name}: ${value}`}
+              >
+                {ordersData.map((_, i) => (
+                  <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
 
-        <div className="overview-card">
-          <div className="icon dark-gold"><FaShoppingCart size={22} /></div>
-          <p>Total Orders</p>
-          <h3>{order.length}</h3>
+          <table className="overview-table">
+            <thead>
+              <tr>
+                <th>الحالة</th>
+                <th>العدد</th>
+              </tr>
+            </thead>
+            <tbody>
+              {ordersData.map((it, idx) => (
+                <tr key={idx}>
+                  <td>{it.name}</td>
+                  <td>{it.value}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
+      </div>
 
-        <div className="overview-card success">
-          <div className="icon success-icon"><FaShoppingCart size={22} /></div>
-          <p>Success Orders</p>
-          <h3>{successOrders.length}</h3>
-        </div>
-
-        <div className="overview-card pending">
-          <div className="icon pending-icon"><FaShoppingCart size={22} /></div>
-          <p>Pending Orders</p>
-          <h3>{pendingOrders.length}</h3>
-        </div>
-
-        <div className="overview-card failed">
-          <div className="icon failed-icon"><FaShoppingCart size={22} /></div>
-          <p>Failed Orders</p>
-          <h3>{failedOrders.length}</h3>
-        </div>
-
-        <div className="overview-card">
-          <div className="icon gold"><FaBox size={22} /></div>
-          <p>Total Comments</p>
-          <h3>{comments.length}</h3>
-        </div>
+      <div className="chart-card full">
+        <h3>نظرة عامة على النشاط</h3>
+        <ResponsiveContainer width="100%" height={320}>
+          <LineChart
+            data={[
+              { name: "المستخدمون", value: data.users.length },
+              { name: "الطلبات", value: data.orders.length },
+              { name: "طلبات بدون تسجيل", value: data.withoutProducts.length },
+              { name: "قائمة الرغبات", value: data.wishlists.length },
+            ]}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis allowDecimals={false} />
+            <Tooltip />
+            <Line type="monotone" dataKey="value" stroke="#D4AF37" strokeWidth={3} dot={{ r: 6 }} />
+          </LineChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );

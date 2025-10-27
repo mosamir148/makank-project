@@ -26,7 +26,7 @@ const UserSchema = new moongose.Schema({
     role:{
         type:String,
         enum: ["user", "admin"], 
-        default: "admin" 
+        default: "user" 
     },
     resetOTP: { type: String, default: null },
     resetOTPExpires: { type: Date, default: null },

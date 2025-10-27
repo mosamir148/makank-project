@@ -1,12 +1,9 @@
-import { useContext, useEffect, useState } from 'react'
-import { FaHeart, FaStar } from 'react-icons/fa6'
-import { CiStar } from 'react-icons/ci'
+import {  useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
-import toast from 'react-hot-toast'
 import './Product.css'
 import { BASE_URL } from '../../../assets/url'
-import { userContext } from '../../../context/UserContext'
+import Loading from '../../../components/Loading/Loading'
 
 const Product = () => {
   const [loading, setLoading] = useState(true)
@@ -66,7 +63,7 @@ const Product = () => {
 
  
 
-  if (loading) return <p className="loading-text">Loading...</p>
+  if (loading) return <Loading />
 
   return (
     <section className="products-page">

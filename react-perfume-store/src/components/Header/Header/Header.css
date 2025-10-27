@@ -1,150 +1,210 @@
+
 .header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  background: rgba(0, 0, 0, 0.95);
-  backdrop-filter: blur(10px);
-  z-index: 1000;
-  padding: 20px 0;
-  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: var(--dark-gray);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    transition: var(--transition);
 }
-.header .container{
+.header .container {
     padding: 0 10px;
 }
 .header-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
 }
 
-
+/* Logo */
 .logo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 .logo-img {
-  width: 50px;       
-  height: auto;
-  border-radius: 8px; 
+    width: 50px;
+    height: auto;
+    border-radius: 8px;
 }
 
-
-/* القائمة الرئيسية */
-
+/* Nav */
 .nav-list {
-  display: flex;
-  list-style: none;
-  gap: 30px;
+    display: flex;
+    list-style: none;
+    gap: 15px;
 }
 
 .nav-link {
-  color: var(--white);
-  text-decoration: none;
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: 0.7px;
-  position: relative;
-  transition: 0.3s;
+    color: var(--white);
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.7px;
+    position: relative;
+    transition: var(--transition);
 }
-
 .nav-link::after {
-  content: '';
-  position: absolute;
-  bottom: -5px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: var(--primary-gold);
-  transition: 0.3s;
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--primary-gold);
+    transition: var(--transition);
 }
-
 .nav-link:hover,
 .nav-link.active {
-  color: var(--primary-gold);
+    color: var(--primary-gold);
 }
-
 .nav-link:hover::after,
 .nav-link.active::after {
-  width: 100%;
+    width: 100%;
 }
 
+/* Header Actions */
 .header-actions {
-  display: flex;
-  gap: 20px;
-  align-items: center;
+    display: flex;
+    gap: 20px;
+    align-items: center;
 }
 
 .lang-toggle {
-  background: transparent;
-  border: 1px solid var(--primary-gold);
-  color: var(--primary-gold);
-  padding: 8px 20px;
-  cursor: pointer;
-  font-weight: 600;
-  letter-spacing: 1px;
-  transition: 0.3s;
+    background: transparent;
+    border: 1px solid var(--primary-gold);
+    color: var(--primary-gold);
+    padding: 8px 20px;
+    cursor: pointer;
+    font-weight: 600;
+    letter-spacing: 1px;
+    transition: var(--transition);
 }
-
 .lang-toggle:hover {
-  background: var(--primary-gold);
-  color: var(--black);
+    background: var(--primary-gold);
+    color: var(--black);
 }
-
 
 .menu-toggle {
-  display: none;
-  background: none;
-  border: none;
-  color: var(--primary-gold);
-  cursor: pointer;
+    display: none;
+    background: none;
+    border: none;
+    color: var(--primary-gold);
+    cursor: pointer;
 }
 
+/* Responsive Nav */
+@media (max-width: 950px) {
+    .nav {
+        position: fixed;
+        top: 70px;
+        right: -100%;
+        width: 60%;
+        height: 100vh;
+        background: var(--dark-gray);
+        padding: 60px 30px;
+        transition: right 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+    }
 
-@media (max-width: 970px) {
-  .nav {
-    position: fixed;
-    top: 70px;
-    right: -100%;
-    width: 60%;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.98);
-    padding: 60px 30px;
-    transition: right 0.3s ease;
+    .nav.open {
+        right: 0;
+    }
+
+    .nav-list {
+        flex-direction: column;
+        gap: 25px;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+}
+
+/* Cart Badge */
+.cartCount {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: var(--primary-gold);
+    color: var(--black);
+    width: 20px;
+    height: 20px;
     display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-  }
-
-  .nav.open {
-    right: 0;
-  }
-
-  .nav-list {
-    flex-direction: column;
-    gap: 25px;
-  }
-
-  .menu-toggle {
-    display: block;
-  }
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 600;
 }
 
+/* Theme Toggle Popup */
+.theme-popup-wrapper {
+    position: relative;
+    display: inline-block;
+}
 
+.theme-toggle-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--white);
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+.theme-toggle-btn:hover {
+    background-color: rgba(255,255,255,0.05);
+}
 
-.cartCount{
-  position: absolute;
-  top: -25px;
-  right: -10px;
-  background: var(--light-gray);
-  color: var(--black);
-  width: 20px;
-  height: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 50%;
+/* Popup Container */
+.theme-popup {
+    position: absolute;
+    top: 120%;
+    right: 0;
+    width: 140px;
+    background-color: var(--medium-gray);
+    border: 1px solid #333;
+    border-radius: 6px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    z-index: 1000;
+    padding: 4px 0;
+    transition: var(--transition);
+}
+
+/* Option Items */
+.theme-option {
+    cursor: pointer;
+    padding: 6px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.2s, color 0.2s;
+    color: var(--white);
+}
+.theme-option:hover {
+    background-color: var(--dark-gray);
+}
+.theme-option.active {
+    background-color: var(--primary-gold);
+    color: var(--black);
+    font-weight: 500;
+}
+
+/* Checkmark */
+.theme-option .check {
+    color: green;
+    font-weight: bold;
 }

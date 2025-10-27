@@ -97,7 +97,7 @@
     padding: 1.5rem 1rem;
     text-align: left;
     font-weight: 700;
-    color: var(--black);
+    color: var(--white);
     text-transform: uppercase;
     letter-spacing: 1px;
     font-size: 0.9rem;
@@ -119,7 +119,7 @@
 
 .all-users-table tbody td {
     padding: 1.25rem 1rem;
-    color: var(--light-gray);
+    color: var(--white);
     font-size: 0.95rem;
 }
 
@@ -133,16 +133,17 @@
     padding: 0.75rem 1rem !important;
 }
 
-.actions-wrapper {
+.actions-cell .actions-wrapper {
     display: flex;
+    align-items: center;
     gap: 0.5rem;
     justify-content: flex-end;
     flex-wrap: wrap;
 }
 
 /* Action Buttons */
-.action-btn,
-.delete-btn {
+.all-users-container  .action-btn,
+.all-users-container  .delete-btn {
     padding: 0.6rem 1.2rem;
     border: none;
     border-radius: 8px;
@@ -155,7 +156,7 @@
     text-align: center;
 }
 
-.action-btn {
+.all-users-container .actions-cell .action-btn {
     background: linear-gradient(135deg, var(--primary-gold) 0%, var(--dark-gold) 100%);
     color: var(--black);
 }
@@ -165,8 +166,9 @@
     box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
 }
 
-.delete-btn {
-    background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+.all-users-container .actions-cell .delete-btn {
+    background: blue;
+    /* background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); */
     color: var(--white);
 }
 
@@ -268,13 +270,15 @@
 .user-info {
     padding: 1rem;
     margin-bottom: 1rem;
-    background: rgba(212, 175, 55, 0.05);
+    background: var(--black);
+    color: var(--white);
     border-left: 4px solid var(--primary-gold);
     border-radius: 8px;
     display: flex;
     gap: 0.5rem;
     transition: var(--transition);
 }
+
 
 .user-info:hover {
     background: rgba(212, 175, 55, 0.1);

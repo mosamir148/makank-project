@@ -1,4 +1,4 @@
-import  "./Sidebar.css";
+import "./Sidebar.css";
 import { useState } from "react";
 import { FaChevronDown, FaChevronRight } from "react-icons/fa6";
 import { Link } from "react-router-dom";
@@ -13,14 +13,16 @@ const Sidebar = ({ active }) => {
   };
 
   const menus = [
-    { name: "Dashboard", key: "", subMenu: [] },
-    { name: "Users", key: "user", subMenu: [] },
-    { name: "Products", key: "products", subMenu: ["Add Product"] },
-    { name: "Order", key: "carts", subMenu: [] },
+    { name: "لوحة التحكم", key: "", subMenu: [] },
+    { name: "المستخدمون", key: "user", subMenu: [] },
+    { name: "المنتجات", key: "products", subMenu: ["إضافة منتج"] },
+    { name: "الطلبات", key: "carts", subMenu: [] },
+    { name: "بدون تسجيل", key: "without", subMenu: [] },
+    { name: "سلة الرغبات", key: "wish", subMenu: [] },
   ];
 
   return (
-   <div className={`sidebar ${active ? "active" : ""}`}>
+    <div className={`sidebar ${active ? "active" : ""}`}>
       <ul>
         {menus.map((menu) => (
           <li key={menu.key}>

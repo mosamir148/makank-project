@@ -10,19 +10,24 @@ import "./ProductDetails.css";
 import { BASE_URL } from "../../../assets/url";
 import { userContext } from "../../../context/UserContext";
 import { productsContext } from "../../../context/GetProducts";
+import Loading from "../../../components/Loading/Loading";
 
 const ProductDetails = () => {
   const { id } = useParams();
   const { product } = useContext(productsContext);
   const [data, setData] = useState(null);
   const { user } = useContext(userContext);
+  const [loading, setLoading] = useState(true) 
 
+  // جلب بيانات المنتج
   const getProduct = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/product/${id}`);
       setData(res.data.product);
     } catch (err) {
       console.log(err);
+    }finally{
+      setLoading(false)
     }
   };
 
@@ -30,32 +35,55 @@ const ProductDetails = () => {
     getProduct();
   }, [id]);
 
-  const AddToCart = async () => {
+  
+  const AddToWish = async () => {
     try {
-      if (!user) {
-        toast.error("يجب أن تسجل الدخول أولاً");
-        return;
+      if (user && user._id) {
+        await axios.post(
+          `${BASE_URL}/wish/add`,
+          {
+            userId: user._id,
+            productId: data._id,
+          },
+          { withCredentials: true }
+        );
+        toast.success("تمت إضافة المنتج إلى للسله بنجاح ✅");
+      } else {
+
+        let localWish = JSON.parse(localStorage.getItem("localWish")) || [];
+
+        const exists = localWish.find((item) => item._id === data._id);
+        if (exists) {
+          toast("هذا المنتج موجود بالفعل في المفضلة ❤️");
+          return;
+        }
+
+        localWish.push({
+          _id: data._id,
+          title: data.title,
+          price: data.price,
+          image: data.image,
+          description: data.description,
+          brand: data.brand,
+          category: data.category,
+        });
+
+        localStorage.setItem("localWish", JSON.stringify(localWish));
+        toast.success("✅ تمت إضافة المنتج للسله بنجاح ( )");
       }
-      await axios.post(
-        `${BASE_URL}/cart/add`,
-        {
-          userId: user._id,
-          productId: data._id,
-        },
-        { withCredentials: true }
-      );
-      toast.success("تمت إضافة المنتج إلى السلة بنجاح!");
     } catch (err) {
       console.log(err);
-      toast.error("حدث خطأ أثناء إضافة المنتج إلى السلة");
+      toast.error("حدث خطأ أثناء الإضافة إلى المفضلة");
     }
   };
+
+  if(loading) return  <Loading />
 
   return (
     <section className="product-details-section">
       {data ? (
         <div className="product-details-container">
-          {/* صور المنتج */}
+
           <div className="product-images">
             <ImageGallery
               items={[
@@ -116,8 +144,8 @@ const ProductDetails = () => {
               </tbody>
             </table>
 
-            <button onClick={AddToCart} className="add-to-cart-btn">
-              Add to Cart
+            <button onClick={AddToWish} className="add-to-cart-btn">
+              Add to Wish ❤️
             </button>
           </div>
         </div>

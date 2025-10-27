@@ -13,7 +13,7 @@ createRoot(document.getElementById('root')).render(
       <UserContextProvider>
         <GetProducts>
           <Toaster position="top-center" />
-          <App />
+            <App />
         </GetProducts>
       </UserContextProvider>
     </BrowserRouter>

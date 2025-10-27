@@ -13,6 +13,7 @@ const UserRoute = require("./routes/User");
 const CartRoute = require("./routes/Cart");
 const WishRoute = require("./routes/Wishlist");
 const CommentRoute = require("./routes/Comment");
+const withoutRoutes = require("./routes/WithoutRegister");
 
 const app = express();
 app.use(express.json({ limit: "Infinity" })); 
@@ -20,7 +21,7 @@ app.use(express.json({ limit: "Infinity" }));
 /* -------------------- 🔹 1- CORS -------------------- */
 app.use(cors({
   origin: [
-    "http://localhost:5173",
+    "http://localhost:5174",
     "https://full-ecommerce-frontend-iota.vercel.app"
   ],
   credentials: true,
@@ -60,6 +61,7 @@ app.use("/api/user", UserRoute);
 app.use("/api/cart", CartRoute);
 app.use("/api/wish", WishRoute);
 app.use("/api/comment", CommentRoute);
+app.use("/api/without", withoutRoutes );
 
 /* -------------------- 🔹 6- Database -------------------- */
 const MONGODB_URI = process.env.MONGODB_URI;

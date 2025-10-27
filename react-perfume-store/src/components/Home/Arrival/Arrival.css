@@ -1,5 +1,5 @@
 .new-arrivals {
-    background: var(--beige);
+    background: var(--light-gray);
     overflow: hidden;
 }
 
@@ -43,7 +43,7 @@
     font-family: 'Playfair Display', serif;
     font-size: 22px;
     margin-bottom: 10px;
-    color: var(--dark-gray);
+    color: var(--black);
 }
 
 .arrival-card p {

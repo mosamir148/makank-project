@@ -36,7 +36,6 @@ const Testimonials = () => {
     setCurrent((prev) => (prev - 1 + testimonials.length) % testimonials.length);
   };
 
-  // التشغيل التلقائي
   useEffect(() => {
     const interval = setInterval(nextTestimonial, 5000);
     return () => clearInterval(interval);
