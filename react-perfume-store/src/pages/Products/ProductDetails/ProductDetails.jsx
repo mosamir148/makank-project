@@ -19,7 +19,7 @@ const ProductDetails = () => {
   const { user } = useContext(userContext);
   const [loading, setLoading] = useState(true) 
 
-  // جلب بيانات المنتج
+
   const getProduct = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/product/${id}`);

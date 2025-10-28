@@ -1,72 +1,34 @@
-const WithOut = require("../models/WithoutRegister");
+const WithoutRegister = require("../models/WithoutRegister");
 const Cart = require("../models/Cart");
 const Product = require("../models/Product");
 
 
 const createWithoutUserAndCart = async (req, res) => {
   try {
-    const { username, address, email, phone, phoneWhats, products, status } = req.body;
+    const { username, email, phone, address, productId, quantity } = req.body;
 
-    console.log("💡 Body received:", req.body);
-
-    // ابحث عن مستخدم موجود بنفس الهاتف
-    let existingUser = await WithOut.findOne({ phone });
-
-    if (!existingUser) {
-      // لو مش موجود، أنشئ مستخدم جديد
-      existingUser = new WithOut({
-        username,
-        address,
-        email,
-        phone,
-        phoneWhats,
-        status: status || "Pending",
-      });
-      await existingUser.save();
-    } else {
-      // لو موجود، حدث بياناته فقط بدون إعادة تعيين status
-      existingUser.username = username;
-      existingUser.address = address;
-      existingUser.email = email;
-      existingUser.phoneWhats = phoneWhats;
-      await existingUser.save();
+    if (!productId) {
+      return res.status(400).json({ message: "productId is required" });
     }
 
-    // معالجة الـ cart
-    const cartItems = await Promise.all(
-      products.map(async (item) => {
-        // ابحث إذا المنتج موجود بالفعل في cart للمستخدم
-        let existingCart = await Cart.findOne({ user: existingUser._id, product: item.productId });
+    // 1️⃣ إنشاء الزائر
+    const guest = await WithoutRegister.create({ username, email, phone, address });
 
-        if (!existingCart) {
-          // لو مش موجود، أنشئ cart جديد
-          const newCart = new Cart({
-            user: existingUser._id,
-            product: item.productId,
-            quantity: item.quantity || 1,
-            status: "Pending", // جديد افتراضي
-          });
-          await newCart.save();
-          return newCart;
-        } else {
-          // لو موجود، حدث الكمية فقط بدون إعادة تعيين status
-          existingCart.quantity = item.quantity || existingCart.quantity;
-          await existingCart.save();
-          return existingCart;
-        }
-      })
-    );
-
-    console.log("✅ User and cart processed successfully");
-
-    res.status(201).json({
-      message: "User and cart processed successfully",
-      user: existingUser,
-      cart: cartItems,
+    // 2️⃣ إنشاء Cart مربوط بالزائر
+    const cartItem = await Cart.create({
+      guest: guest._id,
+      product: productId,
+      quantity: quantity || 1,
+      status: "Pending",
     });
+
+    await cartItem.populate("product");
+    await cartItem.populate("guest");
+
+    res.status(201).json(cartItem);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server Error", error });
+    console.error("❌ Error creating guest cart:", error);
+    res.status(500).json({ message: "Error creating guest cart", error: error.message });
   }
 };
 
@@ -98,7 +60,7 @@ const getWithoutUsers = async (req, res) => {
 };
 
 
-// PUT: تحديث status لمنتج معين في الـ cart
+
 const updateCartStatus = async (req, res) => {
   try {
     const { cartId } = req.params;     // id بتاع المنتج في الـ cart
@@ -118,7 +80,6 @@ const updateCartStatus = async (req, res) => {
 };
 
 
-// PUT: تحديث status للمستخدم نفسه
 const updateUserStatus = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -137,11 +98,34 @@ const updateUserStatus = async (req, res) => {
   }
 };
 
+const deleteCartItem = async (req, res) => {
+  try {
+    const { cartId } = req.params;
+
+    // نلاقي الـcart بالـID
+    const cartItem = await WithOut.findById(cartId);
+    if (!cartItem) return res.status(404).json({ message: "Cart not found" });
+
+    // نحفظ userId قبل الحذف
+    const userId = cartItem.user;
+
+    // نحذف العنصر
+    await cartItem.deleteOne();
+
+    // نرجع رسالة نجاح
+    res.status(200).json({ message: "Cart item deleted successfully", cartId, userId });
+  } catch (error) {
+    console.error("Error deleting cart item:", error);
+    res.status(500).json({ message: "Server Error", error: error.message });
+  }
+};
+
 module.exports = {
   createWithoutUserAndCart,
   getWithoutUsers,
   updateCartStatus,
   updateUserStatus,
+  deleteCartItem,
 };
 
 

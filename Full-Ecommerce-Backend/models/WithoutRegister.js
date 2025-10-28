@@ -30,4 +30,4 @@ const WithOutSchema = new mongoose.Schema({
     
 }, { timestamps: true });
 
-module.exports = mongoose.model("WithOut", WithOutSchema);
+module.exports = mongoose.model("WithoutRegister", WithOutSchema);

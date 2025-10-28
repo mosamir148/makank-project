@@ -29,9 +29,6 @@ const OverView = () => {
     orders: [],
     comments: [],
     wishlists: [],
-    withoutUsers: [],
-    withoutProducts: [],
-    withoutStats: { Pending: 0, Complete: 0, Failed: 0 },
   });
 
   const [pending, setPending] = useState(0);
@@ -51,10 +48,9 @@ const OverView = () => {
           axios.get(`${BASE_URL}/product`, { withCredentials: true }),
           axios.get(`${BASE_URL}/cart/all`, { withCredentials: true }),
           axios.get(`${BASE_URL}/wish/all`, { withCredentials: true }),
-          axios.get(`${BASE_URL}/without/getWithoutUsers`, { withCredentials: true }),
         ]);
 
-        const [usersRes, productsRes, ordersRes, wishRes, withoutRes] = results;
+        const [usersRes, productsRes, ordersRes, wishRes] = results;
 
         const usersList =
           usersRes?.status === "fulfilled" && usersRes.value?.data?.Users
@@ -76,27 +72,9 @@ const OverView = () => {
             ? wishRes.value.data
             : [];
 
-        const withoutUsers =
-          withoutRes?.status === "fulfilled" && Array.isArray(withoutRes.value.data)
-            ? withoutRes.value.data
-            : [];
-
-        let withoutProducts = [];
-        withoutUsers.forEach(u => {
-          if (u.products && u.products.length) {
-            u.products.forEach(p => {
-              withoutProducts.push({ ...p, user: u.username });
-            });
-          }
-        });
-
         const pendingOrders = allOrders.filter(o => o && o.status === "Pending").length;
         const failedOrders = allOrders.filter(o => o && o.status === "Failed").length;
         const successOrders = allOrders.filter(o => o && o.status === "Complete").length;
-
-        const withoutPending = withoutProducts.filter(p => p.status === "Pending").length;
-        const withoutComplete = withoutProducts.filter(p => p.status === "Complete").length;
-        const withoutFailed = withoutProducts.filter(p => p.status === "Failed").length;
 
         setData({
           users: usersList,
@@ -104,18 +82,11 @@ const OverView = () => {
           orders: allOrders,
           comments: [],
           wishlists,
-          withoutUsers,
-          withoutProducts,
-          withoutStats: {
-            Pending: withoutPending,
-            Complete: withoutComplete,
-            Failed: withoutFailed,
-          },
         });
 
-        setPending(pendingOrders + withoutPending);
-        setFailed(failedOrders + withoutFailed);
-        setSuccess(successOrders + withoutComplete);
+        setPending(pendingOrders);
+        setFailed(failedOrders);
+        setSuccess(successOrders);
 
       } catch (err) {
         console.error("❌ Unexpected fetch error:", err);
@@ -129,12 +100,10 @@ const OverView = () => {
   }, []);
 
   const summaryData = [
-    { name: "المستخدمون", value: data.users.length },
-    { name: "المنتجات", value: data.products },
-    { name: "إجمالي الطلبات", value: data.orders.length },
-    { name: "طلبات بدون تسجيل", value: data.withoutProducts?.length || 0 },
-    { name: "الطلبات المسجلة", value: (data.orders.length - (data.withoutProducts?.length || 0)) },
-    { name: "قائمة الرغبات", value: data.wishlists.length },
+    { name: "المستخدمون", value: data.users?.length || 0 },
+    { name: "المنتجات", value: data.products || 0 },
+    { name: "إجمالي الطلبات", value: data.orders?.length || 0 },
+    { name: "قائمة الرغبات", value: data.wishlists?.length || 0 },
   ];
 
   const ordersData = [
@@ -175,7 +144,7 @@ const OverView = () => {
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={summaryData}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
+              <XAxis dataKey="name" interval={0} tick={{ fontSize: 16 }} angle={5} />
               <YAxis allowDecimals={false} />
               <Tooltip />
               <Bar dataKey="value" fill="#FACC15" barSize={40} />
@@ -201,7 +170,7 @@ const OverView = () => {
         </div>
 
         <div className="chart-card">
-          <h3>حالة الطلبات (بما في ذلك الطلبات بدون تسجيل)</h3>
+          <h3>حالة الطلبات</h3>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
@@ -247,7 +216,6 @@ const OverView = () => {
             data={[
               { name: "المستخدمون", value: data.users.length },
               { name: "الطلبات", value: data.orders.length },
-              { name: "طلبات بدون تسجيل", value: data.withoutProducts.length },
               { name: "قائمة الرغبات", value: data.wishlists.length },
             ]}
           >

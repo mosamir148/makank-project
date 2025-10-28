@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { createWithoutUserAndCart, getWithoutUsers ,updateCartStatus ,updateUserStatus} = require("../controllers/WithoutRegister");
+const { createWithoutUserAndCart,deleteCartItem, getWithoutUsers ,updateCartStatus ,updateUserStatus} = require("../controllers/WithoutRegister");
 const verifyAdmin = require("../middleware/verifyAdmin");
 
 
@@ -11,6 +11,8 @@ router.get("/getWithoutUsers", verifyAdmin, getWithoutUsers);
 
 router.put("/updateCartStatus/:cartId", updateCartStatus);
 router.put("/updateUserStatus/:userId", updateUserStatus);
+
+router.delete("/deleteCartItem/:cartId", deleteCartItem);
 
 
 module.exports = router;

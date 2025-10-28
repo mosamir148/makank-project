@@ -62,7 +62,7 @@ function App() {
 
               <Route path='wish' element={<Wish />} />
 
-              <Route path='without' element={<Without />} />
+              {/* <Route path='without' element={<Without />} /> */}
               
               </Route>
             

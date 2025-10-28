@@ -15,9 +15,9 @@ const Sidebar = ({ active }) => {
   const menus = [
     { name: "لوحة التحكم", key: "", subMenu: [] },
     { name: "المستخدمون", key: "user", subMenu: [] },
-    { name: "المنتجات", key: "products", subMenu: ["إضافة منتج"] },
+    { name: "المنتجات", key: "products", subMenu: ["add-product"] },
     { name: "الطلبات", key: "carts", subMenu: [] },
-    { name: "بدون تسجيل", key: "without", subMenu: [] },
+    // { name: "بدون تسجيل", key: "without", subMenu: [] },
     { name: "سلة الرغبات", key: "wish", subMenu: [] },
   ];
 

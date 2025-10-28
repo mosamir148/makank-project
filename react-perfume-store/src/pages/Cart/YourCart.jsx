@@ -40,7 +40,7 @@ const YourCart = () => {
     try {
       const res = await axios.post(`${BASE_URL}/user/login`, loginData, { withCredentials: true });
       setUser(res.data.info);
-      await AddAllToCart();
+      await AddAllToCart({ userId: res.data.info._id }); 
       toast.success("تم تسجيل طلبك بنجاح وسيتم التواصل معك!")
       setShowLoginForm(false);
     } catch (err) {
@@ -63,61 +63,76 @@ const YourCart = () => {
         phone:""
     })
     const [image, setImage] = useState(null)
+
     const handleChangeRegister = (e)=>{
         setRegisterData({...registerData , [e.target.name]: e.target.value })
     }
 
-    const handleSubmitRegister = async (e)=>{
-        e.preventDefault();
+    const handleSubmitRegister = async (e) => {
+  e.preventDefault();
 
-        // VALIDATIONS
-        if(!registerData.username || !registerData.email || !registerData.password || !registerData.phone ){
-            toast.error("Please fill in all fields.")
-            return
-        }
-        if(registerData.password.length < 8  ){
-            toast.error("Password must be at least 8 characters")
-            return
-        }
-        if(registerData.username.length < 3  ){
-            toast.error("UserName must be at least 3 characters")
-            return
-        }
-        if(registerData.phone.length !== 11  ){
-            toast.error("Phone Number must be at 11 characters")
-            return
-        }
+  // ✅ VALIDATIONS
+  if (!registerData.username || !registerData.email || !registerData.password || !registerData.phone) {
+    toast.error("يرجى إدخال جميع البيانات المطلوبة");
+    return;
+  }
+  if (registerData.password.length < 8) {
+    toast.error("كلمة المرور يجب أن تكون 8 أحرف على الأقل");
+    return;
+  }
+  if (registerData.username.length < 3) {
+    toast.error("الاسم يجب أن يكون 3 أحرف على الأقل");
+    return;
+  }
+  if (registerData.phone.length !== 11) {
+    toast.error("رقم الهاتف يجب أن يكون 11 رقمًا");
+    return;
+  }
 
-        // CREATE USER
-        try{
-            const formData = new FormData();
-            formData.append("username", registerData.username);
-            formData.append("email", registerData.email);
-            formData.append("password", registerData.password);
-            formData.append("phone", registerData.phone);
-            if (image) {
-            formData.append("image", image); 
-        }
-            await axios.post(`${BASE_URL}/user/signUp`, registerData ,{ withCredentials: true })
-            setUser(res.data.user);
-            await AddAllToCart()
-            toast.success("تم تسجيل طلبك بنجاح وسيتم التواصل معك!")
-            setShowRegisterForm(false)
+  try {
+    // ✅ تجهيز البيانات للإرسال
+    const formData = new FormData();
+    formData.append("username", registerData.username);
+    formData.append("email", registerData.email);
+    formData.append("password", registerData.password);
+    formData.append("phone", registerData.phone);
+    if (image) formData.append("image", image);
 
-        // HANDLE ERROE
-        }catch(err){
-            if (err.response) {
-                if (err.response.status === 400) {
-                toast.error(`Email already exists`);
-                } else {
-                toast.error(err.response.data.message || "Register failed");
-                }
-          } else {
-                toast.error("An unexpected error occurred");
-                console.log(err);
-          }
-        }
+    // ✅ تسجيل المستخدم
+    const res = await axios.post(`${BASE_URL}/user/signUp`, formData, {
+      withCredentials: true,
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    console.log("Full response:", res);
+    const newUser = res.data.User;
+    setUser(newUser);
+    console.log("User registered:", newUser);
+
+    // ✅ إضافة المنتجات في السلة بعد التسجيل
+    for (const item of cart) {
+      const payload = {
+        userId: newUser._id,
+        productId: item.product?._id,
+        quantity: item.quantity || 1,
+      };
+      console.log("Adding to cart:", payload);
+      await axios.post(`${BASE_URL}/cart/add`, payload, { withCredentials: true });
     }
+
+    toast.success("✅ تم تسجيل طلبك بنجاح وسيتم التواصل معك قريبًا");
+    setShowRegisterForm(false);
+
+  } catch (err) {
+    console.error("Register error:", err);
+    if (err.response) {
+      if (err.response.status === 400) toast.error("البريد الإلكتروني موجود بالفعل");
+      else toast.error(err.response.data.message || "فشل إنشاء الحساب");
+    } else {
+      toast.error("حدث خطأ غير متوقع");
+    }
+  }
+};
+
 
 
   // MY CART
@@ -229,27 +244,34 @@ const YourCart = () => {
     );
   };
 
-  const AddAllToCart = async () => {
-    try {
-      for (const item of cart) {
-        await axios.post(
-          `${BASE_URL}/cart/add`,
-          {
-             userId: user._id,
-            productId: item.product?._id,
-            quantity: item.quantity || 1,
-          },
-          { withCredentials: true }
-        );
+const AddAllToCart = async ({ userId, guestId }) => {
+  try {
+    for (const item of cart) {
+      // احصل على المنتج سواء كان من DB أو local
+      const product = item.product?._id ? item.product : item;
+
+      if (!product?._id) {
+        console.warn("Skipping product without ID:", item);
+        continue; // لو المنتج بدون _id تخطاه
       }
-      console.log("Current cart items:", cart);
-console.log("User info:", user);
-console.log("Guest info:", guestData);
-      toast.success("✅ تم طلب المنتجات بنجاح وسيتم التواصل معك قريبًا");
-    } catch (err) {
-      toast.error("حدث خطأ أثناء تنفيذ الطلب");
+
+      const payload = {
+        userId: userId || undefined,
+        guest: guestId || undefined,
+        productId: product._id,
+        quantity: item.quantity || 1,
+      };
+
+      console.log("Adding to cart:", payload);
+      await axios.post(`${BASE_URL}/cart/add`, payload, { withCredentials: true });
     }
-  };
+
+    toast.success("✅ تم طلب المنتجات بنجاح وسيتم التواصل معك قريبًا");
+  } catch (err) {
+    console.error("AddAllToCart error:", err.response?.data || err);
+    toast.error("حدث خطأ أثناء تنفيذ الطلب");
+  }
+};
 
   const handleCheckout = () => setShowPopup(true);
 
@@ -273,7 +295,8 @@ console.log("Guest info:", guestData);
  const handleChangeGuest = (e)=>{
         setGuestData({...guestData , [e.target.name]: e.target.value })
     }
- const handleGuestSubmit = async (e) => {
+
+const handleGuestSubmit = async (e) => {
   e.preventDefault();
 
   if (!guestData.username || !guestData.address || !guestData.phone) {
@@ -282,31 +305,32 @@ console.log("Guest info:", guestData);
   }
 
   try {
+    for (const item of cart) {
+      const product = item.product?._id ? item.product : item;
+      if (!product._id) continue;
 
-    const payload = {
-      ...guestData,
-      products: cart.map(item => ({
-        productId: item.product?._id,
-        quantity: item.quantity || 1,
-      })),
-    };
+      const payload = {
+        ...guestData,
+        productId: product._id,
+        quantity: item.quantity || 1
+      };
 
+      await axios.post(`${BASE_URL}/without/withoutOrder`, payload, {
+        withCredentials: true,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
 
-    const res = await axios.post(`${BASE_URL}/without/withoutOrder`, payload, {
-      withCredentials: true,
-    });
-
-    console.log("✅ Guest order response:", res.data);
-
-    toast.success("✅ تم تسجيل طلبك بنجاح وسيتم التواصل معك قريبًا");
     setShowGuestForm(false);
-    setCart([]); // مسح الكارت بعد الإرسال
+    setCart([]);
     localStorage.removeItem("guestWishlist");
     localStorage.removeItem("localWish");
 
+    toast.success("✅ تم تسجيل طلبك بنجاح وسيتم التواصل معك قريبًا");
+
   } catch (err) {
-    console.error(err);
-    toast.error("حدث خطأ أثناء تسجيل الطلب");
+    console.error("Guest submit error:", err.response?.data || err);
+    toast.error(err.response?.data?.message || "حدث خطأ أثناء تسجيل الطلب");
   }
 };
 
@@ -539,7 +563,7 @@ console.log("Guest info:", guestData);
                   onChange={handleChangeGuest}
                 />
 
-                <button onClick={handleGuestSubmit} type="submit" className="popup-btn login">
+                <button  type="submit" className="popup-btn login">
                   تأكيد الطلب
                 </button>
                 <button

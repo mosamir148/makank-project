@@ -5,8 +5,10 @@ const cartSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      ref: "WithOut",
-      required: true,
+    },
+    guest: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "WithoutRegister", 
     },
     product: {
       type: mongoose.Schema.Types.ObjectId,

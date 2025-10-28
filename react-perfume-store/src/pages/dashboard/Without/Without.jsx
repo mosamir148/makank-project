@@ -3,6 +3,7 @@ import axios from "axios";
 import "./Without.css";
 import { BASE_URL } from "../../../assets/url";
 import Loading from "../../../components/Loading/Loading";
+import Swal from "sweetalert2";
 
 const Without = () => {
   const [users, setUsers] = useState([]);
@@ -18,6 +19,7 @@ const Without = () => {
         const res = await axios.get(`${BASE_URL}/without/getWithoutUsers`, { withCredentials: true });
         const data = Array.isArray(res.data) ? res.data : [];
         setUsers(data);
+
       } catch (error) {
         console.error("حدث خطأ أثناء جلب المستخدمين:", error);
       } finally {
@@ -62,6 +64,33 @@ const Without = () => {
     }
   };
 
+const handleDeleteProduct = async (userId) => {
+  try {
+    const result = await Swal.fire({
+      title: "هل أنت متأكد؟",
+      text: "سيتم حذف كل منتجات هذا المستخدم!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "نعم، احذفه!",
+      cancelButtonText: "إلغاء",
+    });
+
+    if (result.isConfirmed) {
+      await axios.delete(`${BASE_URL}/without/deleteCartItem/${userId}`, { withCredentials: true });
+
+      // إزالة المستخدم بعد حذف منتجاته
+      setUsers(prevUsers => prevUsers.filter(u => u._id !== userId));
+
+      Swal.fire("تم الحذف!", "تم حذف المستخدم وكل منتجاته بنجاح.", "success");
+    }
+  } catch (error) {
+    console.error("حدث خطأ أثناء حذف المنتج:", error);
+    Swal.fire("حدث خطأ!", "لم يتم الحذف، حاول مرة أخرى.", "error");
+  }
+};
+
   if (loading) return <Loading />;
 
   return (
@@ -70,13 +99,14 @@ const Without = () => {
 
       <div className="orders-table-container">
         <table className="orders-table">
-          <thead>
+         <thead>
             <tr>
               <th>#</th>
               <th>المستخدم</th>
               <th>المنتجات</th>
               <th>الهاتف</th>
               <th>البريد الإلكتروني</th>
+              <th>إجراء</th> 
             </tr>
           </thead>
           <tbody>
@@ -95,7 +125,6 @@ const Without = () => {
                   {u.products.map((c) => (
                     <div key={c._id} className="cell-flex">
                       <span>{c.product.name}</span>
-
                       <select
                         value={c.status || "Pending"}
                         onChange={async (e) => {
@@ -117,13 +146,24 @@ const Without = () => {
                 </td>
                 <td>{u.phone}</td>
                 <td>{u.email || "لا يوجد"}</td>
+                <td>
+                  {u.products.map((c) => (
+                    <button
+                      key={c._id}
+                      onClick={() => handleDeleteProduct( u._id)}
+                      className="delete-btn"
+                    >
+                      حذف
+                    </button>
+                  ))}
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
 
-      {/* نافذة تفاصيل المستخدم */}
+
       {selectUser && (
         <div className="modal">
           <div className="modal-header">
@@ -151,7 +191,7 @@ const Without = () => {
           </div>
           <div className="modal-body">
             <img src={product.product.image} alt={product.product.name} crossOrigin="anonymous" />
-            <p><strong>الاسم:</strong> {product.product.name}</p>
+            <p><strong>الاسم:</strong> {product.product.title}</p>
             <p><strong>الوصف:</strong> {product.product.description}</p>
             <p><strong>السعر:</strong> ${product.product.price}</p>
             <p><strong>الخصم:</strong> {product.product.discount || 0}%</p>
