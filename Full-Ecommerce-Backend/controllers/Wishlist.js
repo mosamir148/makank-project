@@ -1,24 +1,34 @@
 const Wishlist = require("../models/Wishlist");
 
-// إضافة منتج للـWishlist
+// إضافة منتج للـWishlist (عادي، مميز، أو أونلاين)
 exports.addToWishlist = async (req, res) => {
   try {
-    const { userId, productId } = req.body;
+    console.log("Wishlist request body:", req.body);
+    const { userId, productId, featuredProductId, onlineProductId } = req.body;
 
-    if (!userId || !productId) {
-      return res.status(400).json({ message: "userId and productId are required" });
+    if (!userId || (!productId && !featuredProductId && !onlineProductId)) {
+      return res.status(400).json({ message: "userId and at least one productId are required" });
     }
 
-    let item = await Wishlist.findOne({ user: userId, product: productId });
+    // query للتحقق من وجود العنصر مسبقًا
+    let query = { user: userId };
+    if (productId) query.product = productId;
+    if (featuredProductId) query.FeaturedProduct = featuredProductId;
+    if (onlineProductId) query.onlineProduct = onlineProductId;
 
+    let item = await Wishlist.findOne(query);
     if (item) {
-      return res.status(200).json({ message: "Product already in wishlist", item });
+      return res.status(200).json({ message: "Already in wishlist", item });
     }
 
-    item = await Wishlist.create({ user: userId, product: productId });
+    item = await Wishlist.create({
+      user: userId,
+      product: productId || undefined,
+      FeaturedProduct: featuredProductId || undefined,
+      onlineProduct: onlineProductId || undefined,
+    });
 
-    await item.populate("product");
-    await item.populate("user", "username email phone");
+    await item.populate("product FeaturedProduct onlineProduct user", "title username email phone");
 
     res.status(201).json(item);
   } catch (error) {
@@ -34,9 +44,13 @@ exports.addToWishlist = async (req, res) => {
 exports.getUserWishlist = async (req, res) => {
   try {
     const userId = req.user._id;
+
     const wishlist = await Wishlist.find({ user: userId })
-      .populate("product")
+      .populate("product", "title category brand description price image")
+      .populate("FeaturedProduct", "title category brand description price image")
+      .populate("onlineProduct", "title category brand description price image")
       .populate("user", "username email phone");
+
     res.status(200).json(wishlist);
   } catch (error) {
     console.error("Wishlist fetch error:", error);
@@ -49,7 +63,10 @@ exports.getAllWishlists = async (req, res) => {
   try {
     const wishlists = await Wishlist.find()
       .populate("product")
+      .populate("FeaturedProduct")
+      .populate("onlineProduct")
       .populate("user", "username email phone");
+
     res.status(200).json(wishlists);
   } catch (error) {
     res.status(500).json({ message: "Error fetching all wishlists", error });

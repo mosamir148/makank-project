@@ -5,26 +5,19 @@
 
 .arrivals-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 25px;
+    border: 1px solid (var(--primary-gold));
 }
 
 .arrival-card {
     text-align: center;
     transition: var(--transition);
+    border-bottom: 2px solid var(--primary-gold);
 }
 
 .arrival-card:hover {
     transform: translateY(-10px);
-}
-
-.arrival-image {
-    height: 280px;
-    border-radius: 15px;
-    margin-bottom: 20px;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
 }
 
 .new-badge {
@@ -38,6 +31,7 @@
     font-weight: 700;
     border-radius: 20px;
 }
+
 
 .arrival-card h3 {
     font-family: 'Playfair Display', serif;

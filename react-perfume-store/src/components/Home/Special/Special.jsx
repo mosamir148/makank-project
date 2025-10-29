@@ -1,46 +1,84 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./Special.css";
+import { BASE_URL } from "../../../assets/url";
+import axios from "axios";
+import Loading from "../../Loading/Loading";
+import toast from "react-hot-toast";
+import { userContext } from "../../../context/UserContext";
 
 const Special = () => {
   useEffect(() => {
     AOS.init({ duration: 1000 });
   }, []);
 
-  const products = [
-    {
-      id: 1,
-      badge: "New",
-      image:
-        "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400",
-      name: "Noir Élégance",
-      category: "Luxury Men's Perfume",
-      price: "1,200 SAR",
-      delay: 0,
-    },
-    {
-      id: 2,
-      badge: "Best Seller",
-      image:
-        "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=400",
-      name: "Rose Mystique",
-      category: "Elegant Women's Perfume",
-      price: "1,500 SAR",
-      delay: 100,
-    },
-    {
-      id: 3,
-      badge: "Exclusive",
-      image:
-        "https://images.unsplash.com/photo-1588405748880-12d1d2a59d75?w=400",
-      name: "Oud Royal",
-      category: "Authentic Oriental Perfume",
-      price: "2,000 SAR",
-      delay: 200,
-    },
-  ];
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { user } = useContext(userContext);
+
+  const fetchProducts = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/featuredProduct`);
+      setData(res.data.products);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+
+  const AddToWish = async (product) => {
+    try {
+      if (user && user._id) {
+        await axios.post(
+          `${BASE_URL}/wish/add`,
+          {
+            userId: user._id,
+            featuredProductId: product._id, 
+          },
+          { withCredentials: true }
+        );
+        toast.success("تمت إضافة المنتج إلى المفضلة بنجاح ✅");
+      } else {
+        let localWish = JSON.parse(localStorage.getItem("localWish")) || [];
+
+        const exists = localWish.find((item) => item._id === product._id);
+        if (exists) {
+          toast("هذا المنتج موجود بالفعل في المفضلة ❤️");
+          return;
+        }
+
+     localWish.push({
+        _id: product._id,
+        title: product.title || "بدون عنوان",
+        price: product.price || 0,
+        image: product.image || "/placeholder.png",
+        description: product.description || "",
+        brand: product.brand || "",
+        category: product.category || "",
+        quantity: 1,
+        from: "local",
+        type: "featured",
+      });
+
+
+        localStorage.setItem("localWish", JSON.stringify(localWish));
+        toast.success("✅ تمت إضافة المنتج للمفضلة بنجاح");
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error("حدث خطأ أثناء الإضافة إلى المفضلة");
+    }
+  };
+
+  if (loading) return <Loading />;
 
   return (
-    <section  className="featured-products" id="featured-products">
+    <section className="featured-products" id="featured-products">
       <div className="container">
         <div className="section-header">
           <h2 className="section-title">Featured Products</h2>
@@ -50,33 +88,44 @@ const Special = () => {
         </div>
 
         <div className="products-grid">
-          {products.map((product) => (
+          {data.map((product) => (
             <div
-              key={product.id}
+              key={product._id}
               className="product-card"
               data-aos="zoom-in"
               data-aos-delay={product.delay}
             >
-              <div className="product-badge">{product.badge}</div>
+              <div className="product-badge">{product.discount} EGY</div>
+
               <div
                 className="product-image"
                 style={{ backgroundImage: `url(${product.image})` }}
               ></div>
+
               <div className="product-content">
-                <h3 className="product-name">{product.name}</h3>
+                <h3 className="product-name">{product.title}</h3>
                 <p className="product-category">{product.category}</p>
-                <div className="product-rating">
-                  {"★".repeat(5).split("").map((star, i) => (
-                    <span key={i} className="star">
-                      {star}
-                    </span>
-                  ))}
+
+                <div>
+                  <p className="featured-product-description">
+                    {product.description}
+                  </p>
                 </div>
+
                 <div className="product-footer">
                   <span className="product-price">{product.price}</span>
-                  <a href={`/product-details/${product.id}`} className="btn btn-secondary">
+                  <a
+                    href={`/featuredProduct/${product._id}`}
+                    className="btn btn-secondary"
+                  >
                     View Details
                   </a>
+                  <button
+                    className="btn btn-secondary"
+                    onClick={() => AddToWish(product)}
+                  >
+                    Add to Wish ❤️
+                  </button>
                 </div>
               </div>
             </div>
@@ -88,4 +137,3 @@ const Special = () => {
 };
 
 export default Special;
-

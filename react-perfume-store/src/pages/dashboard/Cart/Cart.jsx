@@ -11,40 +11,39 @@ const [selectedUser, setSelectedUser] = useState(null);
 const [selectedProduct, setSelectedProduct] = useState(null);
 
 const getOrders = async () => {
-try {
-const res = await axios.get(`${BASE_URL}/cart/all`, { withCredentials: true });
-const allOrders = res.data || [];
+  try {
+  const res = await axios.get(`${BASE_URL}/cart/all`, { withCredentials: true });
+  console.log(res.data)
+  const allOrders = res.data || [];
 
 
-setOrders(allOrders);
-} catch (err) {
-  console.error("❌ Error fetching orders:", err);
-}
-
-
+  setOrders(allOrders);
+  } catch (err) {
+    console.error("❌ Error fetching orders:", err);
+  }
 };
 
-useEffect(() => {
-getOrders();
-}, []);
+  useEffect(() => {
+  getOrders();
+  }, []);
 
 // 🟡 تحديث حالة الطلب
-const handleStatusChange = async (cartId, newStatus) => {
-try {
-await axios.put(
-`${BASE_URL}/cart/${cartId}`,
-{ status: newStatus },
-{ withCredentials: true }
-);
-setOrders((prev) =>
-prev.map((o) => (o._id === cartId ? { ...o, status: newStatus } : o))
-);
-toast.success("تم تحديث الحالة بنجاح!");
-} catch (err) {
-console.error("❌ خطأ أثناء تحديث الحالة:", err);
-toast.error("حدث خطأ أثناء التحديث!");
-}
-};
+  const handleStatusChange = async (cartId, newStatus) => {
+  try {
+  await axios.put(
+  `${BASE_URL}/cart/${cartId}`,
+  { status: newStatus },
+  { withCredentials: true }
+  );
+  setOrders((prev) =>
+  prev.map((o) => (o._id === cartId ? { ...o, status: newStatus } : o))
+  );
+  toast.success("تم تحديث الحالة بنجاح!");
+  } catch (err) {
+  console.error("❌ خطأ أثناء تحديث الحالة:", err);
+  toast.error("حدث خطأ أثناء التحديث!");
+  }
+  };
 
 return ( <div className="orders-container"> <h1 className="orders-title">لوحة الطلبات</h1>
 
@@ -87,10 +86,10 @@ return ( <div className="orders-container"> <h1 className="orders-title">لوح�
               </td>
               <td>
                <div className="cell-flex" >
-  {/* الاسم أو الإيميل */}
-  <span>
-    {o.user ? o.user.email : o.guest?.username || "زائر"}
-  </span>
+
+          <span>
+            {o.user ? o.user.email : o.guest?.username || "زائر"}
+          </span>
 
   {/* نوع المستخدم */}
   <span style={{ fontSize: "12px", fontWeight: "bold", color: o.user ? "green" : "orange" }}>

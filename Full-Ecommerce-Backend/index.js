@@ -9,6 +9,8 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 
 const ProductRoute = require("./routes/Product");
+const FeaturedProduct = require("./routes/FeaturedProduct");
+const OnlineProduct = require("./routes/OnlineProduct");
 const UserRoute = require("./routes/User");
 const CartRoute = require("./routes/Cart");
 const WishRoute = require("./routes/Wishlist");
@@ -57,6 +59,8 @@ app.use(morgan("tiny"));
 
 /* -------------------- 🔹 5- Routes -------------------- */
 app.use("/api/product", ProductRoute);
+app.use("/api/featuredProduct", FeaturedProduct);
+app.use("/api/onlineProduct", OnlineProduct);
 app.use("/api/user", UserRoute);
 app.use("/api/cart", CartRoute);
 app.use("/api/wish", WishRoute);

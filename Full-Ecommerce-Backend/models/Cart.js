@@ -13,7 +13,14 @@ const cartSchema = new mongoose.Schema(
     product: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Product",
-      required: true,
+    },
+    featuredproduct: {
+      type:  mongoose.Schema.Types.ObjectId,
+      ref: "FeaturedProduct",
+    },
+    onlineProduct: {
+      type:  mongoose.Schema.Types.ObjectId,
+      ref: "OnlineProduct",
     },
     quantity: {
       type: Number,
@@ -28,7 +35,6 @@ const cartSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// فهرس فريد لكل user + product
-cartSchema.index({ user: 1, product: 1 }, { unique: true });
+
 
 module.exports = mongoose.model("Cart", cartSchema);

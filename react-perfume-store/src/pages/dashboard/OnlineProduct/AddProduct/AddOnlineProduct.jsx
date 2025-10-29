@@ -2,10 +2,10 @@ import axios from "axios";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import "./AddProduct.css";
+// import "./AddProduct.css";
 import { BASE_URL } from "../../../../assets/url";
 
-const AddProduct = () => {
+const AddOnlineProduct = () => {
   const [image, setImage] = useState(null);
   const [images, setImages] = useState([]);
   const [title, setTitle] = useState("");
@@ -29,14 +29,14 @@ const AddProduct = () => {
       if (image) formData.append("image", image);
       images.forEach((img) => formData.append("images", img));
 
-      await axios.post(`${BASE_URL}/product`, formData, {
+      await axios.post(`${BASE_URL}/onlineProduct`, formData, {
         withCredentials: true,
         headers: { "Content-Type": "multipart/form-data" },
       });
 
       toast.success("Product uploaded successfully!");
       setTitle(""); setPrice(""); setDiscount(""); setCategory(""); setBrand(""); setDescription(""); setImage(null); setImages([]);
-      navigate("/dashboard/products");
+      navigate("/dashboard/online-products");
       window.location.reload();
     } catch (err) {
       console.error(err.response?.data);
@@ -46,7 +46,7 @@ const AddProduct = () => {
 
   return (
     <section className="add-product-section">
-      <h2 className="add-product-title">Add New Featured Product</h2>
+      <h2 className="add-product-title">Add New Online Product</h2>
       <form className="add-product-form" onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Product Name</label>
@@ -98,7 +98,6 @@ const AddProduct = () => {
   );
 };
 
-export default AddProduct;
-
+export default AddOnlineProduct;
 
 

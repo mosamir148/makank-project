@@ -136,30 +136,26 @@ const YourCart = () => {
 
 
   // MY CART
-  const MyCart = async () => {
+   const MyCart = async () => {
     try {
       let allItems = [];
 
       try {
-        const res = await axios.get(`${BASE_URL}/wish/mywishlist`, {
-          withCredentials: true,
-        });
-
+        const res = await axios.get(`${BASE_URL}/wish/mywishlist`, { withCredentials: true });
         const dbArray = Array.isArray(res?.data) ? res.data : [];
+        console.log(res.data)
         const dbItems = dbArray.map((item) => {
-          const product = item?.product?._id ? item.product : item;
-
+          const product = item.product || item.featuredproduct || item;
           return {
-            _id: item?._id || product?._id,
-            product: product,
-            quantity: item?.quantity || 1,
+            _id: item._id || product._id,
+            product,
+            quantity: item.quantity || 1,
             from: "db",
           };
         });
-
         allItems = [...allItems, ...dbItems];
       } catch (err) {
-        console.log("❌ DB Fetch Error:", err?.response?.data || err?.message || err);
+        console.log("❌ DB Fetch Error:", err);
       }
 
       let localWishlist = [];
@@ -183,9 +179,10 @@ const YourCart = () => {
 
       setCart(allItems);
     } catch (err) {
-      console.log("❌ MyCart Global Error:", err?.message || err);
+      console.log("❌ MyCart Global Error:", err);
     }
   };
+
 
   useEffect(() => {
     MyCart();
@@ -244,34 +241,42 @@ const YourCart = () => {
     );
   };
 
-const AddAllToCart = async ({ userId, guestId }) => {
-  try {
-    for (const item of cart) {
-      // احصل على المنتج سواء كان من DB أو local
-      const product = item.product?._id ? item.product : item;
+  const AddAllToCart = async ({ userId, guestId }) => {
+    try {
+      for (const item of cart) {
 
-      if (!product?._id) {
-        console.warn("Skipping product without ID:", item);
-        continue; // لو المنتج بدون _id تخطاه
+        const isFeatured = !!item.FeaturedProduct?._id || !!item.Featuredproduct;
+        const product = isFeatured ? item.Featuredproduct : item.product || item;
+
+
+        if (!product?._id) {
+          console.warn("Skipping item without ID:", item);
+          continue;
+        }
+
+
+        const payload = {
+          userId: userId || undefined,
+          guestId: guestId || undefined, 
+          quantity: item.quantity || 1,
+        };
+
+        if (isFeatured) {
+          payload.FeaturedProduct = product._id; 
+        } else {
+          payload.productId = product._id;
+        }
+
+        console.log("🛒 Adding to cart:", payload);
+        await axios.post(`${BASE_URL}/cart/add`, payload, { withCredentials: true });
       }
 
-      const payload = {
-        userId: userId || undefined,
-        guest: guestId || undefined,
-        productId: product._id,
-        quantity: item.quantity || 1,
-      };
-
-      console.log("Adding to cart:", payload);
-      await axios.post(`${BASE_URL}/cart/add`, payload, { withCredentials: true });
+      toast.success("✅ تم طلب المنتجات بنجاح وسيتم التواصل معك قريبًا");
+    } catch (err) {
+      console.error("❌ AddAllToCart error:", err.response?.data || err);
+      toast.error("حدث خطأ أثناء تنفيذ الطلب");
     }
-
-    toast.success("✅ تم طلب المنتجات بنجاح وسيتم التواصل معك قريبًا");
-  } catch (err) {
-    console.error("AddAllToCart error:", err.response?.data || err);
-    toast.error("حدث خطأ أثناء تنفيذ الطلب");
-  }
-};
+  };
 
   const handleCheckout = () => setShowPopup(true);
 
@@ -356,20 +361,22 @@ const handleGuestSubmit = async (e) => {
           <p className="empty">🛒 لا توجد منتجات في السلة حاليًا</p>
         ) : (
           cart.map((cartItem, index) => {
-            const product = cartItem.product?._id ? cartItem.product : cartItem;
+
+            console.log(cartItem)
             return (
               <div key={index} className="cart-card">
                 <div className="cart-image">
                   <img
-                    src={product.image || "https://via.placeholder.com/150"}
-                    alt={product.title || "product"}
+                     src={cartItem?.product.image || cartItem?.product.onlineProduct.image || cartItem?.product.FeaturedProduct.image || "default-image.jpg"}
+                      alt={cartItem?.product.title || cartItem?.product.onlineProduct.title || cartItem?.product.FeaturedProduct.title || "منتج"}
                   />
                 </div>
                 <div className="cart-info">
-                  <h3>{product.title || "منتج بدون عنوان"}</h3>
-                  <h3>{product.brand || "منتج بدون براند"}</h3>
-                  <p className="cart-desc">{product.category || "منتج بدون كاتيجوري"}</p>
-                  <p className="cart-desc">{product.description || "منتج بدون وصف"}</p>
+                  <h3>{cartItem?.product.title || cartItem?.product.onlineProduct.title || cartItem?.product.product.FeaturedProduct.title ||  "منتج بدون عنوان"} </h3>
+                  <h3>{cartItem?.product.brand || cartItem?.product.onlineProduct.brand || cartItem?.product.FeaturedProduct.brand || "منتج بدون براند"}</h3>
+                  <p className="cart-desc">{cartItem?.product.category || cartItem?.product.onlineProduct.category || cartItem?.product.FeaturedProduct.category || "منتج بدون كاتيجوري"}</p>
+                  <p className="cart-desc">{cartItem?.product.description || cartItem?.product.onlineProduct.description || cartItem?.product.FeaturedProduct.description || "منتج بدون وصف"}</p>
+                      
                   <div className="quantity-controls">
                     <button className="qty-btn" onClick={() => handleDecrease(index)}>−</button>
                     <span className="qty-value">{cartItem.quantity || 1}</span>

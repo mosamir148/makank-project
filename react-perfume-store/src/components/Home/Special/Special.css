@@ -66,14 +66,23 @@
     color: var(--dark-gray);
 }
 
-.product-category {
+.featured-products .product-category {
     font-size: 14px;
     color: #888;
     margin-bottom: 15px;
 }
-
-.product-rating {
-    margin-bottom: 20px;
+.featured-products .featured-product-description{
+   display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3; 
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--dark-gray);
+  margin-bottom: 1.2rem;
+  white-space: normal;
+  max-height: calc(1.7em * 3);
 }
 
 .star {
@@ -85,7 +94,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-direction: column;
     margin-top: 20px;
+    gap: 10px;
 }
 
 .product-price {

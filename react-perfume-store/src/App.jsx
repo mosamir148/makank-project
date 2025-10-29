@@ -22,6 +22,14 @@ import Wish from './pages/dashboard/Wish/Wish'
 import Loading from './components/Loading/Loading'
 import logo from './assets/Logo.jpg'
 import Without from './pages/dashboard/Without/Without'
+import FeaturedAllProduct from './pages/dashboard/FeaturedProduct/AllProduct/FeaturedAllProduct'
+import FeaturedAddProduct from './pages/dashboard/FeaturedProduct/AddProduct/FeaturedAddProduct'
+import SpecialDetails from './components/Home/Special/SpecialDetails'
+import FeaturedUpdateProduct from './pages/dashboard/FeaturedProduct/UpdateProduct/FeaturedUpdateProduct'
+import OnlineAllProduct from './pages/dashboard/OnlineProduct/AllProduct/OnlineAllProduct'
+import AddOnlineProduct from './pages/dashboard/OnlineProduct/AddProduct/AddOnlineProduct'
+import OnlineUpdateProduct from './pages/dashboard/OnlineProduct/UpdateProduct/OnlineUpdateProduct'
+import OnlineDetails from './components/Home/Online/OnlineDetails'
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -58,6 +66,14 @@ function App() {
               <Route path='products/add-product' element={<AddProduct />} />
               <Route path='products/update-product/:id' element={<UpdateProduct />} />
               
+              <Route path='featured-products' element={<FeaturedAllProduct />} />
+              <Route path='featured-products/add-featured-product' element={<FeaturedAddProduct />} />
+              <Route path='featured-products/update-product/:id' element={<FeaturedUpdateProduct />} />
+              
+              <Route path='online-products' element={<OnlineAllProduct />} />
+              <Route path='online-products/add-online-product' element={<AddOnlineProduct />} />
+              <Route path='online-products/update-product/:id' element={<OnlineUpdateProduct />} />
+              
               <Route path='carts' element={<Cart />} />
 
               <Route path='wish' element={<Wish />} />
@@ -78,6 +94,9 @@ function App() {
               <Route path="/register" element={<Register />} />
               <Route path="/products" element={<Product />} />
               <Route path="/product/:id" element={<ProductDetails />} />
+              <Route path='featuredProduct/:id' element={<SpecialDetails />} />
+              <Route path='onlineProduct/:id' element={<OnlineDetails />} />
+
               <Route path="/cart" element={<YourCart />} />
             </Route>
 

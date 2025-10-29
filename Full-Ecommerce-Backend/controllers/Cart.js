@@ -1,21 +1,23 @@
-const Cart = require("../models/Cart")
-const WithoutRegister = require("../models/WithoutRegister")
+const Cart = require("../models/Cart");
+const WithoutRegister = require("../models/WithoutRegister");
 
-
+// إضافة منتج للكارت (عادي، مميز، أو أونلاين)
 exports.addToCart = async (req, res) => {
   try {
-    const { userId, guestId, productId, quantity } = req.body;
+    const { userId, guestId, productId, featuredProductId, onlineProductId, quantity } = req.body;
 
-    if (!productId) {
-      return res.status(400).json({ message: "productId is required" });
+    if (!productId && !featuredProductId && !onlineProductId) {
+      return res.status(400).json({ message: "Product ID, FeaturedProduct ID or OnlineProduct ID is required" });
     }
 
     if (!userId && !guestId) {
       return res.status(400).json({ message: "userId or guestId is required" });
     }
 
-    // تحقق إذا العنصر موجود مسبقًا لنفس user أو guest
-    let query = { product: productId };
+    let query = {};
+    if (productId) query.product = productId;
+    if (featuredProductId) query.featuredproduct = featuredProductId;
+    if (onlineProductId) query.onlineProduct = onlineProductId;
     if (userId) query.user = userId;
     if (guestId) query.guest = guestId;
 
@@ -28,18 +30,36 @@ exports.addToCart = async (req, res) => {
       cartItem = await Cart.create({
         user: userId || undefined,
         guest: guestId || undefined,
-        product: productId,
+        product: productId || undefined,
+        featuredproduct: featuredProductId || undefined,
+        onlineProduct: onlineProductId || undefined,
         quantity: quantity || 1,
         status: "Pending",
       });
     }
 
-    await cartItem.populate("product");
-    await cartItem.populate("user", "username email phone");
-    await cartItem.populate("guest", "username email phone address");
+    // Populate لجميع أنواع المنتجات
+    await cartItem.populate([
+      { path: "product", select: "title description brand category price image" },
+      { path: "featuredproduct", select: "title description brand category price image" },
+      { path: "onlineProduct", select: "title description brand category price image" },
+      { path: "user", select: "username email phone" },
+      { path: "guest", select: "username email phone address" },
+    ]);
 
-    res.status(201).json(cartItem);
+    // دمج المنتج العادي والمميز والأونلاين في حقل واحد للفرونت
+    const unifiedProduct = cartItem.product || cartItem.featuredproduct || cartItem.onlineProduct || null;
 
+    res.status(201).json({
+      _id: cartItem._id,
+      user: cartItem.user,
+      guest: cartItem.guest,
+      quantity: cartItem.quantity,
+      status: cartItem.status,
+      createdAt: cartItem.createdAt,
+      updatedAt: cartItem.updatedAt,
+      product: unifiedProduct,
+    });
   } catch (error) {
     console.error("addToCart error:", error);
     if (error.code === 11000) {
@@ -49,52 +69,72 @@ exports.addToCart = async (req, res) => {
   }
 };
 
-
+// جلب كارت المستخدم
 exports.getUserCart = async (req, res) => {
   try {
     const userId = req.user._id;
 
-    const cart = await Cart.find({ user: userId })
-      .populate("product")
-      .populate("user", "name email phone");
+    let cart = await Cart.find({ user: userId })
+      .populate("product", "title description brand category price image")
+      .populate("featuredproduct", "title description brand category price image")
+      .populate("onlineProduct", "title description brand category price image")
+      .populate("user", "username email phone");
+
+    cart = cart.map(item => ({
+      _id: item._id,
+      user: item.user,
+      guest: item.guest,
+      quantity: item.quantity,
+      status: item.status,
+      createdAt: item.createdAt,
+      updatedAt: item.updatedAt,
+      product: item.product || item.featuredproduct || item.onlineProduct || null,
+    }));
 
     res.status(200).json(cart);
   } catch (error) {
-    console.error("Cart fetch error:", error); 
+    console.error("Cart fetch error:", error);
     res.status(500).json({ message: "Error fetching cart", error: error.message });
   }
 };
 
-
-
+// جلب كل الكارتات
 exports.getAllCarts = async (req, res) => {
   try {
-    const carts = await Cart.find()
-      .populate("product", "title price image description createdAt updatedAt")
-      .populate("user", "username email phone address createdAt updatedAt")
-      // خلي populate للزائر يكون اختياري
-      .populate({
-        path: "guest",
-        select: "username email phone address createdAt updatedAt",
-        options: { strictPopulate: false } // يتجاوز أي خطأ لو مش موجود
-      });
+    let carts = await Cart.find()
+      .populate("product", "title description brand category price image")
+      .populate("featuredproduct", "title description brand category price image")
+      .populate("onlineProduct", "title description brand category price image")
+      .populate("user", "username email phone address")
+      .populate("guest", "username email phone address");
+
+    carts = carts.map(item => ({
+      _id: item._id,
+      user: item.user,
+      guest: item.guest,
+      quantity: item.quantity,
+      status: item.status,
+      createdAt: item.createdAt,
+      updatedAt: item.updatedAt,
+      product: item.product || item.featuredproduct || item.onlineProduct || null,
+    }));
 
     res.status(200).json(carts);
   } catch (error) {
-    console.error("❌ Error in getAllCarts:", error);
+    console.error("Error fetching carts:", error);
     res.status(500).json({ message: "Error fetching carts", error: error.message });
   }
 };
 
-
+// تحديث كمية أو حالة المنتج في الكارت
 exports.updateCartItem = async (req, res) => {
   try {
-    const { id } = req.params; 
+    const { id } = req.params;
     const { quantity, status } = req.body;
 
     const updatedItem = await Cart.findByIdAndUpdate(
       id,
-      { quantity, ...(status && { status }) }, 
+      { quantity, ...(status && { status }) },
       { new: true }
     );
 
@@ -105,32 +145,26 @@ exports.updateCartItem = async (req, res) => {
 };
 
 
+// حذف عنصر من الكارت
 exports.deleteCartItem = async (req, res) => {
   try {
-    const { id } = req.params; // cart item id
+    const { id } = req.params;
     const userId = req.user._id?.toString() || req.user.id?.toString();
-    const userRole = req.user.role; // admin / user
-   
+    const userRole = req.user.role;
+
     const cartItem = await Cart.findById(id);
 
-    if (!cartItem) {
-      return res.status(404).json({ message: "Cart item not found" });
-    }
+    if (!cartItem) return res.status(404).json({ message: "Cart item not found" });
 
-    const cartUserId = cartItem.user.toString();
-
-    if (userRole !== "admin" && cartUserId !== userId) {
+    const cartUserId = cartItem.user?.toString();
+    if (userRole !== "admin" && cartUserId !== userId)
       return res.status(403).json({ message: "Not authorized to delete this item" });
-    }
 
     await Cart.findByIdAndDelete(id);
 
     res.status(200).json({ message: "Item removed from cart" });
   } catch (error) {
     console.error("DeleteCartItem Error:", error);
-    res.status(500).json({ 
-      message: "Error deleting cart item", 
-      error: error
-    });
+    res.status(500).json({ message: "Error deleting cart item", error });
   }
 };
