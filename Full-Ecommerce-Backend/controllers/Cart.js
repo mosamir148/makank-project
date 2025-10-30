@@ -16,7 +16,7 @@ exports.addToCart = async (req, res) => {
 
     let query = {};
     if (productId) query.product = productId;
-    if (featuredProductId) query.featuredproduct = featuredProductId;
+    if (featuredProductId) query.featuredProduct = featuredProductId;
     if (onlineProductId) query.onlineProduct = onlineProductId;
     if (userId) query.user = userId;
     if (guestId) query.guest = guestId;
@@ -31,24 +31,24 @@ exports.addToCart = async (req, res) => {
         user: userId || undefined,
         guest: guestId || undefined,
         product: productId || undefined,
-        featuredproduct: featuredProductId || undefined,
+        featuredProduct: featuredProductId || undefined,
         onlineProduct: onlineProductId || undefined,
         quantity: quantity || 1,
         status: "Pending",
       });
     }
 
-    // Populate لجميع أنواع المنتجات
+
     await cartItem.populate([
       { path: "product", select: "title description brand category price image" },
-      { path: "featuredproduct", select: "title description brand category price image" },
+      { path: "featuredProduct", select: "title description brand category price image" },
       { path: "onlineProduct", select: "title description brand category price image" },
       { path: "user", select: "username email phone" },
       { path: "guest", select: "username email phone address" },
     ]);
 
     // دمج المنتج العادي والمميز والأونلاين في حقل واحد للفرونت
-    const unifiedProduct = cartItem.product || cartItem.featuredproduct || cartItem.onlineProduct || null;
+    const unifiedProduct = cartItem.product || cartItem.featuredProduct || cartItem.onlineProduct || null;
 
     res.status(201).json({
       _id: cartItem._id,
@@ -76,7 +76,7 @@ exports.getUserCart = async (req, res) => {
 
     let cart = await Cart.find({ user: userId })
       .populate("product", "title description brand category price image")
-      .populate("featuredproduct", "title description brand category price image")
+      .populate("featuredProduct", "title description brand category price image")
       .populate("onlineProduct", "title description brand category price image")
       .populate("user", "username email phone");
 
@@ -88,7 +88,7 @@ exports.getUserCart = async (req, res) => {
       status: item.status,
       createdAt: item.createdAt,
       updatedAt: item.updatedAt,
-      product: item.product || item.featuredproduct || item.onlineProduct || null,
+      product: item.product || item.featuredProduct || item.onlineProduct || null,
     }));
 
     res.status(200).json(cart);
@@ -103,7 +103,7 @@ exports.getAllCarts = async (req, res) => {
   try {
     let carts = await Cart.find()
       .populate("product", "title description brand category price image")
-      .populate("featuredproduct", "title description brand category price image")
+      .populate("featuredProduct", "title description brand category price image")
       .populate("onlineProduct", "title description brand category price image")
       .populate("user", "username email phone address")
       .populate("guest", "username email phone address");
@@ -116,7 +116,7 @@ exports.getAllCarts = async (req, res) => {
       status: item.status,
       createdAt: item.createdAt,
       updatedAt: item.updatedAt,
-      product: item.product || item.featuredproduct || item.onlineProduct || null,
+      product: item.product || item.featuredProduct || item.onlineProduct || null,
     }));
 
     res.status(200).json(carts);

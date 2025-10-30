@@ -4,30 +4,77 @@ import axios from "axios";
 import { BASE_URL } from "../../../assets/url";
 import { productsContext } from "../../../context/GetProducts";
 import { Link } from "react-router-dom";
+import Loading from "../../Loading/Loading";
+import toast from "react-hot-toast";
+import { userContext } from "../../../context/UserContext";
 
 const Online = () => {
   useEffect(() => {
     AOS.init({ duration: 1000 });
   }, []);
-  const { product, setProducts } = useContext(productsContext);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [loading, setLoading] = useState(true);
-    const fetchProducts = async (page = 1) => {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
+  const { user } = useContext(userContext);
+
+  const fetchProducts = async () => {
     try {
-      const res = await axios.get(`${BASE_URL}/onlineProduct?page=${page}&limit=10`);
-      setLoading(false)
-      setProducts(res.data.products);
-      setTotalPages(Math.ceil(res.data.totalCount / 10));
+      const res = await axios.get(`${BASE_URL}/onlineProduct`);
+      setData(res.data.products);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchProducts(currentPage);
-  }, [currentPage]);
+    fetchProducts();
+  }, []);
 
+
+  const AddToWish = async (product) => {
+    try {
+        console.log("Adding online product ID:", product._id);
+      if (user && user._id) {
+        await axios.post(
+          `${BASE_URL}/wish/add`,
+          {
+            userId: user._id,
+            onlineProductId: product._id, 
+        },
+          { withCredentials: true }
+        );
+        toast.success("تمت إضافة المنتج إلى المفضلة بنجاح ✅");
+      } else {
+        let localWish = JSON.parse(localStorage.getItem("localWish")) || [];
+
+        const exists = localWish.find((item) => item._id === data._id);
+        if (exists) {
+          toast("هذا المنتج موجود بالفعل في المفضلة ❤️");
+          return;
+        }
+
+        localWish.push({
+          _id: data._id,
+          title: data.title || "منتج بدون عنوان",
+          price: data.price || "غير محدد",
+          image: data.image || "/placeholder.png",
+          description: data.description || "منتج بدون وصف",
+          brand: data.brand || "منتج بدون براند",
+          category: data.category || "منتج بدون كاتيجوري",
+          type: "online", // فرق نوع المنتج
+        });
+
+        localStorage.setItem("localWish", JSON.stringify(localWish));
+        toast.success("✅ تمت إضافة المنتج للمفضلة بنجاح");
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error("حدث خطأ أثناء الإضافة إلى المفضلة");
+    }
+  };
+
+  if (loading) return <Loading />;
 
   return (
     <section className="exclusive-online" id="exclusive-online">
@@ -38,35 +85,35 @@ const Online = () => {
         </div>
 
         <div className="exclusive-grid">
-          {product && product.length > 0 ? (
-            product.map((item) => (
-              <div key={item._id} className="exclusive-card">
+          {data && data.length > 0 ? (
+            data.map((product) => (
+              <div key={product._id} className="exclusive-card">
                 <div className="exclusive-badge">حصري</div>
                 <img
-                  src={item.image}
-                  alt={item.title}
+                  src={product.image}
+                  alt={product.title}
                   crossOrigin="anonymous"
                   loading="lazy"
                   className="exclusive-image"
                 />
                 <div className="exclusive-content">
-                  <h3>{item.title}</h3>
+                  <h3>{product.title}</h3>
                   <div className="exclusive-features">
-                    <span>السعر: ${item.price}</span>
-                    <span>الخصم: ${item.discount}</span>
-                    <span>التصنيف: {item.category}</span>
-                    <span>الوصف: {item.description}</span>
+                    <span>السعر: ${product.price}</span>
+                    <span>الخصم: ${product.discount}</span>
+                    <span>التصنيف: {product.category}</span>
+                    <span>الوصف: {product.description}</span>
                   </div>
                   <div className="product-footer">
                   <a
-                    href={`/onlineProduct/${item._id}`}
+                    href={`/onlineProduct/${product._id}`}
                     className="btn btn-secondary"
                   >
                     View Details
                   </a>
                   <button
                     className="btn btn-secondary"
-                    onClick={() => AddToWish(item)}
+                    onClick={() => AddToWish(product)}
                   >
                     Add to Wish ❤️
                   </button>

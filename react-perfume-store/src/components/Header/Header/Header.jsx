@@ -29,18 +29,15 @@ const Header = () => {
         }
     }
     
-
  const fetchCart = async () => {
   try {
     let dbCount = 0;
     let localCount = 0;
 
-
     if (user && user._id) {
       const res = await axios.get(`${BASE_URL}/wish/mywishlist`, {
         withCredentials: true,
       });
-
 
       const wishlistData =
         Array.isArray(res.data)
@@ -81,10 +78,9 @@ const Header = () => {
     };
   }, [user]);
 
-  // لفحص تفضيل النظام (System preference)
+
   const getSystemPreference = () => window.matchMedia("(prefers-color-scheme: dark)").matches;
 
-  // تعيين الوضع بناءً على الوضع المحفوظ أو النظام
   useEffect(() => {
     const savedMode = localStorage.getItem("darkMode");
 
@@ -96,7 +92,7 @@ const Header = () => {
         document.body.classList.remove("dark");
       }
     } else {
-      // الوضع system افتراضي
+
       setThemeMode("system");
       const isDark = getSystemPreference();
       if (isDark) {
@@ -106,7 +102,7 @@ const Header = () => {
       }
     }
 
-    // استماع تغير إعداد النظام فقط اذا الوضع system
+
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     const handler = (e) => {
       if (localStorage.getItem("darkMode") === null) {
@@ -124,7 +120,7 @@ const Header = () => {
     return () => mediaQuery.removeEventListener("change", handler);
   }, [themeMode]);
 
-  // تغيير الوضع بناء على اختيار المستخدم في البوب أب
+
   const changeTheme = (mode) => {
     setThemeMode(mode);
     setPopupOpen(false);
@@ -224,6 +220,18 @@ const Header = () => {
                   Contact
                 </NavLink>
                 </li>
+                {user && user.role === "user" && (
+                  <li>
+                    <NavLink
+                      to="/profile"
+                      className={({ isActive }) =>
+                        isActive ? "nav-link active" : "nav-link"
+                      }
+                    >
+                      Profile
+                    </NavLink>
+                  </li>
+                )}
 
                   {
                     user && user.role === "admin" &&
@@ -277,12 +285,12 @@ const Header = () => {
           </nav>
 
           {/* الأزرار */}
+
           <div className="header-actions">
             <button className="lang-toggle" id="langToggle">AR</button>
 
             {/* DARK LIGHT SYSTEM MODE */}
-            
-
+          
             <div className="theme-popup-wrapper">
             <button
               className="theme-toggle-btn"
@@ -314,10 +322,11 @@ const Header = () => {
       </div>
     </div>
   )}
-</div>
+            </div>
 
 
-                    {/*  BARS */}
+              {/*  BARS */}
+
             <button
               className="menu-toggle"
               id="menuToggle"
@@ -328,6 +337,8 @@ const Header = () => {
 
 
           </div>
+
+          
         </div>
       </div>
     </header>

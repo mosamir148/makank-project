@@ -10,7 +10,7 @@ const wishlistSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Product",
     },
-    FeaturedProduct: {
+    featuredProduct: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "FeaturedProduct",
     },
@@ -20,25 +20,6 @@ const wishlistSchema = new mongoose.Schema(
     },
   },
   { timestamps: true }
-);
-
-
-// فقط للمنتج العادي
-wishlistSchema.index(
-  { user: 1, product: 1 },
-  { unique: true, partialFilterExpression: { product: { $type: "objectId" } } }
-);
-
-// فقط للمنتج المميز
-wishlistSchema.index(
-  { user: 1, FeaturedProduct: 1 },
-  { unique: true, partialFilterExpression: { FeaturedProduct: { $type: "objectId" } } }
-);
-
-// فقط للمنتج الأونلاين
-wishlistSchema.index(
-  { user: 1, onlineProduct: 1 },
-  { unique: true, partialFilterExpression: { onlineProduct: { $type: "objectId" } } }
 );
 
 

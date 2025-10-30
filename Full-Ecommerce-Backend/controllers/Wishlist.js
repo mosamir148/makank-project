@@ -13,7 +13,7 @@ exports.addToWishlist = async (req, res) => {
     // query للتحقق من وجود العنصر مسبقًا
     let query = { user: userId };
     if (productId) query.product = productId;
-    if (featuredProductId) query.FeaturedProduct = featuredProductId;
+    if (featuredProductId) query.featuredProduct = featuredProductId;
     if (onlineProductId) query.onlineProduct = onlineProductId;
 
     let item = await Wishlist.findOne(query);
@@ -24,11 +24,11 @@ exports.addToWishlist = async (req, res) => {
     item = await Wishlist.create({
       user: userId,
       product: productId || undefined,
-      FeaturedProduct: featuredProductId || undefined,
+      featuredProduct: featuredProductId || undefined,
       onlineProduct: onlineProductId || undefined,
     });
 
-    await item.populate("product FeaturedProduct onlineProduct user", "title username email phone");
+    await item.populate("product featuredProduct onlineProduct user", "title username email phone");
 
     res.status(201).json(item);
   } catch (error) {
@@ -47,7 +47,7 @@ exports.getUserWishlist = async (req, res) => {
 
     const wishlist = await Wishlist.find({ user: userId })
       .populate("product", "title category brand description price image")
-      .populate("FeaturedProduct", "title category brand description price image")
+      .populate("featuredProduct", "title category brand description price image")
       .populate("onlineProduct", "title category brand description price image")
       .populate("user", "username email phone");
 
@@ -63,7 +63,7 @@ exports.getAllWishlists = async (req, res) => {
   try {
     const wishlists = await Wishlist.find()
       .populate("product")
-      .populate("FeaturedProduct")
+      .populate("featuredProduct")
       .populate("onlineProduct")
       .populate("user", "username email phone");
 

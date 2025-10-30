@@ -30,6 +30,7 @@ import OnlineAllProduct from './pages/dashboard/OnlineProduct/AllProduct/OnlineA
 import AddOnlineProduct from './pages/dashboard/OnlineProduct/AddProduct/AddOnlineProduct'
 import OnlineUpdateProduct from './pages/dashboard/OnlineProduct/UpdateProduct/OnlineUpdateProduct'
 import OnlineDetails from './components/Home/Online/OnlineDetails'
+import Profile from './pages/Profile/Profile'
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -96,8 +97,8 @@ function App() {
               <Route path="/product/:id" element={<ProductDetails />} />
               <Route path='featuredProduct/:id' element={<SpecialDetails />} />
               <Route path='onlineProduct/:id' element={<OnlineDetails />} />
-
               <Route path="/cart" element={<YourCart />} />
+              <Route path="/profile" element={<Profile />} />
             </Route>
 
       </Routes>

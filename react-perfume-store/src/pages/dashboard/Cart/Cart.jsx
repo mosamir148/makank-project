@@ -15,8 +15,6 @@ const getOrders = async () => {
   const res = await axios.get(`${BASE_URL}/cart/all`, { withCredentials: true });
   console.log(res.data)
   const allOrders = res.data || [];
-
-
   setOrders(allOrders);
   } catch (err) {
     console.error("❌ Error fetching orders:", err);
@@ -27,7 +25,7 @@ const getOrders = async () => {
   getOrders();
   }, []);
 
-// 🟡 تحديث حالة الطلب
+
   const handleStatusChange = async (cartId, newStatus) => {
   try {
   await axios.put(

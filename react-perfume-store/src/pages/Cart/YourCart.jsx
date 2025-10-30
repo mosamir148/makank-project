@@ -107,18 +107,8 @@ const YourCart = () => {
     const newUser = res.data.User;
     setUser(newUser);
     console.log("User registered:", newUser);
-
-    // ✅ إضافة المنتجات في السلة بعد التسجيل
-    for (const item of cart) {
-      const payload = {
-        userId: newUser._id,
-        productId: item.product?._id,
-        quantity: item.quantity || 1,
-      };
-      console.log("Adding to cart:", payload);
-      await axios.post(`${BASE_URL}/cart/add`, payload, { withCredentials: true });
-    }
-
+    await AddAllToCart({ userId: res.data.User._id });
+ 
     toast.success("✅ تم تسجيل طلبك بنجاح وسيتم التواصل معك قريبًا");
     setShowRegisterForm(false);
 
@@ -136,52 +126,72 @@ const YourCart = () => {
 
 
   // MY CART
-   const MyCart = async () => {
+  const MyCart = async () => {
+  try {
+    let allItems = [];
+
     try {
-      let allItems = [];
+      const res = await axios.get(`${BASE_URL}/wish/mywishlist`, { withCredentials: true });
+      const dbArray = Array.isArray(res?.data) ? res.data : [];
+      console.log("DB Wishlist:", res.data);
 
-      try {
-        const res = await axios.get(`${BASE_URL}/wish/mywishlist`, { withCredentials: true });
-        const dbArray = Array.isArray(res?.data) ? res.data : [];
-        console.log(res.data)
-        const dbItems = dbArray.map((item) => {
-          const product = item.product || item.featuredproduct || item;
-          return {
-            _id: item._id || product._id,
-            product,
-            quantity: item.quantity || 1,
-            from: "db",
-          };
-        });
-        allItems = [...allItems, ...dbItems];
-      } catch (err) {
-        console.log("❌ DB Fetch Error:", err);
-      }
+      const dbItems = dbArray.map((item) => {
+        let product = null;
 
-      let localWishlist = [];
-      try {
-        const local1 = JSON.parse(localStorage.getItem("localWish")) || [];
-        const local2 = JSON.parse(localStorage.getItem("guestWishlist")) || [];
-        localWishlist = [...local1, ...local2];
-      } catch (err) {
-        console.log("⚠️ LocalStorage Parse Error:", err);
-      }
+        if (item.product) product = { ...item.product, type: "product" };
+        else if (item.featuredProduct) product = { ...item.featuredProduct, type: "featured" };
+        else if (item.onlineProduct) product = { ...item.onlineProduct, type: "online" };
+        else product = { ...item, type: "product" };
 
-      if (Array.isArray(localWishlist) && localWishlist.length > 0) {
-        const localItems = localWishlist.map((p) => ({
+        return {
+          _id: item._id || product._id,
+          product,
+          quantity: item.quantity || 1,
+          from: "db",
+        };
+      });
+
+      allItems = [...allItems, ...dbItems];
+    } catch (err) {
+      console.log("❌ DB Fetch Error:", err);
+    }
+
+    // ✅ جلب عناصر من LocalStorage
+    let localWishlist = [];
+    try {
+      const local1 = JSON.parse(localStorage.getItem("localWish")) || [];
+      const local2 = JSON.parse(localStorage.getItem("guestWishlist")) || [];
+      localWishlist = [...local1, ...local2];
+    } catch (err) {
+      console.log("⚠️ LocalStorage Parse Error:", err);
+    }
+
+    if (Array.isArray(localWishlist) && localWishlist.length > 0) {
+      const localItems = localWishlist.map((p) => {
+        let product = null;
+
+        if (p.product) product = { ...p.product, type: "product" };
+        else if (p.featuredProduct) product = { ...p.featuredProduct, type: "featured" };
+        else if (p.onlineProduct) product = { ...p.onlineProduct, type: "online" };
+        else product = { ...p, type: "product" };
+
+        return {
           _id: p._id,
-          product: p,
+          product,
           quantity: p.quantity || 1,
           from: "local",
-        }));
-        allItems = [...allItems, ...localItems];
-      }
+        };
+      });
 
-      setCart(allItems);
-    } catch (err) {
-      console.log("❌ MyCart Global Error:", err);
+      allItems = [...allItems, ...localItems];
     }
-  };
+
+    setCart(allItems);
+  } catch (err) {
+    console.log("❌ MyCart Global Error:", err);
+  }
+};
+
 
 
   useEffect(() => {
@@ -241,42 +251,46 @@ const YourCart = () => {
     );
   };
 
-  const AddAllToCart = async ({ userId, guestId }) => {
-    try {
-      for (const item of cart) {
-
-        const isFeatured = !!item.FeaturedProduct?._id || !!item.Featuredproduct;
-        const product = isFeatured ? item.Featuredproduct : item.product || item;
-
-
-        if (!product?._id) {
-          console.warn("Skipping item without ID:", item);
-          continue;
-        }
-
-
-        const payload = {
-          userId: userId || undefined,
-          guestId: guestId || undefined, 
-          quantity: item.quantity || 1,
-        };
-
-        if (isFeatured) {
-          payload.FeaturedProduct = product._id; 
-        } else {
-          payload.productId = product._id;
-        }
-
-        console.log("🛒 Adding to cart:", payload);
-        await axios.post(`${BASE_URL}/cart/add`, payload, { withCredentials: true });
+const AddAllToCart = async ({ userId, guestId }) => {
+  try {
+    for (const item of cart) {
+      if (!item.product?._id) {
+        console.warn("Skipping item without ID:", item);
+        continue;
       }
 
-      toast.success("✅ تم طلب المنتجات بنجاح وسيتم التواصل معك قريبًا");
-    } catch (err) {
-      console.error("❌ AddAllToCart error:", err.response?.data || err);
-      toast.error("حدث خطأ أثناء تنفيذ الطلب");
+      const payload = {
+        userId: userId || undefined,
+        guestId: guestId || undefined,
+        quantity: item.quantity || 1,
+      };
+
+      // ✅ تحديد النوع الصحيح حسب الـ type
+      switch (item.product.type) {
+        case "product":
+          payload.productId = item.product._id;
+          break;
+        case "featured":
+          payload.featuredProductId = item.product._id;
+          break;
+        case "online":
+          payload.onlineProductId = item.product._id;
+          break;
+        default:
+          payload.productId = item.product._id;
+      }
+
+      console.log("🛒 Adding to cart:", payload);
+      await axios.post(`${BASE_URL}/cart/add`, payload, { withCredentials: true });
     }
-  };
+
+    toast.success("✅ تم طلب المنتجات بنجاح وسيتم التواصل معك قريبًا");
+  } catch (err) {
+    console.error("❌ AddAllToCart error:", err.response?.data || err);
+    toast.error("حدث خطأ أثناء تنفيذ الطلب");
+  }
+};
+
 
   const handleCheckout = () => setShowPopup(true);
 
@@ -313,9 +327,11 @@ const handleGuestSubmit = async (e) => {
     for (const item of cart) {
       const product = item.product?._id ? item.product : item;
       if (!product._id) continue;
-
+      
+      
       const payload = {
         ...guestData,
+        //  guestId, 
         productId: product._id,
         quantity: item.quantity || 1
       };
@@ -343,7 +359,7 @@ const handleGuestSubmit = async (e) => {
  
 
   const Subtotal = cart.reduce(
-    (acc, cur) => acc + (cur.product?.price || 0) * (cur.quantity || 1),
+    (acc, cur) => acc + (cur.product?.price || cur.product.onlineProduct?.price || cur.product.featuredProduct?.price || 0) * (cur.quantity || 1),
     0
   );
 
@@ -361,21 +377,26 @@ const handleGuestSubmit = async (e) => {
           <p className="empty">🛒 لا توجد منتجات في السلة حاليًا</p>
         ) : (
           cart.map((cartItem, index) => {
+            const product = 
+            cartItem?.product?.featuredProduct || 
+            cartItem?.product?.onlineProduct || 
+            cartItem?.product || 
+            {};
 
-            console.log(cartItem)
-            return (
+            return (  
               <div key={index} className="cart-card">
                 <div className="cart-image">
                   <img
-                     src={cartItem?.product.image || cartItem?.product.onlineProduct.image || cartItem?.product.FeaturedProduct.image || "default-image.jpg"}
-                      alt={cartItem?.product.title || cartItem?.product.onlineProduct.title || cartItem?.product.FeaturedProduct.title || "منتج"}
+                     src={product.image || "default-image.jpg"}
+                      alt={product.title ||  "منتج"}
                   />
                 </div>
                 <div className="cart-info">
-                  <h3>{cartItem?.product.title || cartItem?.product.onlineProduct.title || cartItem?.product.product.FeaturedProduct.title ||  "منتج بدون عنوان"} </h3>
-                  <h3>{cartItem?.product.brand || cartItem?.product.onlineProduct.brand || cartItem?.product.FeaturedProduct.brand || "منتج بدون براند"}</h3>
-                  <p className="cart-desc">{cartItem?.product.category || cartItem?.product.onlineProduct.category || cartItem?.product.FeaturedProduct.category || "منتج بدون كاتيجوري"}</p>
-                  <p className="cart-desc">{cartItem?.product.description || cartItem?.product.onlineProduct.description || cartItem?.product.FeaturedProduct.description || "منتج بدون وصف"}</p>
+                  <h3>{product.title  ||  "منتج بدون عنوان"} </h3>
+                  <h3>{product.brand ||  "منتج بدون براند"}</h3>
+                  <p className="cart-desc">{product.category || "منتج بدون كاتيجوري"}</p>
+                  <p className="cart-desc">{product.description || "منتج بدون وصف"}</p>
+                  <p className="cart-desc">{product.price  || "منتج بدون سعر"} EGY</p>
                       
                   <div className="quantity-controls">
                     <button className="qty-btn" onClick={() => handleDecrease(index)}>−</button>
