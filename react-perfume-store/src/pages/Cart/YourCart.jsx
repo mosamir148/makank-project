@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import "./YourCart.css";
 import { BASE_URL } from "../../assets/url";
 import { userContext } from "../../context/UserContext";
-import { useNavigate } from "react-router-dom";
+import { useLang } from "../../context/LangContext";
 
 const YourCart = () => {
   const [cart, setCart] = useState([]);
@@ -16,7 +16,7 @@ const YourCart = () => {
   const [showRegisterForm, setShowRegisterForm] = useState(false);
   const isLoggedIn = document.cookie.includes("token");
   const {setUser,user} = useContext(userContext)
-
+  const { t } = useLang()
   const [guestData, setGuestData] = useState({
     username: "",
     address: "",
@@ -124,7 +124,6 @@ const YourCart = () => {
 };
 
 
-
   // MY CART
   const MyCart = async () => {
   try {
@@ -157,7 +156,7 @@ const YourCart = () => {
       console.log("❌ DB Fetch Error:", err);
     }
 
-    // ✅ جلب عناصر من LocalStorage
+
     let localWishlist = [];
     try {
       const local1 = JSON.parse(localStorage.getItem("localWish")) || [];
@@ -456,13 +455,13 @@ const [timers, setTimers] = useState({});
       <div className="cart-items">
         <div className="cart-title">
           <p>
-            Your <span>Cart</span>
+            {t("Cart")} <span> {t("Your")} </span>
           </p>
           <div className="line"></div>
         </div>
 
         {cart.length === 0 ? (
-          <p className="empty">🛒 لا توجد منتجات في السلة حاليًا</p>
+          <p className="empty">🛒 {t("noProduct")}</p>
         ) : (
           cart.map((cartItem, index) => {
             const product = 
@@ -511,85 +510,61 @@ const [timers, setTimers] = useState({});
         )}
       </div>
 
-          {/* <div className="coupon-section">
-              <h3>🎟️ كود الخصم</h3>
+        
+
+      <div className="cart-summary">
+              <h3>{t("summaryTitle")}</h3>
+
+              <p className="summary-item">
+                <span>{t("subtotal")} :</span>
+                <span>{total.toFixed(2)} EGP</span>
+              </p>
+
+
               <div className="coupon-box">
                 <input
                   type="text"
-                  placeholder="أدخل كود الخصم هنا"
+                  className="coupon-input"
+                  placeholder={t("couponPlaceholder")}
                   value={couponCode}
                   onChange={(e) => setCouponCode(e.target.value)}
                 />
-                <button onClick={applyCoupon}>تطبيق</button>
+                <button className="coupon-btn" onClick={applyCoupon}>
+                   {t("applyCoupon")}
+                </button>
               </div>
 
               {discount > 0 && (
-                <p className="discount-info">
-                  ✅ تم تطبيق خصم قدره{" "}
-                  <strong>
-                    {discount.toFixed(2)} جنيه
-                  </strong>
+                <p className="summary-item discount">
+                  <span>{t("discount")}:</span>
+                  <span>- {discount.toFixed(2)} EGP</span>
                 </p>
               )}
 
-  
-          </div> */}
 
-      <div className="cart-summary">
-  <h3>ملخص السلة</h3>
+              <p className="summary-item total">
+                <strong>{t("total")}:</strong>
+                <strong>{(total - discount).toFixed(2)} EGP</strong>
+              </p>
 
-  {/* 🧾 السعر قبل الخصم */}
-  <p className="summary-item">
-    <span>الإجمالي الفرعي:</span>
-    <span>{total.toFixed(2)} EGP</span>
-  </p>
-
-  {/* 🎟️ إدخال كوبون الخصم */}
-  <div className="coupon-box">
-    <input
-      type="text"
-      className="coupon-input"
-      placeholder="أدخل كود الخصم هنا"
-      value={couponCode}
-      onChange={(e) => setCouponCode(e.target.value)}
-    />
-    <button className="coupon-btn" onClick={applyCoupon}>
-      تطبيق الكوبون
-    </button>
-  </div>
-
-  {/* 💰 إظهار الخصم إن وُجد */}
-  {discount > 0 && (
-    <p className="summary-item discount">
-      <span>الخصم:</span>
-      <span>- {discount.toFixed(2)} EGP</span>
-    </p>
-  )}
-
-  {/* 🧮 الإجمالي بعد الخصم */}
-  <p className="summary-item total">
-    <strong>الإجمالي:</strong>
-    <strong>{(total - discount).toFixed(2)} EGP</strong>
-  </p>
-
-  <button onClick={handleCheckout} className="checkout-btn">إتمام الشراء</button>
-</div>
+              <button onClick={handleCheckout} className="checkout-btn">{t("checkout")}</button>
+      </div>
 
       {showPopup && (
         <div className="popup-overlay">
           <div className="popup">
-            <h3>تسجيل الدخول أو المتابعة كضيف</h3>
+            <h3> {t("title")} </h3>
             <button className="popup-btn login" onClick={handleLoginOpen}>
-              تسجيل الدخول
+              {t("login")}
             </button>
             <button className="popup-btn register" onClick={handleRegisterOpen}>
-              إنشاء حساب جديد
+              {t("register")}
             </button>
             <button className="popup-btn guest" onClick={handleGuestContinue}>
-              الاستكمال بدون حساب
+              {t("guest")}
             </button>
             <button className="close-btn" onClick={() => setShowPopup(false)}>
-              إغلاق
+              {t("close")}
             </button>
           </div>
         </div>
@@ -599,11 +574,11 @@ const [timers, setTimers] = useState({});
       {showLoginForm && (
         <div className="popup-overlay">
           <div className="popup guest-form">
-            <h3>تسجيل الدخول</h3>
+            <h3>{t("loginTitle")}</h3>
             <form onSubmit={handleSubmitLogin}>
               <input
                 type="email"
-                placeholder="البريد الإلكتروني"
+                placeholder={t("email")}
                 value={loginData.email}
                 name="email"
                  onChange={handleChangeLogin }                
@@ -611,21 +586,21 @@ const [timers, setTimers] = useState({});
               />
               <input
                 type="password"
-                placeholder="كلمة المرور"
+                placeholder={t("password")}
                 value={loginData.password}
                 name="password"
                 onChange={handleChangeLogin }
                 required
               />
               <button  type="submit" className="popup-btn login">
-                تسجيل الدخول
+                {t("loginBtn")}
               </button>
               <button
                 type="button"
                 className="close-btn"
                 onClick={() => setShowLoginForm(false)}
               >
-                إغلاق
+                {t("close")}
               </button>
             </form>
           </div>
@@ -636,11 +611,11 @@ const [timers, setTimers] = useState({});
       {showRegisterForm && (
         <div className="popup-overlay">
           <div className="popup guest-form">
-            <h3>إنشاء حساب جديد</h3>
+            <h3>{t("registerTitle")}</h3>
             <form onSubmit={handleSubmitRegister}>
               <input
                 type="text"
-                placeholder="الاسم الكامل"
+                placeholder={t("fullName")}
                 name="username"
                 value={registerData.name}
                 onChange={handleChangeRegister}
@@ -648,7 +623,7 @@ const [timers, setTimers] = useState({});
               />
               <input
                 type="email"
-                placeholder="البريد الإلكتروني"
+                placeholder={t("email")}
                 value={registerData.email}
                 name="email"
                 onChange={handleChangeRegister}
@@ -656,7 +631,7 @@ const [timers, setTimers] = useState({});
               />
               <input
                 type="tel"
-                placeholder="رقم الهاتف"
+                placeholder={t("phone")}
                 name="phone"
                 value={registerData.phone}
                 onChange={handleChangeRegister}
@@ -664,21 +639,21 @@ const [timers, setTimers] = useState({});
               />
               <input
                 type="password"
-                placeholder="كلمة المرور"
+                placeholder={t("password")}
                 name="password"
                 value={registerData.password}
                 onChange={handleChangeRegister}
                 required
               />
               <button  type="submit" className="popup-btn register">
-                إنشاء حساب
+                {t("registerBtn")}
               </button>
               <button
                 type="button"
                 className="close-btn"
                 onClick={() => setShowRegisterForm(false)}
               >
-                إغلاق
+                {t("close")}
               </button>
             </form>
           </div>
@@ -689,11 +664,11 @@ const [timers, setTimers] = useState({});
       {showGuestForm && (
           <div className="popup-overlay">
             <div className="popup guest-form">
-              <h3>معلومات التواصل</h3>
+              <h3> {t("guestTitle")}</h3>
               <form onSubmit={handleGuestSubmit}>
                 <input
                   type="text"
-                  placeholder="الاسم الكامل"
+                  placeholder= {t("fullName")}
                   name="username"
                   value={guestData.username || ""}
                   onChange={handleChangeGuest}
@@ -701,7 +676,7 @@ const [timers, setTimers] = useState({});
                 />
                 <input
                   type="text"
-                  placeholder="العنوان بالتفصيل"
+                  placeholder= {t("address")}
                   name="address"
                   value={guestData.address || ""}
                   onChange={handleChangeGuest}
@@ -709,14 +684,14 @@ const [timers, setTimers] = useState({});
                 />
                 <input
                   type="email"
-                  placeholder="البريد الإلكتروني"
+                  placeholder= {t("email")}
                   name="email"
                   value={guestData.email || ""}
                   onChange={handleChangeGuest}
                 />
                 <input
                   type="tel"
-                  placeholder="رقم الهاتف"
+                  placeholder= {t("phone")}
                   name="phone"
                   value={guestData.phone || ""}
                   onChange={handleChangeGuest}
@@ -724,21 +699,21 @@ const [timers, setTimers] = useState({});
                 />
                 <input
                   type="tel"
-                  placeholder="رقم واتساب"
+                  placeholder= {t("whatsapp")}
                   name="phoneWhats"
                   value={guestData.phoneWhats || ""}
                   onChange={handleChangeGuest}
                 />
 
                 <button  type="submit" className="popup-btn login">
-                  تأكيد الطلب
+                  {t("guestBtn")}
                 </button>
                 <button
                   type="button"
                   className="close-btn"
                   onClick={() => setShowGuestForm(false)}
                 >
-                  إغلاق
+                   {t("close")}
                 </button>
               </form>
             </div>

@@ -58,6 +58,15 @@
   color: #666;
 }
 
+body[dir="rtl"] .toggle-password{
+  right: auto;
+  left: 15px;
+}
+body[dir="ltr"] .toggle-password{
+  right: 15px;
+  left: auto;
+}
+
 .form-options { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
 .form-checkbox { display: flex; align-items: center; gap: 10px; }
 .form-checkbox input { width: 18px; height: 18px; cursor: pointer; accent-color: var(--primary-gold); }

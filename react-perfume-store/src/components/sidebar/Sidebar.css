@@ -1,6 +1,6 @@
 .sidebar {
   position: fixed;
-  top: 4rem;
+  top: 5rem;
   left: 0;
   width: 16rem;
   min-height: 100vh;
@@ -12,9 +12,23 @@
   transition: var(--transition);
 }
 
-.sidebar.active {
+body[dir="ltr"] .sidebar {
+  left: 0;
+  transform: translateX(-100%);
+}
+
+body[dir="rtl"] .sidebar {
+  right: 0;
+  transform: translateX(100%);
+}
+body[dir="ltr"] .sidebar.active {
   transform: translateX(0);
 }
+
+body[dir="rtl"] .sidebar.active {
+  transform: translateX(0);
+}
+
 
 .sidebar ul {
   list-style: none;

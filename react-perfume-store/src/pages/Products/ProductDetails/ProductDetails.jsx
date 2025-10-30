@@ -11,6 +11,7 @@ import { BASE_URL } from "../../../assets/url";
 import { userContext } from "../../../context/UserContext";
 import { productsContext } from "../../../context/GetProducts";
 import Loading from "../../../components/Loading/Loading";
+import { useLang } from "../../../context/LangContext";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -18,7 +19,7 @@ const ProductDetails = () => {
   const [data, setData] = useState(null);
   const { user } = useContext(userContext);
   const [loading, setLoading] = useState(true) 
-
+  const {t} = useLang()
 
   const getProduct = async () => {
     try {
@@ -103,7 +104,7 @@ const ProductDetails = () => {
             />
           </div>
 
-          {/* معلومات المنتج */}
+
           <div className="product-info">
             <h1>{data.title}</h1>
 
@@ -150,14 +151,14 @@ const ProductDetails = () => {
           </div>
         </div>
       ) : (
-        <p className="loading">Loading...</p>
+        <p className="loading"><Loading/> </p>
       )}
 
       {/* المنتجات المشابهة */}
       {data && (
         <div className="related-products">
           <h2>
-            Related <span>Products</span>
+            {t("products")}  <span>{t("Related")}</span>
           </h2>
 
           <div className="related-grid">

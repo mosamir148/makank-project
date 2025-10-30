@@ -4,6 +4,7 @@ import axios from 'axios'
 import './Product.css'
 import { BASE_URL } from '../../../assets/url'
 import Loading from '../../../components/Loading/Loading'
+import { useLang } from '../../../context/LangContext'
 
 const Product = () => {
   const [loading, setLoading] = useState(true)
@@ -15,7 +16,7 @@ const Product = () => {
   const [sortOption, setSortOption] = useState("relavent")
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
-
+  const {t} = useLang()
   useEffect(() => {
     fetchProducts()
   }, [currentPage, selectedCategories, selectedBrandies, sortOption])
@@ -68,15 +69,15 @@ const Product = () => {
   return (
     <section className="products-page">
       <div className="products-header">
-        <h1>Our Products</h1>
-        <p>Discover premium items crafted with style and quality</p>
+        <h1>{t("OurProducts")}</h1>
+        <p>{t("OurProductsSub")}</p>
       </div>
 
       <div className="products-container">
         {/* Sidebar Filters */}
         <aside className="filters-sidebar">
           <div className="filter-section">
-            <h3 className="filter-title">Categories</h3>
+            <h3 className="filter-title">{t("Categories")}</h3>
             {categories.map((category, i) => (
               <div key={i} className="filter-option">
                 <input
@@ -90,7 +91,7 @@ const Product = () => {
           </div>
 
           <div className="filter-section">
-            <h3 className="filter-title">Brands</h3>
+            <h3 className="filter-title">{t("Brands")}</h3>
             {brands.map((brand, i) => (
               <div key={i} className="filter-option">
                 <input
@@ -107,12 +108,12 @@ const Product = () => {
         {/* Main Products Section */}
         <main className="products-main">
           <div className="products-toolbar">
-            <p className="products-count">{products.length} Products Found</p>
+            <p className="products-count">{products.length} - {t("ProductsFound")}</p>
             <div className="sort-options">
               <select value={sortOption} onChange={(e) => setSortOption(e.target.value)}>
-                <option value="relavent">Sort by: Relevant</option>
-                <option value="low-high">Price: Low to High</option>
-                <option value="high-low">Price: High to Low</option>
+                <option value="relavent">{t("Sortby")}</option>
+                <option value="low-high">{t("PriceLow")}</option>
+                <option value="high-low">{t("PriceHigh")}</option>
               </select>
             </div>
           </div>
@@ -145,7 +146,7 @@ const Product = () => {
               onClick={() => setCurrentPage(prev => prev - 1)}
               className="pagination-btn"
             >
-              Prev
+              {t("Prev")}
             </button>
             {[...Array(totalPages)].map((_, index) => (
               <button
@@ -161,7 +162,7 @@ const Product = () => {
               onClick={() => setCurrentPage(prev => prev + 1)}
               className="pagination-btn"
             >
-              Next
+              {t("Next")}
             </button>
           </div>
         </main>

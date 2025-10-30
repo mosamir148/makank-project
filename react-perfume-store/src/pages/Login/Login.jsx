@@ -6,6 +6,7 @@ import { userContext } from "../../context/UserContext";
 import { BASE_URL } from "../../assets/url";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { useLang } from "../../context/LangContext";
 
 const Login = () => {
     const [active,setActive ] = useState(false);
@@ -13,7 +14,7 @@ const Login = () => {
     const [email,setEmail] = useState("")
     const navigate = useNavigate()
     const {setUser} = useContext(userContext)
-
+    const {t} = useLang()
     const handleSubmit = async (e)=>{
         e.preventDefault();
         // SIGNED USER 
@@ -40,44 +41,49 @@ const Login = () => {
     }
 
   return (
-    <div className="auth-page">
+     <div className="auth-page">
       <div className="auth-container">
         <div className="auth-header">
           <h1 className="auth-logo">LUXE PARFUM</h1>
-          <p className="auth-subtitle">مرحباً بك في عالم العطور الفاخرة</p>
+          <p className="auth-subtitle">{t("authSubtitle")}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="auth-form">
-          <h2 className="form-title">تسجيل الدخول</h2>
+          <h2 className="form-title">{t("loginTitle")}</h2>
 
           <div className="form-group">
-            <label className="form-label">البريد الإلكتروني</label>
+            <label className="form-label">{t("emailLabel")}</label>
             <input 
               value={email}
-                onChange={(e)=>setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
               type="email" 
-              className="form-input" placeholder="أدخل بريدك الإلكتروني" required />
+              className="form-input" 
+              placeholder={t("emailPlaceholder")} 
+              required
+            />
           </div>
 
           <div className="form-group">
-            <label className="form-label">كلمة المرور</label>
+            <label className="form-label">{t("passwordLabel")}</label>
             <input
-                value={password}
-                onChange={(e)=>setPassword(e.target.value)}
-              type={active ? "text" : "password"} className="form-input" placeholder="أدخل كلمة المرور" required />
-                <span className="toggle-password" onClick={() => setActive(!active)}>
-                   {active ? <FaEye /> : <FaEyeSlash />}  
-                </span>
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              type={active ? "text" : "password"} 
+              className="form-input" 
+              placeholder={t("passwordPlaceholder")} 
+              required
+            />
+            <span className="toggle-password" onClick={() => setActive(!active)}>
+              {active ? <FaEye /> : <FaEyeSlash />}
+            </span>
           </div>
 
-          <button type="submit" className="submit-btn">تسجيل الدخول</button>
+          <button type="submit" className="submit-btn">{t("loginButton")}</button>
 
           <div className="form-footer">
-            <p>ليس لديك حساب؟ <Link to="/register" className="form-link">إنشاء حساب جديد</Link></p>
+            <p>{t("noAccount")} <Link to="/register" className="form-link">{t("registerLink")}</Link></p>
           </div>
         </form>
-
-        
       </div>
     </div>
   );
