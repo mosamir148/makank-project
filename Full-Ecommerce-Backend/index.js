@@ -11,6 +11,7 @@ const cookieParser = require("cookie-parser");
 const ProductRoute = require("./routes/Product");
 const FeaturedProduct = require("./routes/FeaturedProduct");
 const OnlineProduct = require("./routes/OnlineProduct");
+const OfferProduct = require("./routes/OfferProduct");
 const UserRoute = require("./routes/User");
 const CartRoute = require("./routes/Cart");
 const WishRoute = require("./routes/Wishlist");
@@ -34,6 +35,17 @@ app.use(helmet());
 app.use(express.urlencoded({ extended: true, limit: "Infinity" }));
 app.use(cookieParser());
 app.use(morgan("tiny"));
+
+
+/* -------------------- 🔹 3- Cron  Schedule  -------------------- */
+const cron = require("node-cron");
+const { deleteExpiredOffers } = require("./controllers/OfferProduct");
+
+
+// كل دقيقة مثلاً للتحقق وحذف العروض المنتهية
+cron.schedule("* * * * *", () => {
+  deleteExpiredOffers();
+});
 
 /* -------------------- 🔹 3- Rate Limiter  -------------------- */
 // في التطوير زوّد الحد شوية
@@ -61,6 +73,7 @@ app.use(morgan("tiny"));
 app.use("/api/product", ProductRoute);
 app.use("/api/featuredProduct", FeaturedProduct);
 app.use("/api/onlineProduct", OnlineProduct);
+app.use("/api/offerProduct", OfferProduct);
 app.use("/api/user", UserRoute);
 app.use("/api/cart", CartRoute);
 app.use("/api/wish", WishRoute);

@@ -141,6 +141,7 @@ const YourCart = () => {
         if (item.product) product = { ...item.product, type: "product" };
         else if (item.featuredProduct) product = { ...item.featuredProduct, type: "featured" };
         else if (item.onlineProduct) product = { ...item.onlineProduct, type: "online" };
+        else if (item.offerProduct) product = { ...item.offerProduct, type: "offer" };
         else product = { ...item, type: "product" };
 
         return {
@@ -173,6 +174,7 @@ const YourCart = () => {
         if (p.product) product = { ...p.product, type: "product" };
         else if (p.featuredProduct) product = { ...p.featuredProduct, type: "featured" };
         else if (p.onlineProduct) product = { ...p.onlineProduct, type: "online" };
+        else if (p.offerProduct) product = { ...p.offerProduct, type: "offer" };
         else product = { ...p, type: "product" };
 
         return {
@@ -251,6 +253,7 @@ const YourCart = () => {
     );
   };
 
+
 const AddAllToCart = async ({ userId, guestId }) => {
   try {
     for (const item of cart) {
@@ -275,6 +278,9 @@ const AddAllToCart = async ({ userId, guestId }) => {
           break;
         case "online":
           payload.onlineProductId = item.product._id;
+          break;
+        case "offer":
+          payload.offerProductId = item.product._id;
           break;
         default:
           payload.productId = item.product._id;
@@ -356,12 +362,67 @@ const handleGuestSubmit = async (e) => {
 };
 
 
- 
 
   const Subtotal = cart.reduce(
-    (acc, cur) => acc + (cur.product?.price || cur.product.onlineProduct?.price || cur.product.featuredProduct?.price || 0) * (cur.quantity || 1),
+    (acc, cur) => acc + (cur.product?.price || cur.product.onlineProduct?.price || cur.product.featuredProduct?.price || cur.product.offerProduct?.price || 0) * (cur.quantity || 1),
     0
   );
+
+  
+const [timers, setTimers] = useState({});
+
+  useEffect(() => {
+    const intervals = {};
+
+    cart.forEach((cartItem, index) => {
+      const product =
+        cartItem?.product?.featuredProduct ||
+        cartItem?.product?.onlineProduct ||
+        cartItem?.product?.offerProduct ||
+        cartItem?.product ||
+        {};
+
+      if (product.startDate && product.endDate) {
+        const updateTimer = () => {
+          const now = new Date().getTime();
+          const start = new Date(product.startDate).getTime();
+          const end = new Date(product.endDate).getTime();
+
+          if (now < start) {
+            const diff = start - now;
+            setTimers((prev) => ({
+              ...prev,
+              [index]: formatTime(diff, "يبدأ بعد"),
+            }));
+          } else if (now >= start && now < end) {
+            const diff = end - now;
+            setTimers((prev) => ({
+              ...prev,
+              [index]: formatTime(diff, "ينتهي خلال"),
+            }));
+          } else {
+            setTimers((prev) => ({ ...prev, [index]: "انتهى العرض" }));
+            clearInterval(intervals[index]);
+          }
+        };
+
+        updateTimer();
+        intervals[index] = setInterval(updateTimer, 1000);
+      }
+    });
+
+    return () => Object.values(intervals).forEach(clearInterval);
+  }, [cart]);
+
+  const formatTime = (ms, prefix) => {
+    const totalSeconds = Math.floor(ms / 1000);
+    const days = Math.floor(totalSeconds / (3600 * 24));
+    const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    return `${prefix}: ${days}ي ${hours}س ${minutes}د ${seconds}ث`;
+  };
+
 
   return (
     <section className="cart-section">
@@ -380,6 +441,7 @@ const handleGuestSubmit = async (e) => {
             const product = 
             cartItem?.product?.featuredProduct || 
             cartItem?.product?.onlineProduct || 
+            cartItem?.product?.offerProduct || 
             cartItem?.product || 
             {};
 
@@ -398,6 +460,12 @@ const handleGuestSubmit = async (e) => {
                   <p className="cart-desc">{product.description || "منتج بدون وصف"}</p>
                   <p className="cart-desc">{product.price  || "منتج بدون سعر"} EGY</p>
                       
+                  {product.startDate && product.endDate && (
+                    <div className="offer-timer">
+                      <p>{timers[index]}</p>
+                    </div>
+                  )}
+
                   <div className="quantity-controls">
                     <button className="qty-btn" onClick={() => handleDecrease(index)}>−</button>
                     <span className="qty-value">{cartItem.quantity || 1}</span>

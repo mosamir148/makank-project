@@ -10,7 +10,7 @@ import { BASE_URL } from "../../../assets/url";
 import { userContext } from "../../../context/UserContext";
 import Loading from "../../../components/Loading/Loading";
 
-const OnlineDetails = () => {
+const OfferDetails = () => {
   const { id } = useParams();
   const { user } = useContext(userContext);
   const [data, setData] = useState(null);
@@ -19,8 +19,8 @@ const OnlineDetails = () => {
 
   const getProduct = async () => {
     try {
-      const res = await axios.get(`${BASE_URL}/onlineProduct/${id}`);
-
+      const res = await axios.get(`${BASE_URL}/offerProduct/${id}`);
+        console.log(res.data.product)
       setData(res.data.product);
     } catch (err) {
       console.log(err);
@@ -36,13 +36,13 @@ const OnlineDetails = () => {
 
   const AddToWish = async () => {
     try {
-        console.log("Adding online product ID:", data._id);
+
       if (user && user._id) {
         await axios.post(
           `${BASE_URL}/wish/add`,
           {
             userId: user._id,
-            onlineProductId: data._id, 
+            offerProductId: data._id, 
         },
           { withCredentials: true }
         );
@@ -139,7 +139,7 @@ const OnlineDetails = () => {
             </table>
 
             <button onClick={AddToWish} className="add-to-cart-btn">
-              Add to Wish ❤️
+              Add to Cart ❤️
             </button>
           </div>
         </div>
@@ -150,4 +150,4 @@ const OnlineDetails = () => {
   );
 };
 
-export default OnlineDetails;
+export default OfferDetails;

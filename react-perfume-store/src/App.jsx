@@ -31,6 +31,10 @@ import AddOnlineProduct from './pages/dashboard/OnlineProduct/AddProduct/AddOnli
 import OnlineUpdateProduct from './pages/dashboard/OnlineProduct/UpdateProduct/OnlineUpdateProduct'
 import OnlineDetails from './components/Home/Online/OnlineDetails'
 import Profile from './pages/Profile/Profile'
+import OfferAllProduct from './pages/dashboard/OfferProduct/AllProduct/OfferAllProduct'
+import OfferAddProduct from './pages/dashboard/OfferProduct/AddProduct/OfferAddProduct'
+import OfferUpdateProduct from './pages/dashboard/OfferProduct/UpdateProduct/OfferUpdateProduct'
+import OfferDetails from './components/Home/Offer/OfferDetails'
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -75,6 +79,10 @@ function App() {
               <Route path='online-products/add-online-product' element={<AddOnlineProduct />} />
               <Route path='online-products/update-product/:id' element={<OnlineUpdateProduct />} />
               
+              <Route path='offer-products' element={<OfferAllProduct />} />
+              <Route path='offer-products/add-offer-product' element={<OfferAddProduct />} />
+              <Route path='offer-products/update-product/:id' element={<OfferUpdateProduct />} />
+              
               <Route path='carts' element={<Cart />} />
 
               <Route path='wish' element={<Wish />} />
@@ -97,6 +105,7 @@ function App() {
               <Route path="/product/:id" element={<ProductDetails />} />
               <Route path='featuredProduct/:id' element={<SpecialDetails />} />
               <Route path='onlineProduct/:id' element={<OnlineDetails />} />
+              <Route path='offerProduct/:id' element={<OfferDetails />} />
               <Route path="/cart" element={<YourCart />} />
               <Route path="/profile" element={<Profile />} />
             </Route>

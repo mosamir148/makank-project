@@ -4,9 +4,9 @@ const WithoutRegister = require("../models/WithoutRegister");
 // إضافة منتج للكارت (عادي، مميز، أو أونلاين)
 exports.addToCart = async (req, res) => {
   try {
-    const { userId, guestId, productId, featuredProductId, onlineProductId, quantity } = req.body;
+    const { userId, guestId, productId, featuredProductId,offerProductId, onlineProductId, quantity } = req.body;
 
-    if (!productId && !featuredProductId && !onlineProductId) {
+    if (!productId && !featuredProductId && !onlineProductId && !offerProductId) {
       return res.status(400).json({ message: "Product ID, FeaturedProduct ID or OnlineProduct ID is required" });
     }
 
@@ -18,6 +18,7 @@ exports.addToCart = async (req, res) => {
     if (productId) query.product = productId;
     if (featuredProductId) query.featuredProduct = featuredProductId;
     if (onlineProductId) query.onlineProduct = onlineProductId;
+    if (offerProductId) query.offerProduct = offerProductId;
     if (userId) query.user = userId;
     if (guestId) query.guest = guestId;
 
@@ -33,6 +34,7 @@ exports.addToCart = async (req, res) => {
         product: productId || undefined,
         featuredProduct: featuredProductId || undefined,
         onlineProduct: onlineProductId || undefined,
+        offerProduct: offerProductId || undefined,
         quantity: quantity || 1,
         status: "Pending",
       });
@@ -43,12 +45,13 @@ exports.addToCart = async (req, res) => {
       { path: "product", select: "title description brand category price image" },
       { path: "featuredProduct", select: "title description brand category price image" },
       { path: "onlineProduct", select: "title description brand category price image" },
+      { path: "offerProduct", select: "title description brand category price image  startDate endDate" },
       { path: "user", select: "username email phone" },
       { path: "guest", select: "username email phone address" },
     ]);
 
     // دمج المنتج العادي والمميز والأونلاين في حقل واحد للفرونت
-    const unifiedProduct = cartItem.product || cartItem.featuredProduct || cartItem.onlineProduct || null;
+    const unifiedProduct = cartItem.product || cartItem.featuredProduct || cartItem.onlineProduct || cartItem.offerProduct  || null;
 
     res.status(201).json({
       _id: cartItem._id,
@@ -78,6 +81,7 @@ exports.getUserCart = async (req, res) => {
       .populate("product", "title description brand category price image")
       .populate("featuredProduct", "title description brand category price image")
       .populate("onlineProduct", "title description brand category price image")
+      .populate("offerProduct", "title description brand category price image startDate endDate")
       .populate("user", "username email phone");
 
     cart = cart.map(item => ({
@@ -88,7 +92,7 @@ exports.getUserCart = async (req, res) => {
       status: item.status,
       createdAt: item.createdAt,
       updatedAt: item.updatedAt,
-      product: item.product || item.featuredProduct || item.onlineProduct || null,
+      product: item.product || item.featuredProduct || item.onlineProduct || item.offerProduct  || null,
     }));
 
     res.status(200).json(cart);
@@ -105,6 +109,7 @@ exports.getAllCarts = async (req, res) => {
       .populate("product", "title description brand category price image")
       .populate("featuredProduct", "title description brand category price image")
       .populate("onlineProduct", "title description brand category price image")
+      .populate("offerProduct", "title description brand category price image startDate endDate")
       .populate("user", "username email phone address")
       .populate("guest", "username email phone address");
 
@@ -116,7 +121,7 @@ exports.getAllCarts = async (req, res) => {
       status: item.status,
       createdAt: item.createdAt,
       updatedAt: item.updatedAt,
-      product: item.product || item.featuredProduct || item.onlineProduct || null,
+      product: item.product || item.featuredProduct  || item.onlineProduct ||  item.offerProduct || null,
     }));
 
     res.status(200).json(carts);

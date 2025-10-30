@@ -19,8 +19,8 @@ exports.CreateProduct = async (req, res) => {
       image: req.files?.image ? req.files.image[0].path : null,
       images: req.files?.images ? req.files.images.map(file => file.path) : []
     });
-console.log("BODY:", req.body);
-console.log("FILES:", req.files);
+
+
     await NewProduct.save();
 
     res.status(201).json({

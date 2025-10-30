@@ -22,6 +22,10 @@ const cartSchema = new mongoose.Schema(
       type:  mongoose.Schema.Types.ObjectId,
       ref: "OnlineProduct",
     },
+    offerProduct: {
+      type:  mongoose.Schema.Types.ObjectId,
+      ref: "OfferProduct",
+    },
     quantity: {
       type: Number,
       default: 1,

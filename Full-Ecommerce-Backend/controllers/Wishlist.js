@@ -1,20 +1,21 @@
 const Wishlist = require("../models/Wishlist");
 
-// إضافة منتج للـWishlist (عادي، مميز، أو أونلاين)
+
 exports.addToWishlist = async (req, res) => {
   try {
     console.log("Wishlist request body:", req.body);
-    const { userId, productId, featuredProductId, onlineProductId } = req.body;
+    const { userId, productId, featuredProductId, onlineProductId ,offerProductId } = req.body;
 
-    if (!userId || (!productId && !featuredProductId && !onlineProductId)) {
+    if (!userId || (!productId && !featuredProductId && !onlineProductId && !offerProductId)) {
       return res.status(400).json({ message: "userId and at least one productId are required" });
     }
 
-    // query للتحقق من وجود العنصر مسبقًا
+
     let query = { user: userId };
     if (productId) query.product = productId;
     if (featuredProductId) query.featuredProduct = featuredProductId;
     if (onlineProductId) query.onlineProduct = onlineProductId;
+    if (offerProductId) query.offerProduct = offerProductId;
 
     let item = await Wishlist.findOne(query);
     if (item) {
@@ -26,9 +27,10 @@ exports.addToWishlist = async (req, res) => {
       product: productId || undefined,
       featuredProduct: featuredProductId || undefined,
       onlineProduct: onlineProductId || undefined,
+      offerProduct: offerProductId || undefined,
     });
 
-    await item.populate("product featuredProduct onlineProduct user", "title username email phone");
+    await item.populate("product featuredProduct onlineProduct offerProduct user", "title username email phone startDate endDate");
 
     res.status(201).json(item);
   } catch (error) {
@@ -40,7 +42,7 @@ exports.addToWishlist = async (req, res) => {
   }
 };
 
-// عرض Wishlist الخاص باليوزر
+
 exports.getUserWishlist = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -49,6 +51,7 @@ exports.getUserWishlist = async (req, res) => {
       .populate("product", "title category brand description price image")
       .populate("featuredProduct", "title category brand description price image")
       .populate("onlineProduct", "title category brand description price image")
+      .populate("offerProduct", "title category brand description price image startDate endDate")
       .populate("user", "username email phone");
 
     res.status(200).json(wishlist);
@@ -58,13 +61,14 @@ exports.getUserWishlist = async (req, res) => {
   }
 };
 
-// عرض كل الـWishlists (لـAdmin)
+
 exports.getAllWishlists = async (req, res) => {
   try {
     const wishlists = await Wishlist.find()
       .populate("product")
       .populate("featuredProduct")
       .populate("onlineProduct")
+      .populate("offerProduct")
       .populate("user", "username email phone");
 
     res.status(200).json(wishlists);

@@ -21,6 +21,7 @@ const Sidebar = ({ active }) => {
     { name: "سلة الرغبات", key: "wish", subMenu: [] },
     { name: "منتجات مميزة", key: "featured-products", subMenu: ["add-featured-product"] },
     { name: "حصري على المتجر الإلكتروني", key: "online-products", subMenu: ["add-online-product"] },
+    { name: " عروض خاصه", key: "offer-products", subMenu: ["add-offer-product"] },
   ];
 
   return (

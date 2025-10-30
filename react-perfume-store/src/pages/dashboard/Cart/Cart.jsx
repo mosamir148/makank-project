@@ -89,29 +89,29 @@ return ( <div className="orders-container"> <h1 className="orders-title">لوح�
             {o.user ? o.user.email : o.guest?.username || "زائر"}
           </span>
 
-  {/* نوع المستخدم */}
-  <span style={{ fontSize: "12px", fontWeight: "bold", color: o.user ? "green" : "orange" }}>
-    {o.user ? "مسجل" : "زائر"}
-  </span>
 
-  <button
-    onClick={() =>
-      setSelectedUser(
-        o.user
-          ? o.user
-          : o.guest || {
-              username: "زائر",
-              phone: "—",
-              address: "—",
-              email: "—",
+          <span style={{ fontSize: "12px", fontWeight: "bold", color: o.user ? "green" : "orange" }}>
+            {o.user ? "مسجل" : "زائر"}
+          </span>
+
+          <button
+            onClick={() =>
+              setSelectedUser(
+                o.user
+                  ? o.user
+                  : o.guest || {
+                      username: "زائر",
+                      phone: "—",
+                      address: "—",
+                      email: "—",
+                    }
+              )
             }
-      )
-    }
-    className={`show-btn ${o.user ? "green" : "orange"}`}
-  >
-    عرض
-  </button>
-</div>
+            className={`show-btn ${o.user ? "green" : "orange"}`}
+          >
+            عرض
+          </button>
+        </div>
               </td>
 
               <td>{o.quantity || 1}</td>
@@ -194,14 +194,7 @@ return ( <div className="orders-container"> <h1 className="orders-title">لوح�
             <strong>الخصم:</strong> {selectedProduct.discount}%
           </p>
         )}
-        <p>
-          <strong>تاريخ الإنشاء:</strong>{" "}
-          {new Date(selectedProduct.createdAt).toLocaleString()}
-        </p>
-        <p>
-          <strong>تاريخ التحديث:</strong>{" "}
-          {new Date(selectedProduct.updatedAt).toLocaleString()}
-        </p>
+        
       </div>
     </div>
   )}
