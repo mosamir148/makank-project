@@ -47,6 +47,8 @@
 
 .offer-content {
     padding: 30px;
+    display: flex;
+    flex-direction: column;
 }
 
 .offer-name {
@@ -79,4 +81,11 @@
     font-size: 28px;
     font-weight: 700;
     color: var(--primary-gold);
+}
+
+.offersbtn{
+    margin: 10px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

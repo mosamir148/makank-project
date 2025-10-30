@@ -17,6 +17,7 @@ const CartRoute = require("./routes/Cart");
 const WishRoute = require("./routes/Wishlist");
 const CommentRoute = require("./routes/Comment");
 const withoutRoutes = require("./routes/WithoutRegister");
+const CouponRoute = require("./routes/Coupon");
 
 const app = express();
 app.use(express.json({ limit: "Infinity" })); 
@@ -79,6 +80,7 @@ app.use("/api/cart", CartRoute);
 app.use("/api/wish", WishRoute);
 app.use("/api/comment", CommentRoute);
 app.use("/api/without", withoutRoutes );
+app.use("/api/coupon", CouponRoute);
 
 /* -------------------- 🔹 6- Database -------------------- */
 const MONGODB_URI = process.env.MONGODB_URI;

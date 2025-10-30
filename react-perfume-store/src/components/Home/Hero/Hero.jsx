@@ -1,38 +1,35 @@
 import { useState, useEffect } from "react";
+import { useLang } from "../../../context/LangContext";
 import "./Hero.css";
 
-const slides = [
-  {
-    title: "Luxury Perfumes from Paris",
-    text: "Discover a world of elegance and sophistication",
-    img: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=1920",
-    btnText: "Shop Now",
-  },
-  {
-    title: "Exclusive Tom Ford Collection",
-    text: "Stand out with an unforgettable scent",
-    img: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=1920",
-    btnText: "Discover More",
-  },
-  {
-    title: "Authentic Oriental Scents",
-    text: "A journey through captivating fragrances",
-    img: "https://images.unsplash.com/photo-1588405748880-12d1d2a59d75?w=1920",
-    btnText: "Explore Now",
-  },
-];
-
 const Hero = () => {
+  const { t } = useLang();
+
+  const slides = [
+    {
+      title: t("hero1"),
+      text: t("hero1sub"),
+      img: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=1920",
+      btnText: t("shopNow"),
+    },
+    {
+      title: t("hero2"),
+      text: t("hero2sub"),
+      img: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=1920",
+      btnText: t("discoverMore"),
+    },
+    {
+      title: t("hero3"),
+      text: t("hero3sub"),
+      img: "https://images.unsplash.com/photo-1588405748880-12d1d2a59d75?w=1920",
+      btnText: t("exploreNow"),
+    },
+  ];
+
   const [current, setCurrent] = useState(0);
 
-  const nextSlide = () => {
-    setCurrent((prev) => (prev + 1) % slides.length);
-  };
-
-  const prevSlide = () => {
-    setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
-  };
-
+  const nextSlide = () => setCurrent((prev) => (prev + 1) % slides.length);
+  const prevSlide = () => setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
 
   useEffect(() => {
     const interval = setInterval(nextSlide, 5000);

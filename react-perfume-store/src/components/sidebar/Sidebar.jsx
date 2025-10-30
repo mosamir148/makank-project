@@ -15,13 +15,13 @@ const Sidebar = ({ active }) => {
   const menus = [
     { name: "لوحة التحكم", key: "", subMenu: [] },
     { name: "المستخدمون", key: "user", subMenu: [] },
-    { name: "المنتجات", key: "products", subMenu: ["add-product"] },
     { name: "الطلبات", key: "carts", subMenu: [] },
-    // { name: "بدون تسجيل", key: "without", subMenu: [] },
-    { name: "سلة الرغبات", key: "wish", subMenu: [] },
+    { name: "المنتجات", key: "products", subMenu: ["add-product"] },
     { name: "منتجات مميزة", key: "featured-products", subMenu: ["add-featured-product"] },
     { name: "حصري على المتجر الإلكتروني", key: "online-products", subMenu: ["add-online-product"] },
-    { name: " عروض خاصه", key: "offer-products", subMenu: ["add-offer-product"] },
+    { name: "عروض خاصه", key: "offer-products", subMenu: ["add-offer-product"] },
+    { name: "كوبونات الخصم", key: "coupons", subMenu: [""] },
+    { name: "سلة الرغبات", key: "wish", subMenu: [] },
   ];
 
   return (

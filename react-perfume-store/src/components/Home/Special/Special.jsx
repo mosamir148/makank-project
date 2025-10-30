@@ -5,6 +5,7 @@ import axios from "axios";
 import Loading from "../../Loading/Loading";
 import toast from "react-hot-toast";
 import { userContext } from "../../../context/UserContext";
+import { useLang } from "../../../context/LangContext";
 
 const Special = () => {
   useEffect(() => {
@@ -14,7 +15,7 @@ const Special = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const { user } = useContext(userContext);
-
+  const { t } = useLang();
   const fetchProducts = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/featuredProduct`);
@@ -78,61 +79,60 @@ const Special = () => {
   if (loading) return <Loading />;
 
   return (
-    <section className="featured-products" id="featured-products">
-      <div className="container">
-        <div className="section-header">
-          <h2 className="section-title">Featured Products</h2>
-          <p className="section-subtitle">
-            Our special selection of the finest fragrances
-          </p>
-        </div>
+  <section className="featured-products" id="featured-products">
+  <div className="container">
+    <div className="section-header">
+      <h2 className="section-title">{t("featuredProducts")}</h2>
+      <p className="section-subtitle">{t("featuredProductsSub")}</p>
+    </div>
 
-        <div className="products-grid">
-          {data.map((product) => (
-            <div
-              key={product._id}
-              className="product-card"
-              data-aos="zoom-in"
-              data-aos-delay={product.delay}
-            >
-              <div className="product-badge">{product.discount} EGY</div>
+    <div className="products-grid">
+      {data.map((product) => (
+        <div
+          key={product._id}
+          className="product-card"
+          data-aos="zoom-in"
+          data-aos-delay={product.delay}
+        >
+          <div className="product-badge">{product.discount} EGY</div>
 
-              <div
-                className="product-image"
-                style={{ backgroundImage: `url(${product.image})` }}
-              ></div>
+          <div
+            className="product-image"
+            style={{ backgroundImage: `url(${product.image})` }}
+          ></div>
 
-              <div className="product-content">
-                <h3 className="product-name">{product.title}</h3>
-                <p className="product-category">{product.category}</p>
+          <div className="product-content">
+            <h3 className="product-name">{product.title}</h3>
+            <p className="product-category">{product.category}</p>
 
-                <div>
-                  <p className="featured-product-description">
-                    {product.description}
-                  </p>
-                </div>
-
-                <div className="product-footer">
-                  <span className="product-price">{product.price}</span>
-                  <a
-                    href={`/featuredProduct/${product._id}`}
-                    className="btn btn-secondary"
-                  >
-                    View Details
-                  </a>
-                  <button
-                    className="btn btn-secondary"
-                    onClick={() => AddToWish(product)}
-                  >
-                    Add to Wish ❤️
-                  </button>
-                </div>
-              </div>
+            <div>
+              <p className="featured-product-description">
+                {product.description}
+              </p>
             </div>
-          ))}
+
+            <div className="product-footer">
+              <span className="product-price">{product.price}</span>
+              <a
+                href={`/featuredProduct/${product._id}`}
+                className="btn btn-secondary"
+              >
+                {t("viewDetails")}
+              </a>
+              <button
+                className="btn btn-secondary"
+                onClick={() => AddToWish(product)}
+              >
+                {t("addToCart")}
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
-    </section>
+      ))}
+    </div>
+  </div>
+</section>
+
   );
 };
 

@@ -74,7 +74,12 @@ return ( <div className="orders-container"> <h1 className="orders-title">لوح�
                   <span>{o.product?.title || "—"}</span>
                   {o.product && (
                     <button
-                      onClick={() => setSelectedProduct(o.product)}
+                      onClick={() =>setSelectedProduct({
+                      ...o.product,
+                      discount: o.discount,
+                      finalPrice: o.finalPrice,
+                      couponCode: o.couponCode,
+                    })}
                       className="show-btn blue"
                     >
                       عرض
@@ -138,38 +143,38 @@ return ( <div className="orders-container"> <h1 className="orders-title">لوح�
   </div>
 
   {/* 🔵 نافذة المستخدم */}
-  {selectedUser && (
-    <div className="modal">
-      <div className="modal-header">
-        <h3>تفاصيل المستخدم</h3>
-        <button onClick={() => setSelectedUser(null)}>✕</button>
-      </div>
-      <div className="modal-body">
-        <p>
-          <strong>الاسم:</strong> {selectedUser.username || "—"}
-        </p>
-        <p>
-          <strong>الهاتف:</strong> {selectedUser.phone || "—"}
-        </p>
-        <p>
-          <strong>العنوان:</strong> {selectedUser.address || "—"}
-        </p>
-        <p>
-          <strong>البريد الإلكتروني:</strong> {selectedUser.email || "—"}
-        </p>
-        {selectedUser.createdAt && (
+    {selectedUser && (
+      <div className="modals">
+        <div className="modal-header">
+          <h3>تفاصيل المستخدم</h3>
+          <button onClick={() => setSelectedUser(null)}>✕</button>
+        </div>
+        <div className="modal-body">
           <p>
-            <strong>أنشئ في:</strong>{" "}
-            {new Date(selectedUser.createdAt).toLocaleString()}
+            <strong>الاسم:</strong> {selectedUser.username || "—"}
           </p>
-        )}
+          <p>
+            <strong>الهاتف:</strong> {selectedUser.phone || "—"}
+          </p>
+          <p>
+            <strong>العنوان:</strong> {selectedUser.address || "—"}
+          </p>
+          <p>
+            <strong>البريد الإلكتروني:</strong> {selectedUser.email || "—"}
+          </p>
+          {selectedUser.createdAt && (
+            <p>
+              <strong>أنشئ في:</strong>{" "}
+              {new Date(selectedUser.createdAt).toLocaleString()}
+            </p>
+          )}
+        </div>
       </div>
-    </div>
-  )}
+    )}
 
   {/* 🔵 نافذة المنتج */}
   {selectedProduct && (
-    <div className="modal">
+    <div className="modals">
       <div className="modal-header">
         <h3>تفاصيل المنتج</h3>
         <button onClick={() => setSelectedProduct(null)}>✕</button>
@@ -189,11 +194,23 @@ return ( <div className="orders-container"> <h1 className="orders-title">لوح�
         <p>
           <strong>السعر:</strong> {selectedProduct.price} ج.م
         </p>
-        {selectedProduct.discount && (
-          <p>
-            <strong>الخصم:</strong> {selectedProduct.discount}%
-          </p>
-        )}
+        {selectedProduct.discount > 0 ? (
+          <>
+            <p>
+              <strong>كود الخصم:</strong> {selectedProduct.couponCode || "—"}
+            </p>
+            <p>
+              <strong>نسبة الخصم:</strong> {selectedProduct.discount} ج.م
+            </p>
+            <p>
+              <strong>السعر بعد الخصم:</strong> {selectedProduct.price - selectedProduct.discount } ج.م
+            </p>
+          </>
+          ) : (
+            <p>
+              <strong>السعر النهائي:</strong> {selectedProduct.price} ج.م
+            </p>
+          )}
         
       </div>
     </div>

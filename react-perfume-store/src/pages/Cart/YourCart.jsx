@@ -266,6 +266,8 @@ const AddAllToCart = async ({ userId, guestId }) => {
         userId: userId || undefined,
         guestId: guestId || undefined,
         quantity: item.quantity || 1,
+        couponCode: couponCode || null, 
+        discount: discount || 0,  
       };
 
       // ✅ تحديد النوع الصحيح حسب الـ type
@@ -339,7 +341,9 @@ const handleGuestSubmit = async (e) => {
         ...guestData,
         //  guestId, 
         productId: product._id,
-        quantity: item.quantity || 1
+        quantity: item.quantity || 1,
+        couponCode: couponCode || null,
+        discount: discount || 0,  
       };
 
       await axios.post(`${BASE_URL}/without/withoutOrder`, payload, {
@@ -361,12 +365,35 @@ const handleGuestSubmit = async (e) => {
   }
 };
 
+// COUPON
+const [couponCode, setCouponCode] = useState("");
+const [discount, setDiscount] = useState(0);
+const applyCoupon = async () => {
+  if (!couponCode) return toast("من فضلك أدخل كود الكوبون");
+
+  try {
+    const res = await axios.post(`${BASE_URL}/coupon/validate`, { code: couponCode });
+    const coupon = res.data.coupon;
+
+    if (coupon.discountType === "percent") {
+      setDiscount((total * coupon.discountValue) / 100);
+    } else {
+      setDiscount(coupon.discountValue);
+    }
+
+    toast.success(`✅ تم تطبيق الكوبون (${coupon.code}) بنجاح!`);
+  } catch (err) {
+    toast.error(err.response?.data?.message || "كود غير صالح");
+    setDiscount(0);
+  }
+};
 
 
-  const Subtotal = cart.reduce(
+  const totalAfterDiscount = cart.reduce(
     (acc, cur) => acc + (cur.product?.price || cur.product.onlineProduct?.price || cur.product.featuredProduct?.price || cur.product.offerProduct?.price || 0) * (cur.quantity || 1),
     0
   );
+  const total = totalAfterDiscount - discount
 
   
 const [timers, setTimers] = useState({});
@@ -484,25 +511,69 @@ const [timers, setTimers] = useState({});
         )}
       </div>
 
+          {/* <div className="coupon-section">
+              <h3>🎟️ كود الخصم</h3>
+              <div className="coupon-box">
+                <input
+                  type="text"
+                  placeholder="أدخل كود الخصم هنا"
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value)}
+                />
+                <button onClick={applyCoupon}>تطبيق</button>
+              </div>
+
+              {discount > 0 && (
+                <p className="discount-info">
+                  ✅ تم تطبيق خصم قدره{" "}
+                  <strong>
+                    {discount.toFixed(2)} جنيه
+                  </strong>
+                </p>
+              )}
+
+  
+          </div> */}
+
       <div className="cart-summary">
-        <div className="cart-title">
-          <p>
-            CART <span>TOTALS</span>
-          </p>
-          <div className="line"></div>
-        </div>
+  <h3>ملخص السلة</h3>
 
-        <div className="summary-details">
-          <div>
-            <p>Total</p>
-            <p>${Subtotal.toFixed(2)}</p>
-          </div>
-        </div>
+  {/* 🧾 السعر قبل الخصم */}
+  <p className="summary-item">
+    <span>الإجمالي الفرعي:</span>
+    <span>{total.toFixed(2)} EGP</span>
+  </p>
 
-        <button onClick={handleCheckout} className="checkout-btn">
-          Proceed to Checkout
-        </button>
-      </div>
+  {/* 🎟️ إدخال كوبون الخصم */}
+  <div className="coupon-box">
+    <input
+      type="text"
+      className="coupon-input"
+      placeholder="أدخل كود الخصم هنا"
+      value={couponCode}
+      onChange={(e) => setCouponCode(e.target.value)}
+    />
+    <button className="coupon-btn" onClick={applyCoupon}>
+      تطبيق الكوبون
+    </button>
+  </div>
+
+  {/* 💰 إظهار الخصم إن وُجد */}
+  {discount > 0 && (
+    <p className="summary-item discount">
+      <span>الخصم:</span>
+      <span>- {discount.toFixed(2)} EGP</span>
+    </p>
+  )}
+
+  {/* 🧮 الإجمالي بعد الخصم */}
+  <p className="summary-item total">
+    <strong>الإجمالي:</strong>
+    <strong>{(total - discount).toFixed(2)} EGP</strong>
+  </p>
+
+  <button onClick={handleCheckout} className="checkout-btn">إتمام الشراء</button>
+</div>
 
       {showPopup && (
         <div className="popup-overlay">

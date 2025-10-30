@@ -45,56 +45,57 @@ const AddOnlineProduct = () => {
   };
 
   return (
-    <section className="add-product-section">
-      <h2 className="add-product-title">Add New Online Product</h2>
-      <form className="add-product-form" onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label>Product Name</label>
-          <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Enter product name" required />
-        </div>
+   <section className="add-product-section">
+  <h2 className="add-product-title">إضافة منتج أونلاين جديد</h2>
+  <form className="add-product-form" onSubmit={handleSubmit}>
+    <div className="form-group">
+      <label>اسم المنتج</label>
+      <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="أدخل اسم المنتج" required />
+    </div>
 
-        <div className="form-grid">
-          <div className="form-group">
-            <label>Price</label>
-            <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Enter price" required />
-          </div>
-          <div className="form-group">
-            <label>Discount</label>
-            <input type="number" value={discount} onChange={(e) => setDiscount(e.target.value)} placeholder="Enter discount" />
-          </div>
-        </div>
+    <div className="form-grid">
+      <div className="form-group">
+        <label>السعر</label>
+        <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="أدخل السعر" required />
+      </div>
+      <div className="form-group">
+        <label>التخفيض</label>
+        <input type="number" value={discount} onChange={(e) => setDiscount(e.target.value)} placeholder="أدخل قيمة التخفيض" />
+      </div>
+    </div>
 
-        <div className="form-group">
-          <label>Category</label>
-          <input type="text" value={category} onChange={(e) => setCategory(e.target.value)} placeholder="Enter category" required />
-        </div>
+    <div className="form-group">
+      <label>الفئة</label>
+      <input type="text" value={category} onChange={(e) => setCategory(e.target.value)} placeholder="أدخل الفئة" required />
+    </div>
 
-        <div className="form-group">
-          <label>Brand</label>
-          <input type="text" value={brand} onChange={(e) => setBrand(e.target.value)} placeholder="Enter brand" required />
-        </div>
+    <div className="form-group">
+      <label>الماركة</label>
+      <input type="text" value={brand} onChange={(e) => setBrand(e.target.value)} placeholder="أدخل الماركة" required />
+    </div>
 
-        <div className="form-group">
-          <label>Description</label>
-          <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Enter product description" rows="4" />
-        </div>
+    <div className="form-group">
+      <label>الوصف</label>
+      <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="أدخل وصف المنتج" rows="4" />
+    </div>
 
-        <div className="form-group">
-          <label>Main Image</label>
-          <input type="file" accept="image/*" onChange={(e) => setImage(e.target.files[0])} required />
-        </div>
+    <div className="form-group">
+      <label>الصورة الأساسية</label>
+      <input type="file" accept="image/*" onChange={(e) => setImage(e.target.files[0])} required />
+    </div>
 
-        <div className="form-group">
-          <label>Gallery Images</label>
-          <input type="file" accept="image/*" multiple onChange={(e) => {
-            const selectedFiles = Array.from(e.target.files);
-            setImages(prev => [...prev, ...selectedFiles]);
-          }} />
-        </div>
+    <div className="form-group">
+      <label>صور المعرض</label>
+      <input type="file" accept="image/*" multiple onChange={(e) => {
+        const selectedFiles = Array.from(e.target.files);
+        setImages(prev => [...prev, ...selectedFiles]);
+      }} />
+    </div>
 
-        <button type="submit" className="submit-btn">Add Product</button>
-      </form>
-    </section>
+    <button type="submit" className="submit-btn">إضافة المنتج</button>
+  </form>
+</section>
+
   );
 };
 

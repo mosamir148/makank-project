@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import { BASE_URL } from "../../../assets/url";
 import { userContext } from "../../../context/UserContext";
 import { RiShoppingCart2Line } from "react-icons/ri";
+import { useLang } from "../../../context/LangContext";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -17,6 +18,7 @@ const Header = () => {
   const [popupOpen, setPopupOpen] = useState(false);
   const [themeMode, setThemeMode] = useState("system"); // light, dark, system
 
+  // LOGOUT
   const navigate = useNavigate()
    const handleLogOut = async ()=>{
         try{
@@ -29,7 +31,8 @@ const Header = () => {
         }
     }
     
- const fetchCart = async () => {
+    // CART
+  const fetchCart = async () => {
   try {
     let dbCount = 0;
     let localCount = 0;
@@ -64,7 +67,7 @@ const Header = () => {
     console.log("❌ fetchCart error:", err);
     setCartCount(0);
   }
-};
+  };
 
  
   useEffect(() => {
@@ -78,7 +81,7 @@ const Header = () => {
     };
   }, [user]);
 
-
+  // DARK LIGHT MODE
   const getSystemPreference = () => window.matchMedia("(prefers-color-scheme: dark)").matches;
 
   useEffect(() => {
@@ -141,6 +144,10 @@ const Header = () => {
       }
     }
   };
+
+  // LANG
+  const { lang, setLang, t } = useLang();
+
   return (
     <header className="header" id="header">
       <div className="container">
@@ -161,7 +168,7 @@ const Header = () => {
                     isActive ? "nav-link active" : "nav-link"
                   }
                 >
-                  Home
+                  {t("home")}
                 </NavLink>
                 </li>
                 <li>
@@ -171,7 +178,7 @@ const Header = () => {
                     isActive ? "nav-link active" : "nav-link"
                   }
                 >
-                  Products
+                   {t("products")}
                 </NavLink>
                 </li>
                 <li>
@@ -179,7 +186,7 @@ const Header = () => {
                    smooth to="/#special-offers"
                    className="nav-link"
                 >
-                  Special Offers
+                  {t("specialOffers")}
                 </HashLink>
                 </li>
                 <li>
@@ -187,7 +194,7 @@ const Header = () => {
                    smooth to="/#categories"
                    className="nav-link"
                 >
-                  Category
+                  {t("category")}
                 </HashLink>
                 </li>
                 
@@ -196,7 +203,7 @@ const Header = () => {
                     smooth to="/#featured-products"
                    className="nav-link"
                 >
-                  Featured Products
+                  {t("featuredProducts")}
                 </HashLink>
                 </li>
                
@@ -207,7 +214,7 @@ const Header = () => {
                     isActive ? "nav-link active" : "nav-link"
                   }
                 >
-                  About Us
+                  {t("about")}
                 </NavLink>
                 </li>
                 <li>
@@ -217,7 +224,7 @@ const Header = () => {
                     isActive ? "nav-link active" : "nav-link"
                   }
                 >
-                  Contact
+                  {t("contact")}
                 </NavLink>
                 </li>
                 {user && user.role === "user" && (
@@ -228,7 +235,7 @@ const Header = () => {
                         isActive ? "nav-link active" : "nav-link"
                       }
                     >
-                      Profile
+                      {t("profile")}
                     </NavLink>
                   </li>
                 )}
@@ -240,7 +247,7 @@ const Header = () => {
                        className={({ isActive }) =>
                           isActive ? "nav-link active" : "nav-link"
                         }
-                    >Dashboard</NavLink>                </li>
+                    >{t("dashboard")}</NavLink>                </li>
                 }
 
                 
@@ -253,7 +260,7 @@ const Header = () => {
                     isActive ? "nav-link " : "nav-link"
                   }
                 >
-                  LogOut
+                  {t("logout")}
                 </NavLink>
                 :
                 <NavLink
@@ -262,7 +269,7 @@ const Header = () => {
                     isActive ? "nav-link active" : "nav-link"
                   }
                 >
-                  Login
+                  {t("login")}
                 </NavLink>
                   }
                 </li>
@@ -287,7 +294,9 @@ const Header = () => {
           {/* الأزرار */}
 
           <div className="header-actions">
-            <button className="lang-toggle" id="langToggle">AR</button>
+            <button onClick={()=>setLang(lang === "ar" ? "en": "ar")} className="lang-toggle" id="langToggle">
+              {lang === "ar" ? "EN" : "AR"}
+            </button>
 
             {/* DARK LIGHT SYSTEM MODE */}
           
@@ -300,28 +309,28 @@ const Header = () => {
               {themeMode === "dark" ? <FaSun size={20} /> : <FaMoon size={20} />}
             </button>
 
-  {popupOpen && (
-    <div className="theme-popup">
-      <div
-        className={`theme-option ${themeMode === "light" ? "active" : ""}`}
-        onClick={() => changeTheme("light")}
-      >
-        Light {themeMode === "light" && <span className="check">✓</span>}
-      </div>
-      <div
-        className={`theme-option ${themeMode === "dark" ? "active" : ""}`}
-        onClick={() => changeTheme("dark")}
-      >
-        Dark {themeMode === "dark" && <span className="check">✓</span>}
-      </div>
-      <div
-        className={`theme-option ${themeMode === "system" ? "active" : ""}`}
-        onClick={() => changeTheme("system")}
-      >
-        System {themeMode === "system" && <span className="check">✓</span>}
-      </div>
-    </div>
-  )}
+            {popupOpen && (
+              <div className="theme-popup">
+                <div
+                  className={`theme-option ${themeMode === "light" ? "active" : ""}`}
+                  onClick={() => changeTheme("light")}
+                >
+                  Light {themeMode === "light" && <span className="check">✓</span>}
+                </div>
+                <div
+                  className={`theme-option ${themeMode === "dark" ? "active" : ""}`}
+                  onClick={() => changeTheme("dark")}
+                >
+                  Dark {themeMode === "dark" && <span className="check">✓</span>}
+                </div>
+                <div
+                  className={`theme-option ${themeMode === "system" ? "active" : ""}`}
+                  onClick={() => changeTheme("system")}
+                >
+                  System {themeMode === "system" && <span className="check">✓</span>}
+                </div>
+              </div>
+            )}
             </div>
 
 

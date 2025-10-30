@@ -3,6 +3,7 @@ import "./Arrival.css";
 import axios from "axios";
 import { BASE_URL } from "../../../assets/url";
 import { Link } from "react-router-dom";
+import { useLang } from "../../../context/LangContext";
 
 const Arrival = () => {
   useEffect(() => {
@@ -10,6 +11,7 @@ const Arrival = () => {
   }, []);
   const [loading, setLoading] = useState(true)
   const [products, setProducts] = useState([])
+  const { t } = useLang();
 
   const fetchProducts = async () => {
     try {
@@ -29,8 +31,8 @@ const Arrival = () => {
     <section className="new-arrivals" id="new-arrivals">
       <div className="container">
         <div className="section-header">
-          <h2 className="section-title">وصل حديثاً</h2>
-          <p className="section-subtitle">أحدث إصداراتنا من العطور الفاخرة</p>
+          <h2 className="section-title">{t("Newarrival")}</h2>
+          <p className="section-subtitle">{t("NewarrivalSub")}</p>
         </div>
 
  <div className="arrivals-grid">
@@ -43,13 +45,13 @@ const Arrival = () => {
                   
                 </div>
                 <div className="product-content">
-                  <span className="new-badge">جديد</span>
+                  <span className="new-badge">{t("bestsellerSubN")}</span>
                   <h3 >{p.title}</h3>
                   <p className="product-category">{p.category}</p>
                   <p className="product-description">{p.description}</p>
                   <div className="product-footer">
                     <p className="product-price">${p.price}</p>
-                    <Link to={`/product/${p._id}`} className="buy-btn">Buy Now</Link>
+                    <Link to={`/product/${p._id}`} className="buy-btn">{t("shopNow")}</Link>
                   </div>
                 </div>
               </div>

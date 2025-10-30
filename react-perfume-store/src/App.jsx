@@ -35,25 +35,28 @@ import OfferAllProduct from './pages/dashboard/OfferProduct/AllProduct/OfferAllP
 import OfferAddProduct from './pages/dashboard/OfferProduct/AddProduct/OfferAddProduct'
 import OfferUpdateProduct from './pages/dashboard/OfferProduct/UpdateProduct/OfferUpdateProduct'
 import OfferDetails from './components/Home/Offer/OfferDetails'
+import AllCoupon from './pages/dashboard/Coupon/AllCoupon'
+
+
 
 function App() {
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
 
-  useEffect(()=>{
-    setTimeout(()=>{
-      setLoading(false)
-    },2000)
-    return () => clearTimeout();
-  },[])
+  // useEffect(()=>{
+  //   setTimeout(()=>{
+  //     setLoading(false)
+  //   },2000)
+  //   return () => clearTimeout();
+  // },[])
 
-   if (loading) {
-    return (
-      <div className="splash-loading">
-        <img src={logo} alt="Logo" className="splash-logo" />
-        <Loading />
-      </div>
-    );
-  }
+  //  if (loading) {
+  //   return (
+  //     <div className="splash-loading">
+  //       <img src={logo} alt="Logo" className="splash-logo" />
+  //       <Loading />
+  //     </div>
+  //   );
+  // }
 
   return (
     <>
@@ -82,6 +85,8 @@ function App() {
               <Route path='offer-products' element={<OfferAllProduct />} />
               <Route path='offer-products/add-offer-product' element={<OfferAddProduct />} />
               <Route path='offer-products/update-product/:id' element={<OfferUpdateProduct />} />
+              
+              <Route path='coupons' element={<AllCoupon />} />
               
               <Route path='carts' element={<Cart />} />
 

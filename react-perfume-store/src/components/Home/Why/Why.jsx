@@ -1,35 +1,38 @@
+import { useLang } from '../../../context/LangContext';
 import './Why.css';
 
-const features = [
-  {
-    icon: "🚚",
-    title: "Free Shipping",
-    desc: "Free delivery on all orders over $133", // بدل ر.س بالدولار لو حبيت
-  },
-  {
-    icon: "🎁",
-    title: "Luxury Packaging",
-    desc: "Each product comes in premium gift-ready packaging",
-  },
-  {
-    icon: "💬",
-    title: "Customer Support",
-    desc: "Dedicated team available 24/7 to assist you",
-  },
-  {
-    icon: "✓",
-    title: "Quality Guarantee",
-    desc: "100% authentic products with return guarantee",
-  },
-];
-
 const Why = () => {
+  const { t } = useLang();
+
+  const features = [
+    {
+      icon: "🚚",
+      title: t("FreeShipping"),
+      desc: t("FreeShippingSub"),
+    },
+    {
+      icon: "🎁",
+      title: t("LuxuryPackaging"),
+      desc: t("LuxuryPackagingSub"),
+    },
+    {
+      icon: "💬",
+      title: t("CustomerSupport"),
+      desc: t("CustomerSupportSub"),
+    },
+    {
+      icon: "✓",
+      title: t("QualityGuarantee"),
+      desc: t("QualityGuaranteeSub"),
+    },
+  ];
+
   return (
     <section className="why-choose-us">
       <div className="container">
         <div className="section-header">
-          <h2 className="section-title">Why Choose Us</h2>
-          <p className="section-subtitle">Features that make us the best choice</p>
+          <h2 className="section-title">{t("WhyChooseUs")}</h2>
+          <p className="section-subtitle">{t("WhyChooseUsSub")}</p>
         </div>
 
         <div className="features-grid">

@@ -1,7 +1,10 @@
 import React, { useEffect } from "react";
 import "./Sales.css";
+import { useLang } from "../../../context/LangContext";
 
 const Sales = () => {
+    const { t } = useLang();
+
   useEffect(() => {
     AOS.init({ duration: 1000 });
   }, []);
@@ -43,8 +46,8 @@ const Sales = () => {
     <section className="best-sellers" id="best-sellers">
       <div className="container">
         <div className="section-header">
-          <h2 className="section-title">الأكثر مبيعاً</h2>
-          <p className="section-subtitle">العطور المفضلة لدى عملائنا</p>
+          <h2 className="section-title">{t("bestseller")}</h2>
+          <p className="section-subtitle">{t("bestsellerSub")}</p>
         </div>
 
         <div className="bestsellers-grid">

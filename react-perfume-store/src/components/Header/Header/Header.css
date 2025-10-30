@@ -68,7 +68,7 @@
     width: 100%;
 }
 
-/* Header Actions */
+
 .header-actions {
     display: flex;
     gap: 20px;
@@ -98,7 +98,7 @@
     cursor: pointer;
 }
 
-/* Responsive Nav */
+
 @media (max-width: 950px) {
     .nav {
         position: fixed;
@@ -129,7 +129,7 @@
     }
 }
 
-/* Cart Badge */
+
 .cartCount {
     position: absolute;
     top: -10px;
@@ -146,7 +146,7 @@
     font-weight: 600;
 }
 
-/* Theme Toggle Popup */
+
 .theme-popup-wrapper {
     position: relative;
     display: inline-block;
@@ -169,7 +169,7 @@
     background-color: rgba(255,255,255,0.05);
 }
 
-/* Popup Container */
+
 .theme-popup {
     position: absolute;
     top: 120%;
@@ -184,7 +184,16 @@
     transition: var(--transition);
 }
 
-/* Option Items */
+body[dir="ltr"] .theme-popup {
+  right: 0;
+  left: auto;
+}
+
+body[dir="rtl"] .theme-popup {
+  left: 0;
+  right: auto;
+}
+
 .theme-option {
     cursor: pointer;
     padding: 6px 12px;
@@ -203,7 +212,7 @@
     font-weight: 500;
 }
 
-/* Checkmark */
+
 .theme-option .check {
     color: green;
     font-weight: bold;

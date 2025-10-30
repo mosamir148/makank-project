@@ -30,6 +30,8 @@ const cartSchema = new mongoose.Schema(
       type: Number,
       default: 1,
     },
+    couponCode: { type: String },
+    discount: { type: Number, default: 0 },
     status: {
       type: String,
       enum: ["Pending", "Complete", "Failed"],

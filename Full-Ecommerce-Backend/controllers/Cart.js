@@ -1,13 +1,23 @@
 const Cart = require("../models/Cart");
 const WithoutRegister = require("../models/WithoutRegister");
-
-// إضافة منتج للكارت (عادي، مميز، أو أونلاين)
 exports.addToCart = async (req, res) => {
   try {
-    const { userId, guestId, productId, featuredProductId,offerProductId, onlineProductId, quantity } = req.body;
+    const {
+      userId,
+      guestId,
+      productId,
+      featuredProductId,
+      offerProductId,
+      onlineProductId,
+      quantity,
+      couponCode,
+      discount,
+    } = req.body;
 
     if (!productId && !featuredProductId && !onlineProductId && !offerProductId) {
-      return res.status(400).json({ message: "Product ID, FeaturedProduct ID or OnlineProduct ID is required" });
+      return res
+        .status(400)
+        .json({ message: "Product ID, FeaturedProduct ID or OnlineProduct ID is required" });
     }
 
     if (!userId && !guestId) {
@@ -26,6 +36,8 @@ exports.addToCart = async (req, res) => {
 
     if (cartItem) {
       cartItem.quantity += quantity || 1;
+      if (couponCode) cartItem.couponCode = couponCode;
+      if (discount) cartItem.discount = discount;
       await cartItem.save();
     } else {
       cartItem = await Cart.create({
@@ -37,21 +49,32 @@ exports.addToCart = async (req, res) => {
         offerProduct: offerProductId || undefined,
         quantity: quantity || 1,
         status: "Pending",
+        couponCode: couponCode || null,
+        discount: discount || 0,
       });
     }
-
 
     await cartItem.populate([
       { path: "product", select: "title description brand category price image" },
       { path: "featuredProduct", select: "title description brand category price image" },
       { path: "onlineProduct", select: "title description brand category price image" },
-      { path: "offerProduct", select: "title description brand category price image  startDate endDate" },
+      { path: "offerProduct", select: "title description brand category price image startDate endDate" },
       { path: "user", select: "username email phone" },
       { path: "guest", select: "username email phone address" },
     ]);
 
-    // دمج المنتج العادي والمميز والأونلاين في حقل واحد للفرونت
-    const unifiedProduct = cartItem.product || cartItem.featuredProduct || cartItem.onlineProduct || cartItem.offerProduct  || null;
+    const unifiedProduct =
+      cartItem.product ||
+      cartItem.featuredProduct ||
+      cartItem.onlineProduct ||
+      cartItem.offerProduct ||
+      null;
+
+    // ✅ حساب السعر النهائي بعد الخصم
+    let finalPrice = unifiedProduct?.price || 0;
+    if (cartItem.discount > 0) {
+      finalPrice = finalPrice - (finalPrice * cartItem.discount) / 100;
+    }
 
     res.status(201).json({
       _id: cartItem._id,
@@ -62,6 +85,9 @@ exports.addToCart = async (req, res) => {
       createdAt: cartItem.createdAt,
       updatedAt: cartItem.updatedAt,
       product: unifiedProduct,
+      couponCode: cartItem.couponCode || null,
+      discount: cartItem.discount || 0,
+      finalPrice,
     });
   } catch (error) {
     console.error("addToCart error:", error);
@@ -84,16 +110,29 @@ exports.getUserCart = async (req, res) => {
       .populate("offerProduct", "title description brand category price image startDate endDate")
       .populate("user", "username email phone");
 
-    cart = cart.map(item => ({
-      _id: item._id,
-      user: item.user,
-      guest: item.guest,
-      quantity: item.quantity,
-      status: item.status,
-      createdAt: item.createdAt,
-      updatedAt: item.updatedAt,
-      product: item.product || item.featuredProduct || item.onlineProduct || item.offerProduct  || null,
-    }));
+    cart = cart.map((item) => {
+      const product =
+        item.product || item.featuredProduct || item.onlineProduct || item.offerProduct || null;
+
+      let finalPrice = product?.price || 0;
+      if (item.discount > 0) {
+        finalPrice = finalPrice - (finalPrice * item.discount) / 100;
+      }
+
+      return {
+        _id: item._id,
+        user: item.user,
+        guest: item.guest,
+        quantity: item.quantity,
+        status: item.status,
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
+        product,
+        couponCode: item.couponCode || null,
+        discount: item.discount || 0,
+        finalPrice,
+      };
+    });
 
     res.status(200).json(cart);
   } catch (error) {
@@ -102,7 +141,7 @@ exports.getUserCart = async (req, res) => {
   }
 };
 
-// جلب كل الكارتات
+// جلب كل الكارتات (للأدمن)
 exports.getAllCarts = async (req, res) => {
   try {
     let carts = await Cart.find()
@@ -113,16 +152,29 @@ exports.getAllCarts = async (req, res) => {
       .populate("user", "username email phone address")
       .populate("guest", "username email phone address");
 
-    carts = carts.map(item => ({
-      _id: item._id,
-      user: item.user,
-      guest: item.guest,
-      quantity: item.quantity,
-      status: item.status,
-      createdAt: item.createdAt,
-      updatedAt: item.updatedAt,
-      product: item.product || item.featuredProduct  || item.onlineProduct ||  item.offerProduct || null,
-    }));
+    carts = carts.map((item) => {
+      const product =
+        item.product || item.featuredProduct || item.onlineProduct || item.offerProduct || null;
+
+      let finalPrice = product?.price || 0;
+      if (item.discount > 0) {
+        finalPrice = finalPrice - (finalPrice * item.discount) / 100;
+      }
+
+      return {
+        _id: item._id,
+        user: item.user,
+        guest: item.guest,
+        quantity: item.quantity,
+        status: item.status,
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
+        product,
+        couponCode: item.couponCode || null,
+        discount: item.discount || 0,
+        finalPrice,
+      };
+    });
 
     res.status(200).json(carts);
   } catch (error) {

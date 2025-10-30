@@ -1,12 +1,13 @@
+import { useLang } from '../../../context/LangContext';
 import './Newsletter.css';
 import { useState } from 'react';
 
 const Newsletter = () => {
   const [email, setEmail] = useState('');
-
+  const { t } = useLang();
   const handleSubmit = (e) => {
     e.preventDefault();
-    // هنا ممكن تضيف إرسال البريد لمزود الخدمة أو API
+
     alert(`Subscribed with: ${email}`);
     setEmail('');
   };
@@ -15,8 +16,8 @@ const Newsletter = () => {
     <section className="newsletter">
       <div className="container">
         <div className="newsletter-content" data-aos="zoom-in">
-          <h2>Subscribe to Our Newsletter</h2>
-          <p>Get the latest offers and new releases</p>
+          <h2>{t("Newsletter")}</h2>
+          <p>{t("NewsletterSub")}</p>
           <form className="newsletter-form" onSubmit={handleSubmit}>
             <input
               type="email"
@@ -25,7 +26,7 @@ const Newsletter = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            <button type="submit" className="btn btn-primary">Subscribe Now</button>
+            <button type="submit" className="btn btn-primary">{t("SubscribeNow")}</button>
           </form>
         </div>
       </div>

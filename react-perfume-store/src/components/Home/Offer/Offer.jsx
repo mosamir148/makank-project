@@ -5,11 +5,13 @@ import { BASE_URL } from "../../../assets/url"; // عدّل المسار حسب 
 import Loading from "../../Loading/Loading";
 import toast from "react-hot-toast";
 import { userContext } from "../../../context/UserContext";
+import { useLang } from "../../../context/LangContext";
 
 const Offer = () => {
   const [offers, setOffers] = useState([]);
   const [loading, setLoading] = useState(true);
   const {user} = useContext(userContext)
+  const { t } = useLang();
   useEffect(() => {
     const fetchOffers = async () => {
       try {
@@ -71,11 +73,11 @@ const Offer = () => {
   if (loading) return <Loading />
 
   return (
-    <section className="special-offers" id="special-offers">
+     <section className="special-offers" id="special-offers">
       <div className="container">
         <div className="section-header">
-          <h2 className="section-title">Special Offers</h2>
-          <p className="section-subtitle">Exclusive deals for a limited time</p>
+          <h2 className="section-title">{t("specialOffers")}</h2>
+          <p className="section-subtitle">{t("specialOffersSub")}</p>
         </div>
 
         <div className="offers-grid">
@@ -86,11 +88,18 @@ const Offer = () => {
               data-aos="fade-up"
               data-aos-delay={index * 100}
             >
-              <div className="offer-badge">{offer.discount ? `${offer.discount}% OFF` : "Special Offer"}</div>
+              <div className="offer-badge">
+                {offer.discount
+                  ? `${offer.discount}% ${t("off")}`
+                  : t("specialOffer")}
+              </div>
+
               <div
                 className="offer-image"
                 style={{
-                  background: `url('${offer.image || "https://via.placeholder.com/400"}') center/cover`,
+                  background: `url('${
+                    offer.image || "https://via.placeholder.com/400"
+                  }') center/cover`,
                 }}
               ></div>
 
@@ -103,10 +112,12 @@ const Offer = () => {
                 <div className="offer-price">
                   <span className="old-price">${offer.price}</span>
                   <span className="new-price">
-                    ${offer.discount ? (offer.price - (offer.price * offer.discount) / 100).toFixed(2) : offer.price}
+                    $
+                    {offer.discount
+                      ? (offer.price - (offer.price * offer.discount) / 100).toFixed(2)
+                      : offer.price}
                   </span>
                 </div>
-
 
                 <div
                   className="offer-timer"
@@ -126,20 +137,24 @@ const Offer = () => {
                       marginBottom: "5px",
                     }}
                   >
-                    Offer ends in:
+                    {t("offerEndsIn")}
                   </div>
                   <OfferCountdown endDate={offer.endDate} />
                 </div>
 
-                <a href={`/offerProduct/${offer._id}`} className="btn btn-primary" style={{ width: "100%" }}>
-                  Shop Now
+                <a
+                  href={`/offerProduct/${offer._id}`}
+                  className="btn btn-primary offersbtn"
+                >
+                  {t("shopNow")}
                 </a>
+
                 <button
-                    className="btn btn-primary"
-                    onClick={() => AddToWish(offer)}
-                  >
-                    Add to Cart ❤️
-                  </button>
+                  className="btn btn-primary offersbtn"
+                  onClick={() => AddToWish(offer)}
+                >
+                  {t("addToCart")} ❤️
+                </button>
               </div>
             </div>
           ))}

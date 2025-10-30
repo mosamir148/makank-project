@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import './Testimonials.css';
+import { useLang } from '../../../context/LangContext';
 
 const testimonials = [
   {
@@ -27,7 +28,7 @@ const testimonials = [
 
 const Testimonials = () => {
   const [current, setCurrent] = useState(0);
-
+  const { t } = useLang();
   const nextTestimonial = () => {
     setCurrent((prev) => (prev + 1) % testimonials.length);
   };
@@ -45,8 +46,8 @@ const Testimonials = () => {
     <section className="testimonials">
       <div className="container">
         <div className="section-header">
-          <h2 className="section-title">آراء العملاء</h2>
-          <p className="section-subtitle">ما يقوله عملاؤنا عن تجربتهم</p>
+          <h2 className="section-title">{t("CustomerReviews")}</h2>
+          <p className="section-subtitle">{t("CustomerReviewsSub")}</p>
         </div>
 
         <div className="testimonials-slider">

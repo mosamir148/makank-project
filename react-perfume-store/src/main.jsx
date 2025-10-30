@@ -6,14 +6,17 @@ import { BrowserRouter } from 'react-router-dom'
 import UserContextProvider from './context/UserContext.jsx'
 import { Toaster } from 'react-hot-toast'
 import GetProducts from './context/GetProducts.jsx'
+import { LangProvider } from './context/LangContext.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <UserContextProvider>
         <GetProducts>
-          <Toaster position="top-center" />
+          <LangProvider>
+            <Toaster position="top-center" />
             <App />
+          </LangProvider>
         </GetProducts>
       </UserContextProvider>
     </BrowserRouter>
