@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FaBars, FaLaptop, FaMoon, FaSun, FaTimes } from "react-icons/fa";
 import "./Header.css";
 import { HashLink } from "react-router-hash-link";
@@ -154,7 +154,7 @@ const Header = () => {
         <div className="header-content">
           {/* الشعار */}
           <div className="logo">
-                <img src={logo} alt="Luxe Parfum Logo" className="logo-img" />
+                <img src={logo} alt="Luxe Parfum Logo" loading='lazy' className="logo-img" />
           </div>
 
           {/* القائمة */}
@@ -354,4 +354,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default React.memo(Header) 

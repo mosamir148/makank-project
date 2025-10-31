@@ -46,6 +46,7 @@ const Profile = () => {
           {orders.map((item) => (
             <div key={item._id} className="order-card">
               <img
+              loading='lazy'
                 src={item.product?.image || 'https://via.placeholder.com/150'}
                 alt={item.product?.title}
                 className="order-image"
@@ -74,4 +75,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default React.memo(Profile);

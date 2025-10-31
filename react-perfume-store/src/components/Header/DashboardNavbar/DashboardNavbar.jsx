@@ -2,7 +2,7 @@ import { FaBarsProgress } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import logo from "../../../assets/Logo.jpg";
-import { useContext } from "react";
+import React, { useContext } from "react";
 import toast from "react-hot-toast";
 import "./DashboardNavbar.css";
 import { FaBars } from "react-icons/fa";
@@ -44,4 +44,4 @@ const {setUser} = useContext(userContext)
   );
 };
 
-export default DashboardNavbar;
+export default React.memo(DashboardNavbar);

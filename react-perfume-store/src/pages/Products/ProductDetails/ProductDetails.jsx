@@ -167,7 +167,7 @@ const ProductDetails = () => {
               .map((d) => (
                 <Link to={`/product/${d._id}`} key={d._id} className="related-card">
                   <div className="image-box">
-                    <img src={d.image} alt={d.title} crossOrigin="anonymous" />
+                    <img src={d.image} loading='lazy' alt={d.title} crossOrigin="anonymous" />
                   </div>
                   <p className="title">{d.title}</p>
                   <p className="desc">{d.description}</p>
@@ -191,4 +191,4 @@ const ProductDetails = () => {
   );
 };
 
-export default ProductDetails;
+export default React.memo(ProductDetails);

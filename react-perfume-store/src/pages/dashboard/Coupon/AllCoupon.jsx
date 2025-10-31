@@ -206,4 +206,4 @@ const AllCoupon = () => {
   );
 };
 
-export default AllCoupon;
+export default React.memo(AllCoupon);

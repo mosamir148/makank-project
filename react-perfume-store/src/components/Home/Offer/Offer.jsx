@@ -1,5 +1,5 @@
 import "./Offer.css";
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../../assets/url"; // عدّل المسار حسب مشروعك
 import Loading from "../../Loading/Loading";
@@ -207,4 +207,4 @@ const OfferCountdown = ({ endDate }) => {
   );
 };
 
-export default Offer;
+export default React.memo(Offer);

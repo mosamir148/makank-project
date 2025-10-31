@@ -1,5 +1,5 @@
 import "./Sidebar.css";
-import { useState } from "react";
+import React, { useState } from "react";
 import { FaChevronDown, FaChevronRight } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
@@ -61,4 +61,4 @@ const Sidebar = ({ active }) => {
   );
 };
 
-export default Sidebar;
+export default React.memo(Sidebar);

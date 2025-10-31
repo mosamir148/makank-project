@@ -135,6 +135,6 @@ const FeaturedAllProduct = () => {
     </section>
   );
 };
-export default FeaturedAllProduct;
+export default React.memo(FeaturedAllProduct);
 
 

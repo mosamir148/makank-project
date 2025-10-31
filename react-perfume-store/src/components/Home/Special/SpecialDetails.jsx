@@ -153,4 +153,4 @@ const SpecialDetails = () => {
   );
 };
 
-export default SpecialDetails;
+export default React.memo(SpecialDetails);

@@ -190,7 +190,7 @@ const handleDeleteProduct = async (userId) => {
             <button onClick={() => setSelectProduct(false)}>✕</button>
           </div>
           <div className="modal-body">
-            <img src={product.product.image} alt={product.product.name} crossOrigin="anonymous" />
+            <img loading='lazy' src={product.product.image} alt={product.product.name} crossOrigin="anonymous" />
             <p><strong>الاسم:</strong> {product.product.title}</p>
             <p><strong>الوصف:</strong> {product.product.description}</p>
             <p><strong>السعر:</strong> ${product.product.price}</p>
@@ -203,4 +203,4 @@ const handleDeleteProduct = async (userId) => {
   );
 };
 
-export default Without;
+export default React.memo(Without);

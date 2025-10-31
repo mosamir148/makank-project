@@ -11,6 +11,7 @@ import Why from '../../components/Home/Why/Why'
 import Offer from '../../components/Home/Offer/Offer'
 import Testimonials from '../../components/Home/Testimonials/Testimonials'
 import Newsletter from '../../components/Home/Newsletter/Newsletter'
+import React from 'react'
 
 const Home = () => {
   return (
@@ -31,4 +32,4 @@ const Home = () => {
   )
 }
 
-export default Home
+export default React.memo(Home)

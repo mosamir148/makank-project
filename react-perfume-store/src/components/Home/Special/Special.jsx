@@ -136,4 +136,4 @@ const Special = () => {
   );
 };
 
-export default Special;
+export default React.memo(Special);

@@ -43,6 +43,7 @@ const Hero = () => {
           <div
             key={index}
             className={`slide ${index === current ? "active" : ""}`}
+            loading='lazy'
             style={{
               background: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.5)), url('${slide.img}') center/cover`,
             }}

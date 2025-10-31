@@ -1,65 +1,65 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import './App.css'
 import { Routes, Route } from 'react-router-dom'
-import Home from './pages/Home/Home'
-import About from './pages/About/About'
-import Contact from './pages/Contact/Contact'
-import Login from './pages/Login/Login'
-import Register from './pages/Register/Register'
-import Product from './pages/Products/Product/Product'
-import ProductDetails from './pages/Products/ProductDetails/ProductDetails'
 import ProtectedRoute from './Layout/ProtectedRoute/ProtectedRoute'
 import DashboardLayout from './Layout/DashboardLayout/DashboardLayout'
 import PublicLayout from './Layout/PublicLayout/PublicLayout'
-import User from './pages/dashboard/User/User'
-import AllProduct from './pages/dashboard/Product/AllProduct/AllProduct'
-import AddProduct from './pages/dashboard/Product/AddProduct/AddProduct'
-import UpdateProduct from './pages/dashboard/Product/UpdateProduct/UpdateProduct'
-import Cart from './pages/dashboard/Cart/Cart'
-import YourCart from './pages/Cart/YourCart'
-import OverView from './pages/dashboard/OverView/OverView'
-import Wish from './pages/dashboard/Wish/Wish'
 import Loading from './components/Loading/Loading'
 import logo from './assets/Logo.jpg'
-import Without from './pages/dashboard/Without/Without'
-import FeaturedAllProduct from './pages/dashboard/FeaturedProduct/AllProduct/FeaturedAllProduct'
-import FeaturedAddProduct from './pages/dashboard/FeaturedProduct/AddProduct/FeaturedAddProduct'
-import SpecialDetails from './components/Home/Special/SpecialDetails'
-import FeaturedUpdateProduct from './pages/dashboard/FeaturedProduct/UpdateProduct/FeaturedUpdateProduct'
-import OnlineAllProduct from './pages/dashboard/OnlineProduct/AllProduct/OnlineAllProduct'
-import AddOnlineProduct from './pages/dashboard/OnlineProduct/AddProduct/AddOnlineProduct'
-import OnlineUpdateProduct from './pages/dashboard/OnlineProduct/UpdateProduct/OnlineUpdateProduct'
-import OnlineDetails from './components/Home/Online/OnlineDetails'
-import Profile from './pages/Profile/Profile'
-import OfferAllProduct from './pages/dashboard/OfferProduct/AllProduct/OfferAllProduct'
-import OfferAddProduct from './pages/dashboard/OfferProduct/AddProduct/OfferAddProduct'
-import OfferUpdateProduct from './pages/dashboard/OfferProduct/UpdateProduct/OfferUpdateProduct'
-import OfferDetails from './components/Home/Offer/OfferDetails'
-import AllCoupon from './pages/dashboard/Coupon/AllCoupon'
+
+const Home = lazy(() => import("./pages/Home/Home"));
+const About = lazy(() => import("./pages/About/About"));
+const Contact = lazy(() => import("./pages/Contact/Contact"));
+const Login = lazy(() => import("./pages/Login/Login"));
+const Register = lazy(() => import("./pages/Register/Register"));
+const Product = lazy(() => import("./pages/Products/Product/Product"));
+const ProductDetails = lazy(() => import("./pages/Products/ProductDetails/ProductDetails"));
+const User = lazy(() => import("./pages/dashboard/User/User"));
+const AllProduct = lazy(() => import("./pages/dashboard/Product/AllProduct/AllProduct"));
+const AddProduct = lazy(() => import("./pages/dashboard/Product/AddProduct/AddProduct"));
+const UpdateProduct = lazy(() => import("./pages/dashboard/Product/UpdateProduct/UpdateProduct"));
+const Cart = lazy(() => import("./pages/dashboard/Cart/Cart"));
+const YourCart = lazy(() => import("./pages/Cart/YourCart"));
+const OverView = lazy(() => import("./pages/dashboard/OverView/OverView"));
+const Wish = lazy(() => import("./pages/dashboard/Wish/Wish"));
+const FeaturedAllProduct = lazy(() => import("./pages/dashboard/FeaturedProduct/AllProduct/FeaturedAllProduct"));
+const FeaturedAddProduct = lazy(() => import("./pages/dashboard/FeaturedProduct/AddProduct/FeaturedAddProduct"));
+const SpecialDetails = lazy(() => import("./components/Home/Special/SpecialDetails"));
+const FeaturedUpdateProduct = lazy(() => import("./pages/dashboard/FeaturedProduct/UpdateProduct/FeaturedUpdateProduct"));
+const OnlineAllProduct = lazy(() => import("./pages/dashboard/OnlineProduct/AllProduct/OnlineAllProduct"));
+const AddOnlineProduct = lazy(() => import("./pages/dashboard/OnlineProduct/AddProduct/AddOnlineProduct"));
+const OnlineUpdateProduct = lazy(() => import("./pages/dashboard/OnlineProduct/UpdateProduct/OnlineUpdateProduct"));
+const OnlineDetails = lazy(() => import("./components/Home/Online/OnlineDetails"));
+const Profile = lazy(() => import("./pages/Profile/Profile"));
+const OfferAllProduct = lazy(() => import("./pages/dashboard/OfferProduct/AllProduct/OfferAllProduct"));
+const OfferAddProduct = lazy(() => import("./pages/dashboard/OfferProduct/AddProduct/OfferAddProduct"));
+const OfferUpdateProduct = lazy(() => import("./pages/dashboard/OfferProduct/UpdateProduct/OfferUpdateProduct"));
+const OfferDetails = lazy(() => import("./components/Home/Offer/OfferDetails"));
+const AllCoupon = lazy(() => import("./pages/dashboard/Coupon/AllCoupon"));
 
 
 
 function App() {
-  // const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
-  // useEffect(()=>{
-  //   setTimeout(()=>{
-  //     setLoading(false)
-  //   },2000)
-  //   return () => clearTimeout();
-  // },[])
+  useEffect(()=>{
+    setTimeout(()=>{
+      setLoading(false)
+    },2000)
+    return () => clearTimeout();
+  },[])
 
-  //  if (loading) {
-  //   return (
-  //     <div className="splash-loading">
-  //       <img src={logo} alt="Logo" className="splash-logo" />
-  //       <Loading />
-  //     </div>
-  //   );
-  // }
+   if (loading) {
+    return (
+      <div className="splash-loading">
+        <img loading='lazy' src={logo} alt="Logo" className="splash-logo" />
+        <Loading />
+      </div>
+    );
+  }
 
   return (
-    <>
+    <Suspense fallback={<Loading />}>
 
       <Routes>
 
@@ -117,7 +117,7 @@ function App() {
 
       </Routes>
 
-    </>
+    </Suspense>
   )
 }
 

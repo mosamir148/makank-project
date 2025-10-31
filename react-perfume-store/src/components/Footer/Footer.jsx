@@ -1,5 +1,6 @@
 import './Footer.css';
 import { useLang } from '../../context/LangContext';
+import React from 'react';
 
 const Footer = () => {
   const { t } = useLang();
@@ -9,7 +10,6 @@ const Footer = () => {
       <div className="container">
         <div className="footer-content">
           
-          {/* --- القسم الأول --- */}
           <div className="footer-section">
             <h3>LUXE PARFUM</h3>
             <p>{t("hero1sub")}</p>
@@ -63,4 +63,4 @@ const Footer = () => {
   );
 };
 
-export default Footer;
+export default React.memo(Footer);

@@ -26,7 +26,7 @@ app.use(express.json({ limit: "Infinity" }));
 app.use(cors({
   origin: [
     "http://localhost:5173",
-    "https://full-ecommerce-frontend-iota.vercel.app"
+    "https://perfume-frontend-taupe.vercel.app"
   ],
   credentials: true,
 }));
@@ -43,32 +43,11 @@ const cron = require("node-cron");
 const { deleteExpiredOffers } = require("./controllers/OfferProduct");
 
 
-// كل دقيقة مثلاً للتحقق وحذف العروض المنتهية
 cron.schedule("* * * * *", () => {
   deleteExpiredOffers();
 });
 
-/* -------------------- 🔹 3- Rate Limiter  -------------------- */
-// في التطوير زوّد الحد شوية
-// const limiter = rateLimit({
-//   windowMs: 15 * 60 * 1000,
-//   max: process.env.NODE_ENV === "production" ? 100 : 1000,
-//   standardHeaders: true,
-//   legacyHeaders: false
-// });
-// app.use(limiter);
 
-/* -------------------- 🔹 4- Static Files -------------------- */
-// app.use(
-//   "/images",
-//   express.static(path.join(__dirname, "images"), {
-//     setHeaders: (res, path) => {
-//       res.setHeader("Access-Control-Allow-Origin", "*");
-//       res.setHeader("Access-Control-Allow-Methods", "GET");
-//       res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-//     },
-//   })
-// );
 
 /* -------------------- 🔹 5- Routes -------------------- */
 app.use("/api/product", ProductRoute);

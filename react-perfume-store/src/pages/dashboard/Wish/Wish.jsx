@@ -192,4 +192,4 @@ const Wish = () => {
   );
 };
 
-export default Wish;
+export default React.memo(Wish);

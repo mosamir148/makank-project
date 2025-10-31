@@ -330,4 +330,4 @@ const couponsCount =
   );
 };
 
-export default OverView;
+export default React.memo(OverView);

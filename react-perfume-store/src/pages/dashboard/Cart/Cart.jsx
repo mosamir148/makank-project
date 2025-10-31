@@ -181,6 +181,7 @@ return ( <div className="orders-container"> <h1 className="orders-title">لوح�
       </div>
       <div className="modal-body">
         <img
+        loading='lazy'
           src={selectedProduct.image}
           alt="product"
           crossOrigin="anonymous"
@@ -221,4 +222,4 @@ return ( <div className="orders-container"> <h1 className="orders-title">لوح�
 );
 };
 
-export default Cart;
+export default React.memo(Cart);

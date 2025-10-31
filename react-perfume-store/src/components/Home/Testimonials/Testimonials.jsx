@@ -62,6 +62,7 @@ const Testimonials = () => {
                 <div className="testimonial-author">
                   <div
                     className="author-image"
+                    loading='lazy'
                     style={{ background: `url('${item.img}') center/cover` }}
                   ></div>
                   <div className="author-info">

@@ -135,7 +135,7 @@ const OnlineAllProduct = () => {
     </section>
   );
 };
-export default OnlineAllProduct;
+export default React.memo(OnlineAllProduct);
 
 
 

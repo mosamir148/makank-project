@@ -475,6 +475,7 @@ const [timers, setTimers] = useState({});
               <div key={index} className="cart-card">
                 <div className="cart-image">
                   <img
+                  loading='lazy'
                      src={product.image || "default-image.jpg"}
                       alt={product.title ||  "منتج"}
                   />
@@ -724,4 +725,4 @@ const [timers, setTimers] = useState({});
   );
 };
 
-export default YourCart;
+export default React.memo(YourCart);

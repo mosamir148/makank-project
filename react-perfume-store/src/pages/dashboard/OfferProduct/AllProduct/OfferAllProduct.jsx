@@ -12,7 +12,7 @@ const OfferAllProduct = () => {
   const [loading, setLoading] = useState(true);
   const [currentTime, setCurrentTime] = useState(new Date());
 
-  // جلب المنتجات
+
   const fetchProducts = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/offerProduct`);
@@ -26,7 +26,6 @@ const OfferAllProduct = () => {
   useEffect(() => {
     fetchProducts();
 
-    // تحديث الوقت كل ثانية
     const timer = setInterval(() => {
       setCurrentTime(new Date());
     }, 1000);
@@ -152,4 +151,4 @@ const OfferAllProduct = () => {
   );
 };
 
-export default OfferAllProduct;
+export default React.memo(OfferAllProduct);

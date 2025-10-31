@@ -135,4 +135,4 @@ const Online = () => {
   );
 };
 
-export default Online;
+export default React.memo(Online);

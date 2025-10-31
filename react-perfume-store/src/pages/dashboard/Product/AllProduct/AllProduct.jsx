@@ -136,4 +136,4 @@ const AllProduct = () => {
   );
 };
 
-export default AllProduct;
+export default React.memo(AllProduct);

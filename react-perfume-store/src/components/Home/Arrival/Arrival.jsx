@@ -64,4 +64,4 @@ const Arrival = () => {
   );
 };
 
-export default Arrival;
+export default React.memo(Arrival);

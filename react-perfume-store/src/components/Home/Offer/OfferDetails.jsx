@@ -150,4 +150,4 @@ const OfferDetails = () => {
   );
 };
 
-export default OfferDetails;
+export default React.memo(OfferDetails);

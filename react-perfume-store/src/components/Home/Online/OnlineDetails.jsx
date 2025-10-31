@@ -150,4 +150,4 @@ const OnlineDetails = () => {
   );
 };
 
-export default OnlineDetails;
+export default React.memo(OnlineDetails);
