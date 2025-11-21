@@ -55,7 +55,7 @@ const Login = () => {
      <div className="auth-page">
       <div className="auth-container">
         <div className="auth-header">
-          <h1 className="auth-logo">Makanak</h1>
+          <h1 className="auth-logo">{t("makanak")}</h1>
           <p className="auth-subtitle">{t("authSubtitle")}</p>
         </div>
 
