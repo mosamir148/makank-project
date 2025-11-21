@@ -15,6 +15,20 @@ const OrderDetail = () => {
   const { user } = useContext(userContext);
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // Track dark mode changes for any dynamic styling needs
+  useEffect(() => {
+    const checkDarkMode = () => {
+      setIsDarkMode(document.body.classList.contains('dark'));
+    };
+    
+    checkDarkMode();
+    const observer = new MutationObserver(checkDarkMode);
+    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     fetchOrder();
@@ -136,57 +150,6 @@ const OrderDetail = () => {
       </div>
 
       <div className="order-detail-content">
-        {/* Security Info: Show who is viewing this order (from token) */}
-        {(order?.viewedBy || user) && (
-          <div className="security-info-card" style={{
-            backgroundColor: '#f0f9ff',
-            border: '2px solid #3b82f6',
-            borderRadius: '8px',
-            padding: '16px',
-            marginBottom: '20px'
-          }}>
-            <h3 style={{ margin: '0 0 12px 0', color: '#1e40af', fontSize: '16px', fontWeight: '600' }}>
-              🔒 {t("securityInfo") || "Security Information"}
-            </h3>
-            <div className="info-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
-              <div className="info-item">
-                <span className="info-label" style={{ fontWeight: '600', color: '#374151' }}>
-                  {t("viewedBy") || "Viewed By"}:
-                </span>
-                <span className="info-value" style={{ color: '#1e40af', fontWeight: '500' }}>
-                  {order?.viewedBy?.username || user?.username || "—"}
-                </span>
-              </div>
-              <div className="info-item">
-                <span className="info-label" style={{ fontWeight: '600', color: '#374151' }}>
-                  {t("email")}:
-                </span>
-                <span className="info-value" style={{ color: '#1e40af' }}>
-                  {order?.viewedBy?.email || user?.email || "—"}
-                </span>
-              </div>
-              <div className="info-item">
-                <span className="info-label" style={{ fontWeight: '600', color: '#374151' }}>
-                  {t("role")}:
-                </span>
-                <span className="info-value" style={{
-                  color: '#059669',
-                  backgroundColor: '#d1fae5',
-                  padding: '4px 8px',
-                  borderRadius: '4px',
-                  fontWeight: '600',
-                  fontSize: '12px'
-                }}>
-                  {order?.viewedBy?.role || user?.role || "—"}
-                </span>
-              </div>
-            </div>
-            <p style={{ margin: '12px 0 0 0', fontSize: '12px', color: '#6b7280', fontStyle: 'italic' }}>
-              {t("securityNote") || "This information is verified from your authentication token to ensure secure access."}
-            </p>
-          </div>
-        )}
-
         <div className="order-info-card">
           <h3>{t("orderInfo")}</h3>
           <div className="info-grid">
@@ -233,7 +196,7 @@ const OrderDetail = () => {
                 <span className="info-label">
                   {order.couponCode ? (t("couponDiscount") || "Coupon Discount") : (t("discountOrder") || "Discount")}:
                 </span>
-                <span className="info-value" style={{ color: '#ef4444' }}>- {discount.toFixed(2)} EGP</span>
+                <span className="info-value discount-text">- {discount.toFixed(2)} EGP</span>
               </div>
             )}
             {order.createdAt && (
@@ -270,17 +233,7 @@ const OrderDetail = () => {
               <h3 style={{ margin: 0 }}>{t("userInfo")}</h3>
               {/* Security Badge: Shows this is viewed by authenticated admin from token */}
               {(order?.viewedBy || user) && (
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  backgroundColor: '#d1fae5',
-                  padding: '4px 10px',
-                  borderRadius: '12px',
-                  fontSize: '11px',
-                  fontWeight: '600',
-                  color: '#059669'
-                }}>
+                <div className="security-badge">
                   <span>🔒</span>
                   <span>{t("verifiedByToken") || "Verified by Token"}</span>
                 </div>
@@ -293,19 +246,13 @@ const OrderDetail = () => {
               </div>
               <div className="info-item">
                 <span className="info-label">{t("email")}:</span>
-                <span className="info-value" style={{ 
-                  color: customer.email ? 'inherit' : '#999',
-                  fontStyle: customer.email ? 'normal' : 'italic'
-                }}>
+                <span className={`info-value ${!customer.email ? 'info-value-placeholder' : ''}`}>
                   {customer.email || "—"}
                 </span>
               </div>
               <div className="info-item">
                 <span className="info-label">{t("phone")}:</span>
-                <span className="info-value" style={{ 
-                  color: customer.phone ? 'inherit' : '#999',
-                  fontStyle: customer.phone ? 'normal' : 'italic'
-                }}>
+                <span className={`info-value ${!customer.phone ? 'info-value-placeholder' : ''}`}>
                   {customer.phone || "—"}
                 </span>
               </div>
@@ -324,7 +271,7 @@ const OrderDetail = () => {
               {order.user && (
                 <div className="info-item">
                   <span className="info-label">{t("clickToViewProfile")}</span>
-                  <span className="info-value" style={{ color: 'var(--primary-gold)', fontStyle: 'italic' }}>
+                  <span className="info-value click-here-link">
                     {t("clickHere")}
                   </span>
                 </div>
@@ -332,19 +279,10 @@ const OrderDetail = () => {
             </div>
             {/* Security Note: Information verified from authentication token */}
             {(order?.viewedBy || user) && (
-              <div style={{
-                marginTop: '12px',
-                padding: '8px 12px',
-                backgroundColor: '#f0f9ff',
-                border: '1px solid #3b82f6',
-                borderRadius: '6px',
-                fontSize: '11px',
-                color: '#1e40af',
-                fontStyle: 'italic'
-              }}>
+              <div className="security-note">
                 <span>🔐 </span>
                 <span>{t("securityNoteUserInfo") || "This customer information is being viewed securely by an authenticated admin. Access verified from JWT token."}</span>
-                <div style={{ marginTop: '4px', fontSize: '10px', opacity: 0.8 }}>
+                <div>
                   {t("viewedBy") || "Viewed By"}: <strong>{order?.viewedBy?.username || user?.username || "—"}</strong> ({order?.viewedBy?.email || user?.email || "—"})
                 </div>
               </div>
@@ -471,12 +409,12 @@ const OrderDetail = () => {
                         {hasProduct ? (
                           <>
                             {unitPrice > finalPricePerUnit && (
-                              <span className="order-item-unit-price" style={{ textDecoration: 'line-through', color: '#999', fontSize: '0.9em' }}>
+                              <span className="order-item-unit-price unit-price-strikethrough">
                                 {t("unitPrice") || "Unit Price"}: {unitPrice.toFixed(2)} EGP
                               </span>
                             )}
                             {discountApplied > 0 && (
-                              <span className="order-item-discount" style={{ color: '#ef4444', fontSize: '0.9em' }}>
+                              <span className="order-item-discount discount-text" style={{ fontSize: '0.9em' }}>
                                 {t("discount") || "Discount"}: -{discountApplied.toFixed(2)} EGP {itemQuantity > 1 && `× ${itemQuantity} = -${(discountApplied * itemQuantity).toFixed(2)} EGP`}
                               </span>
                             )}
@@ -488,7 +426,7 @@ const OrderDetail = () => {
                             </span>
                           </>
                         ) : (
-                          <span className="order-item-price" style={{ color: '#999' }}>{t("productUnavailable")}</span>
+                          <span className="order-item-price unavailable-text">{t("productUnavailable")}</span>
                         )}
                       </div>
                     </div>
@@ -512,7 +450,7 @@ const OrderDetail = () => {
                 </div>
               )}
               {discount > 0 && (
-                <div className="summary-row" style={{ color: '#ef4444' }}>
+                <div className="summary-row discount-text">
                   <span>
                     {order.couponCode ? (t("couponDiscount") || "Coupon Discount") : (t("discountOrder") || "Discount")}:
                   </span>

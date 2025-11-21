@@ -4,6 +4,7 @@
   padding: 2rem;
   background-color: var(--light-gray);
   min-height: 100vh;
+  transition: background-color var(--transition);
 }
 
 .order-detail-header {
@@ -19,6 +20,7 @@
   font-family: var(--arabic-font);
   color: var(--dark-gold);
   margin: 0;
+  transition: color var(--transition);
 }
 
 .back-btn {
@@ -31,6 +33,11 @@
   font-family: var(--arabic-font);
   font-weight: 600;
   transition: var(--transition);
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.2);
+}
+
+.back-btn:hover {
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
 }
 
 .back-btn:hover {
@@ -52,6 +59,8 @@
   padding: 2rem;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: background-color var(--transition), box-shadow var(--transition), border-color var(--transition);
+  border: 1px solid transparent;
 }
 
 .user-info-card.clickable-user-card {
@@ -74,6 +83,7 @@
   color: var(--dark-gold);
   margin-bottom: 1.5rem;
   font-size: 1.5rem;
+  transition: color var(--transition);
 }
 
 .info-grid {
@@ -93,6 +103,7 @@
   font-weight: 600;
   color: var(--dark-gray);
   font-size: 0.9rem;
+  transition: color var(--transition);
 }
 
 .info-value {
@@ -102,6 +113,7 @@
   padding: 0.5rem;
   background: var(--beige);
   border-radius: 6px;
+  transition: color var(--transition), background-color var(--transition);
 }
 
 /* Status Badge Styles (matching Cart.jsx) */
@@ -208,6 +220,7 @@
   font-weight: 600;
   transition: var(--transition);
   margin-top: 1rem;
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.2);
 }
 
 .view-user-btn:hover,
@@ -303,6 +316,7 @@
   font-size: 1rem;
   font-weight: 600;
   flex: 1;
+  transition: color var(--transition);
 }
 
 .order-item-details {
@@ -321,6 +335,7 @@
   font-weight: 500;
   font-size: 0.9rem;
   white-space: nowrap;
+  transition: background-color var(--transition), color var(--transition);
 }
 
 .order-item-total {
@@ -347,6 +362,7 @@
   border-radius: 6px;
   font-family: var(--arabic-font);
   font-size: 1rem;
+  transition: background-color var(--transition), color var(--transition);
 }
 
 .summary-row.total {
@@ -360,11 +376,78 @@
 .summary-row strong {
   color: var(--dark-gray);
   font-weight: 700;
+  transition: color var(--transition);
 }
 
 .summary-row.total strong {
   color: var(--dark-gold);
   font-size: 1.3rem;
+}
+
+/* Security Badge Styles */
+.security-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #d1fae5;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #059669;
+  transition: background-color var(--transition), color var(--transition);
+}
+
+.security-note {
+  margin-top: 12px;
+  padding: 8px 12px;
+  background-color: #f0f9ff;
+  border: 1px solid #3b82f6;
+  border-radius: 6px;
+  font-size: 11px;
+  color: #1e40af;
+  font-style: italic;
+  transition: background-color var(--transition), border-color var(--transition), color var(--transition);
+}
+
+.security-note div {
+  margin-top: 4px;
+  font-size: 10px;
+  opacity: 0.8;
+}
+
+/* Discount text styling */
+.discount-text {
+  color: #ef4444;
+  transition: color var(--transition);
+}
+
+/* Unit price strikethrough styling */
+.unit-price-strikethrough {
+  text-decoration: line-through;
+  color: #999;
+  font-size: 0.9em;
+  transition: color var(--transition);
+}
+
+/* Unavailable product text */
+.unavailable-text {
+  color: #999;
+  transition: color var(--transition);
+}
+
+/* Click here link styling */
+.click-here-link {
+  color: var(--primary-gold);
+  font-style: italic;
+  transition: color var(--transition);
+}
+
+/* Placeholder/missing data styling */
+.info-value-placeholder {
+  color: #999;
+  font-style: italic;
+  transition: color var(--transition);
 }
 
 /* Dark Mode Styles */
@@ -383,11 +466,13 @@ body.dark .order-items-card,
 body.dark .delivery-address-card {
   background: var(--medium-gray);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border-color: rgba(212, 175, 55, 0.1);
 }
 
 body.dark .user-info-card.clickable-user-card:hover {
   background: rgba(212, 175, 55, 0.1);
   box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3);
+  border-color: var(--primary-gold);
 }
 
 body.dark .info-label {
@@ -503,6 +588,58 @@ body.dark .summary-row.total strong {
 
 body.dark .product-image {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+body.dark .back-btn {
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+}
+
+body.dark .back-btn:hover {
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+}
+
+body.dark .view-user-btn,
+body.dark .view-product-btn,
+body.dark .view-item-product-btn {
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+}
+
+body.dark .view-user-btn:hover,
+body.dark .view-product-btn:hover,
+body.dark .view-item-product-btn:hover {
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+}
+
+body.dark .security-badge {
+  background-color: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+body.dark .security-note {
+  background-color: rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.3);
+  color: #93c5fd;
+}
+
+body.dark .discount-text {
+  color: #fca5a5;
+}
+
+body.dark .unit-price-strikethrough {
+  color: #6b7280;
+}
+
+body.dark .unavailable-text {
+  color: #6b7280;
+}
+
+body.dark .click-here-link {
+  color: var(--primary-gold);
+}
+
+body.dark .info-value-placeholder {
+  color: #6b7280;
 }
 
 @media (max-width: 768px) {
