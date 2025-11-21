@@ -1,5 +1,6 @@
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { RiDeleteBack2Fill } from "react-icons/ri";
 import Swal from "sweetalert2";
 import toast from "react-hot-toast";
@@ -9,13 +10,20 @@ import { userContext } from "../../context/UserContext";
 import { useLang } from "../../context/LangContext";
 
 const YourCart = () => {
+  const navigate = useNavigate();
   const [cart, setCart] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [showGuestForm, setShowGuestForm] = useState(false);
   const [showLoginForm, setShowLoginForm] = useState(false);
   const [showRegisterForm, setShowRegisterForm] = useState(false);
-  const isLoggedIn = document.cookie.includes("token");
-  const {setUser,user} = useContext(userContext)
+  const {setUser, user, loading: userLoading} = useContext(userContext);
+  // Check if user is logged in - check for _id, id, or userId (handle different user object structures)
+  // Also ensure user is not an empty object
+  const isLoggedIn = user && 
+    user !== null && 
+    typeof user === 'object' && 
+    Object.keys(user).length > 0 &&
+    (user._id || user.id || user.userId);
   const { t } = useLang()
   const [guestData, setGuestData] = useState({
     username: "",
@@ -199,6 +207,13 @@ const YourCart = () => {
     MyCart();
   }, [isLoggedIn]);
 
+  // Close popup if user logs in
+  useEffect(() => {
+    if (isLoggedIn && showPopup) {
+      setShowPopup(false);
+    }
+  }, [isLoggedIn, showPopup]);
+
   const DeleteCart = async (id, from) => {
     try {
       const result = await Swal.fire({
@@ -299,7 +314,80 @@ const AddAllToCart = async ({ userId, guestId }) => {
 };
 
 
-  const handleCheckout = () => setShowPopup(true);
+  const handleCheckout = async () => {
+    // Debug logging
+    const hasToken = document.cookie.includes("token");
+    console.log("🔍 Checkout clicked - Auth check:", {
+      user: user,
+      userLoading: userLoading,
+      isLoggedIn: isLoggedIn,
+      hasUserId: !!user?._id,
+      hasToken: hasToken,
+      userKeys: user ? Object.keys(user) : [],
+      userString: JSON.stringify(user)
+    });
+
+    // Wait for user context to load
+    if (userLoading) {
+      toast.info("جاري التحقق من تسجيل الدخول...");
+      return;
+    }
+
+    // Check authentication - use user context first, fallback to cookie check
+    const authenticated = isLoggedIn || (hasToken && !userLoading);
+    
+    if (authenticated) {
+      try {
+        if (cart.length === 0) {
+          toast.error("السلة فارغة");
+          return;
+        }
+
+        // Prepare items array for createOrder endpoint
+        const items = cart.map(item => ({
+          productId: item.product?._id,
+          quantity: item.quantity || 1
+        })).filter(item => item.productId); // Filter out items without productId
+
+        if (items.length === 0) {
+          toast.error("لا توجد منتجات صالحة في السلة");
+          return;
+        }
+
+        const orderData = {
+          items: items,
+          couponCode: couponCode || null,
+          discount: discount || 0,
+          paymentMethod: "Cash"
+        };
+
+        console.log("📤 Creating order for logged-in user:", {
+          userId: user._id || user.id || user.userId,
+          itemsCount: items.length
+        });
+
+        const res = await axios.post(`${BASE_URL}/cart/createOrder`, orderData, {
+          withCredentials: true
+        });
+
+        // Clear cart after successful order
+        setCart([]);
+        localStorage.removeItem("guestWishlist");
+        localStorage.removeItem("localWish");
+        
+        toast.success("✅ تم إنشاء الطلب بنجاح!");
+        // Navigate to order success page or orders page
+        navigate("/order-success", { state: { order: res.data } });
+      } catch (err) {
+        console.error("❌ Create order error:", err.response?.data || err);
+        toast.error(err.response?.data?.message || "حدث خطأ أثناء إنشاء الطلب");
+      }
+    } else {
+      // If not logged in, show popup to login/register/guest
+      console.log("⚠️ User not logged in, showing popup");
+      setShowPopup(true);
+    }
+  };
 
   const handleGuestContinue = async () => {
     setShowPopup(false);
@@ -364,6 +452,19 @@ const handleGuestSubmit = async (e) => {
   }
 };
 
+  // Calculate total using finalPrice (after offer discount) if available, otherwise use price
+  const totalAfterDiscount = cart.reduce(
+    (acc, cur) => {
+      const product = cur.product || {};
+      // Use finalPrice if available (already has offer discount applied), otherwise use price
+      const itemPrice = product.finalPrice || product.price || 0;
+      return acc + itemPrice * (cur.quantity || 1);
+    },
+    0
+  );
+  // total is subtotal after item-level discounts, before coupon discount
+  const total = totalAfterDiscount;
+
 // COUPON
 const [couponCode, setCouponCode] = useState("");
 const [discount, setDiscount] = useState(0);
@@ -374,10 +475,12 @@ const applyCoupon = async () => {
     const res = await axios.post(`${BASE_URL}/coupon/validate`, { code: couponCode });
     const coupon = res.data.coupon;
 
-    if (coupon.discountType === "percent") {
+    // Calculate coupon discount based on subtotal (total after item discounts)
+    if (coupon.discountType === "percent" || coupon.discountType === "percentage") {
       setDiscount((total * coupon.discountValue) / 100);
     } else {
-      setDiscount(coupon.discountValue);
+      // Fixed amount discount - don't exceed subtotal
+      setDiscount(Math.min(coupon.discountValue, total));
     }
 
     toast.success(`✅ تم تطبيق الكوبون (${coupon.code}) بنجاح!`);
@@ -386,13 +489,6 @@ const applyCoupon = async () => {
     setDiscount(0);
   }
 };
-
-
-  const totalAfterDiscount = cart.reduce(
-    (acc, cur) => acc + (cur.product?.price || cur.product.onlineProduct?.price || cur.product.featuredProduct?.price || cur.product.offerProduct?.price || 0) * (cur.quantity || 1),
-    0
-  );
-  const total = totalAfterDiscount - discount
 
   
 const [timers, setTimers] = useState({});
@@ -485,7 +581,25 @@ const [timers, setTimers] = useState({});
                   <h3>{product.brand ||  "منتج بدون براند"}</h3>
                   <p className="cart-desc">{product.category || "منتج بدون كاتيجوري"}</p>
                   <p className="cart-desc">{product.description || "منتج بدون وصف"}</p>
-                  <p className="cart-desc">{product.price  || "منتج بدون سعر"} EGY</p>
+                  <div className="cart-price">
+                    {product.finalPrice && product.finalPrice !== product.price ? (
+                      <>
+                        <p className="cart-desc original-price" style={{ textDecoration: 'line-through', color: '#999' }}>
+                          {product.price || product.originalPrice || 0}
+                        </p>
+                        <p className="cart-desc final-price" style={{ color: '#D4AF37', fontWeight: 'bold' }}>
+                          {product.finalPrice}
+                        </p>
+                        {product.discountAmount && (
+                          <p className="cart-desc discount-badge" style={{ color: '#22C55E', fontSize: '0.9em' }}>
+                            خصم: {product.discountAmount}
+                          </p>
+                        )}
+                      </>
+                    ) : (
+                      <p className="cart-desc">{product.price || product.originalPrice || 0}</p>
+                    )}
+                  </div>
                       
                   {product.startDate && product.endDate && (
                     <div className="offer-timer">
@@ -518,7 +632,7 @@ const [timers, setTimers] = useState({});
 
               <p className="summary-item">
                 <span>{t("subtotal")} :</span>
-                <span>{total.toFixed(2)} EGP</span>
+                <span>{total.toFixed(2)}</span>
               </p>
 
 
@@ -538,20 +652,20 @@ const [timers, setTimers] = useState({});
               {discount > 0 && (
                 <p className="summary-item discount">
                   <span>{t("discount")}:</span>
-                  <span>- {discount.toFixed(2)} EGP</span>
+                  <span>- {discount.toFixed(2)}</span>
                 </p>
               )}
 
 
               <p className="summary-item total">
                 <strong>{t("total")}:</strong>
-                <strong>{(total - discount).toFixed(2)} EGP</strong>
+                <strong>{Math.max(0, (total - discount)).toFixed(2)}</strong>
               </p>
 
               <button onClick={handleCheckout} className="checkout-btn">{t("checkout")}</button>
       </div>
 
-      {showPopup && (
+      {showPopup && !isLoggedIn && (
         <div className="popup-overlay">
           <div className="popup">
             <h3> {t("title")} </h3>
