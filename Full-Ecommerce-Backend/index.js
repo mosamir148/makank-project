@@ -22,6 +22,7 @@ const withoutRoutes = require("./routes/WithoutRegister");
 const DeliveryAddressRoute = require("./routes/DeliveryAddress");
 const NotificationRoute = require("./routes/Notification");
 const CouponRoute = require("./routes/Coupon");
+const RequestRoute = require("./routes/Request");
 
 // Controller imports
 
@@ -275,6 +276,7 @@ app.get("/api/info", (req, res) => {
       comments: "/api/comment",
       deliveryAddresses: "/api/delivery-address",
       notifications: "/api/notification",
+      requests: "/api/request",
     },
     documentation: "See API documentation for details",
   });
@@ -291,6 +293,7 @@ app.use("/api/comment", CommentRoute);
 app.use("/api/without", withoutRoutes);
 app.use("/api/delivery-address", DeliveryAddressRoute);
 app.use("/api/notification", NotificationRoute);
+app.use("/api/request", RequestRoute);
 
 /* ==================== 🔹 8. Database Index Cleanup Helper ==================== */
 const cleanupCartIndexes = async () => {

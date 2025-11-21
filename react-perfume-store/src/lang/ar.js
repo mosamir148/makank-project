@@ -591,4 +591,14 @@ export default {
   errorAddingToCart: "حدث خطأ أثناء الإضافة إلى السلة",
   nA: "غير متوفر",
   orderSummary: "ملخص الطلب",
+  // Requests
+  requests: "الطلبات",
+  inProgress: "قيد المعالجة",
+  resolved: "تم الحل",
+  closed: "مغلق",
+  noRequestsForUser: "لا توجد طلبات لهذا المستخدم",
+  subject: "الموضوع",
+  response: "الرد",
+  noResponse: "لا يوجد رد بعد",
+  message: "الرسالة",
 };

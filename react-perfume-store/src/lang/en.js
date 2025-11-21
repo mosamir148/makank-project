@@ -591,4 +591,14 @@ export default {
   errorAddingToCart: "Error adding to cart",
   nA: "N/A",
   orderSummary: "Order Summary",
+  // Requests
+  requests: "Requests",
+  inProgress: "In Progress",
+  resolved: "Resolved",
+  closed: "Closed",
+  noRequestsForUser: "No requests found for this user",
+  subject: "Subject",
+  response: "Response",
+  noResponse: "No response yet",
+  message: "Message",
 };
