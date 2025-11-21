@@ -169,6 +169,18 @@ const YourCart = () => {
           }
         }
 
+        // Include finalPrice and offerInfo from wishlist item if available (from backend discount calculation)
+        if (item.finalPrice !== undefined) {
+          product.finalPrice = item.finalPrice;
+          // Also set originalPrice if we have offerInfo
+          if (item.offerInfo && item.offerInfo.originalPrice) {
+            product.originalPrice = item.offerInfo.originalPrice;
+          }
+        }
+        if (item.offerInfo) {
+          product.offerInfo = item.offerInfo;
+        }
+
         return {
           _id: item._id || product?._id,
           product: product || {},

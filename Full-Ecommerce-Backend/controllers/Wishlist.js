@@ -120,8 +120,54 @@ exports.addToWishlist = async (req, res) => {
       else if (offerProductId) item.offerProduct = productToValidate;
     }
 
+    // Check for active discount offers and calculate final price
+    let finalPrice = unifiedProduct?.price || 0;
+    let discountApplied = 0;
+    let offerInfo = null;
+
+    if (unifiedProduct && unifiedProduct._id) {
+      const Offer = require("../models/Offer");
+      const now = new Date();
+      const activeDiscountOffers = await Offer.find({
+        type: "discount",
+        isActive: true,
+        startDate: { $lte: now },
+        endDate: { $gte: now }
+      }).lean();
+
+      // Find offer that includes this product
+      for (const offer of activeDiscountOffers) {
+        if (offer.products && offer.products.some(p => p.toString() === unifiedProduct._id.toString())) {
+          const unitPrice = unifiedProduct.price || 0;
+          let offerDiscountAmount = 0;
+          
+          if (offer.discountType === "percentage" || offer.discountType === "percent") {
+            offerDiscountAmount = (unitPrice * offer.discountValue) / 100;
+          } else {
+            offerDiscountAmount = Math.min(offer.discountValue, unitPrice);
+          }
+          
+          discountApplied = offerDiscountAmount;
+          finalPrice = unitPrice - discountApplied;
+          offerInfo = {
+            discountType: offer.discountType,
+            discountValue: offer.discountValue,
+            discountAmount: offerDiscountAmount,
+            originalPrice: unitPrice,
+            finalPrice: finalPrice
+          };
+          break;
+        }
+      }
+    }
+
     // Convert to plain object to ensure all fields are included
     const responseItem = item.toObject ? item.toObject() : item;
+    
+    // Add calculated pricing information to response
+    responseItem.finalPrice = finalPrice;
+    responseItem.discountApplied = discountApplied;
+    responseItem.offerInfo = offerInfo;
     
     res.status(201).json(responseItem);
   } catch (error) {
@@ -184,6 +230,29 @@ exports.getUserWishlist = async (req, res) => {
       .populate("user", "username email phone")
       .lean();
 
+    // Fetch active discount offers once for all items
+    const Offer = require("../models/Offer");
+    const now = new Date();
+    const activeDiscountOffers = await Offer.find({
+      type: "discount",
+      isActive: true,
+      startDate: { $lte: now },
+      endDate: { $gte: now }
+    }).lean();
+
+    // Create a map of product IDs to offers for quick lookup
+    const productOfferMap = new Map();
+    activeDiscountOffers.forEach(offer => {
+      if (offer.products && offer.products.length > 0) {
+        offer.products.forEach(productId => {
+          const productIdStr = productId.toString();
+          if (!productOfferMap.has(productIdStr)) {
+            productOfferMap.set(productIdStr, offer);
+          }
+        });
+      }
+    });
+
     // Merge raw IDs with populated data so frontend can fetch missing products
     const enrichedWishlist = wishlist.map((item) => {
       const rawItem = rawWishlistMap[item._id.toString()];
@@ -206,6 +275,40 @@ exports.getUserWishlist = async (req, res) => {
         console.warn("⚠️ OfferProduct populate failed for productId:", rawItem.offerProduct, "in wishlist item:", item._id);
       }
       
+      // Get the unified product
+      const unifiedProduct = item.product || item.featuredProduct || item.onlineProduct || item.offerProduct;
+      
+      // Calculate final price with discount if applicable
+      let finalPrice = unifiedProduct?.price || 0;
+      let discountApplied = 0;
+      let offerInfo = null;
+
+      if (unifiedProduct && unifiedProduct._id) {
+        const productIdStr = unifiedProduct._id.toString();
+        const offer = productOfferMap.get(productIdStr);
+        
+        if (offer) {
+          const unitPrice = unifiedProduct.price || 0;
+          let offerDiscountAmount = 0;
+          
+          if (offer.discountType === "percentage" || offer.discountType === "percent") {
+            offerDiscountAmount = (unitPrice * offer.discountValue) / 100;
+          } else {
+            offerDiscountAmount = Math.min(offer.discountValue, unitPrice);
+          }
+          
+          discountApplied = offerDiscountAmount;
+          finalPrice = unitPrice - discountApplied;
+          offerInfo = {
+            discountType: offer.discountType,
+            discountValue: offer.discountValue,
+            discountAmount: offerDiscountAmount,
+            originalPrice: unitPrice,
+            finalPrice: finalPrice
+          };
+        }
+      }
+      
       return {
         ...item,
         // Include raw IDs in case populate returned null for any product type
@@ -213,6 +316,10 @@ exports.getUserWishlist = async (req, res) => {
         rawFeaturedProductId: rawItem.featuredProduct,
         rawOnlineProductId: rawItem.onlineProduct,
         rawOfferProductId: rawItem.offerProduct,
+        // Include calculated pricing information
+        finalPrice: finalPrice,
+        discountApplied: discountApplied,
+        offerInfo: offerInfo,
       };
     });
 

@@ -316,10 +316,30 @@ const Product = () => {
           return;
         }
         
+        // Check if product has an active offer (from offers page or regular products with offers)
+        const isOfferProduct = searchParams.get('category') === 'offers' && product.discountType;
+        const offer = isOfferProduct ? {
+          discountType: product.discountType,
+          discountValue: product.discountValue,
+          originalPrice: product.originalPrice,
+          finalPrice: product.finalPrice
+        } : getProductOffer(product._id);
+        
+        // Use finalPrice if available, otherwise use original price
+        const priceToUse = offer ? offer.finalPrice : (product.finalPrice || product.price || 0);
+        
         localWish.push({ 
           ...product, 
           quantity: 1,
-          type: "product"
+          type: "product",
+          price: priceToUse,
+          // Store offer info for display
+          offerInfo: offer ? {
+            discountType: offer.discountType,
+            discountValue: offer.discountValue,
+            originalPrice: offer.originalPrice,
+            finalPrice: offer.finalPrice,
+          } : undefined,
         });
         localStorage.setItem("localWish", JSON.stringify(localWish));
         toast.success(lang === "ar" ? "تمت الإضافة ✅" : "Added ✅");

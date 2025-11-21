@@ -12,7 +12,7 @@ import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 
-const CategoryProducts = ({ categoryKey, titleAr, titleEn }) => {
+const CategoryProducts = ({ categoryKey, titleAr, titleEn, activeOffers: propsActiveOffers = [] }) => {
   const { user } = useContext(userContext);
   const { lang, t } = useLang();
   const navigate = useNavigate();
@@ -20,17 +20,54 @@ const CategoryProducts = ({ categoryKey, titleAr, titleEn }) => {
   const [loading, setLoading] = useState(true);
   const [swiperKey, setSwiperKey] = useState(0);
   const swiperRef = useRef(null);
+  const [activeOffers, setActiveOffers] = useState(propsActiveOffers);
+  
+  // Update local state when props change
+  useEffect(() => {
+    setActiveOffers(propsActiveOffers);
+  }, [propsActiveOffers]);
+
+  // Helper function to get offer for a product
+  const getProductOffer = useCallback((productId, offersList) => {
+    const offersToCheck = offersList || activeOffers;
+    for (const offer of offersToCheck) {
+      if (offer.products && offer.products.some(p => (p._id || p).toString() === productId.toString())) {
+        const product = offer.products.find(p => (p._id || p).toString() === productId.toString());
+        const originalPrice = product?.price || 0;
+        let discountAmount = 0;
+        let finalPrice = originalPrice;
+        
+        if (offer.discountType === "percentage") {
+          discountAmount = (originalPrice * offer.discountValue) / 100;
+          finalPrice = originalPrice - discountAmount;
+        } else if (offer.discountType === "value") {
+          discountAmount = offer.discountValue;
+          finalPrice = originalPrice - discountAmount;
+        }
+        
+        return {
+          ...offer,
+          discountAmount,
+          finalPrice,
+          originalPrice,
+        };
+      }
+    }
+    return null;
+  }, [activeOffers]);
 
   const fetchProducts = useCallback(async () => {
     try {
       let res;
       if (categoryKey === "offers") {
-        // Fetch active offers
-        res = await axios.get(`${BASE_URL}/offer/active`);
-        const allOffers = res.data.offers || [];
-        
-        // Filter for discount type offers only (not coupon)
-        const discountOffers = allOffers.filter((offer) => offer.type === "discount");
+        // Use offers from props if available, otherwise fetch
+        let discountOffers = activeOffers;
+        if (discountOffers.length === 0) {
+          res = await axios.get(`${BASE_URL}/offer/active`);
+          const allOffers = res.data.offers || [];
+          discountOffers = allOffers.filter((offer) => offer.type === "discount");
+          setActiveOffers(discountOffers);
+        }
         
         // Flatten products from all discount offers with offer details
         const products = [];
@@ -68,13 +105,33 @@ const CategoryProducts = ({ categoryKey, titleAr, titleEn }) => {
         
         setProducts(products.slice(0, 6)); // عرض 6 منتجات فقط
       } else {
+        // Fetch products only (offers should come from props)
         res = await axios.get(`${BASE_URL}/product`, {
           params: { limit: 20, page: 1, categories: categoryKey },
           withCredentials: true,
         });
+        
         const allProducts = res.data.products || [];
+        // Use offers from props/state
+        const discountOffers = activeOffers.length > 0 ? activeOffers : [];
+        
+        // Enrich products with offer information if available
+        const enrichedProducts = allProducts.map(product => {
+          const offer = getProductOffer(product._id, discountOffers);
+          if (offer) {
+            return {
+              ...product,
+              discountType: offer.discountType,
+              discountValue: offer.discountValue,
+              discountAmount: offer.discountAmount,
+              finalPrice: offer.finalPrice,
+              originalPrice: offer.originalPrice,
+            };
+          }
+          return product;
+        });
         // Show up to 20 products, but display 6 at a time in the slider
-        setProducts(allProducts.slice(0, 20));
+        setProducts(enrichedProducts.slice(0, 20));
       }
     } catch (err) {
       console.error(err);
@@ -82,7 +139,7 @@ const CategoryProducts = ({ categoryKey, titleAr, titleEn }) => {
     } finally {
       setLoading(false);
     }
-  }, [categoryKey]);
+  }, [categoryKey, getProductOffer, activeOffers]);
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -138,18 +195,30 @@ const CategoryProducts = ({ categoryKey, titleAr, titleEn }) => {
           return;
         }
         
+        // Check if product has an active offer (from offers section or regular products with offers)
+        const isOfferProduct = categoryKey === "offers" && product.discountType;
+        const offer = isOfferProduct ? {
+          discountType: product.discountType,
+          discountValue: product.discountValue,
+          originalPrice: product.originalPrice,
+          finalPrice: product.finalPrice
+        } : getProductOffer(product._id);
+        
+        // Use finalPrice if available, otherwise use original price
+        const priceToUse = offer ? offer.finalPrice : (product.finalPrice || product.originalPrice || product.price || 0);
+        
         // Store product with offer info if available
         localWish.push({ 
           ...product, 
           quantity: 1,
           type: "product",
-          price: product.finalPrice || product.originalPrice || product.price || 0,
+          price: priceToUse,
           // Store offer info for display
-          offerInfo: categoryKey === "offers" && product.discountType ? {
-            discountType: product.discountType,
-            discountValue: product.discountValue,
-            originalPrice: product.originalPrice,
-            finalPrice: product.finalPrice,
+          offerInfo: offer ? {
+            discountType: offer.discountType,
+            discountValue: offer.discountValue,
+            originalPrice: offer.originalPrice,
+            finalPrice: offer.finalPrice,
             endDate: product.endDate,
           } : undefined,
         });
@@ -397,11 +466,11 @@ const CategoryProducts = ({ categoryKey, titleAr, titleEn }) => {
                     {product.description && (
                       <p>{product.description}</p>
                     )}
-                    {categoryKey === "offers" && product.discountType ? (
+                    {(product.discountType || (product.originalPrice && product.finalPrice)) ? (
                       <div className="category-price">
-                        <span className="old-price">{product.originalPrice.toFixed(2)}</span>
+                        <span className="old-price">{product.originalPrice?.toFixed(2) || product.price}</span>
                         <span className="new-price">
-                          {product.finalPrice.toFixed(2)}
+                          {product.finalPrice?.toFixed(2) || product.price}
                         </span>
                       </div>
                     ) : (
@@ -461,11 +530,11 @@ const CategoryProducts = ({ categoryKey, titleAr, titleEn }) => {
                   {product.description && (
                     <p>{product.description}</p>
                   )}
-                  {categoryKey === "offers" && product.discountType ? (
+                  {(product.discountType || (product.originalPrice && product.finalPrice)) ? (
                     <div className="category-price">
-                      <span className="old-price">{product.originalPrice.toFixed(2)}</span>
+                      <span className="old-price">{product.originalPrice?.toFixed(2) || product.price}</span>
                       <span className="new-price">
-                        {product.finalPrice.toFixed(2)}
+                        {product.finalPrice?.toFixed(2) || product.price}
                       </span>
                     </div>
                   ) : (

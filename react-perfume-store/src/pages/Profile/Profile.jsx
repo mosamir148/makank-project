@@ -683,7 +683,7 @@ const Profile = () => {
           </h2>
           {orders.length > 0 && (
             <button onClick={() => navigate('/orders')} className="view-all-orders-btn">
-              {lang === "ar" ? "عرض جميع الطلبات →" : "View All Orders →"}
+              <span>{lang === "ar" ? "عرض جميع الطلبات →" : "View All Orders →"}</span>
             </button>
           )}
         </div>
