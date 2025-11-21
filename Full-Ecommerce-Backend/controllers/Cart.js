@@ -1167,21 +1167,21 @@ exports.createOrder = async (req, res) => {
         }
         
         // Apply coupon discount only to the selected item
+        // Apply discount only once, regardless of quantity
         if (selectedItem) {
           const { validatedItem, itemFinalPrice, quantity } = selectedItem;
-          const itemSubtotal = itemFinalPrice * quantity;
           
           let itemCouponDiscount = 0;
           
-          // Calculate coupon discount for this specific item
+          // Calculate coupon discount on unit price only (not subtotal)
           if (validCoupon.discountType === "percentage" || validCoupon.discountType === "percent") {
-            itemCouponDiscount = (itemSubtotal * validCoupon.discountValue) / 100;
+            itemCouponDiscount = (itemFinalPrice * validCoupon.discountValue) / 100;
           } else {
-            // Fixed amount discount - apply proportionally or up to item subtotal
-            itemCouponDiscount = Math.min(validCoupon.discountValue, itemSubtotal);
+            // Fixed amount discount - apply only once, up to item price
+            itemCouponDiscount = Math.min(validCoupon.discountValue, itemFinalPrice);
           }
           
-          // Apply coupon discount to item's finalPrice (per unit)
+          // Spread the single discount across all units
           const couponDiscountPerUnit = itemCouponDiscount / quantity;
           validatedItem.orderItem.couponDiscount = couponDiscountPerUnit;
           validatedItem.orderItem.finalPrice = Math.max(0, itemFinalPrice - couponDiscountPerUnit);

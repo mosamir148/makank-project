@@ -344,14 +344,15 @@ const YourCart = () => {
     }
 
     // Calculate coupon discount only for the selected item
+    // Apply discount only once, regardless of quantity
     if (selectedItem) {
-      const itemSubtotal = selectedItem.subtotal;
+      const itemPrice = selectedItem.itemPrice; // Use unit price, not subtotal
       let itemCouponDiscount = 0;
 
       if (couponData.discountType === "percent" || couponData.discountType === "percentage") {
-        itemCouponDiscount = (itemSubtotal * couponData.discountValue) / 100;
+        itemCouponDiscount = (itemPrice * couponData.discountValue) / 100;
       } else {
-        itemCouponDiscount = Math.min(couponData.discountValue, itemSubtotal);
+        itemCouponDiscount = Math.min(couponData.discountValue, itemPrice);
       }
 
       setDiscount(itemCouponDiscount);
@@ -571,15 +572,16 @@ const handleGuestSubmit = async (e) => {
     }
 
     // Calculate coupon discount only for the selected item
+    // Apply discount only once, regardless of quantity
     if (selectedItem) {
-      const itemSubtotal = selectedItem.subtotal;
+      const itemPrice = selectedItem.itemPrice; // Use unit price, not subtotal
       let itemCouponDiscount = 0;
 
       if (coupon.discountType === "percent" || coupon.discountType === "percentage") {
-        itemCouponDiscount = (itemSubtotal * coupon.discountValue) / 100;
+        itemCouponDiscount = (itemPrice * coupon.discountValue) / 100;
       } else {
-        // Fixed amount discount - don't exceed item subtotal
-        itemCouponDiscount = Math.min(coupon.discountValue, itemSubtotal);
+        // Fixed amount discount - don't exceed item price
+        itemCouponDiscount = Math.min(coupon.discountValue, itemPrice);
       }
 
       setDiscount(itemCouponDiscount);
