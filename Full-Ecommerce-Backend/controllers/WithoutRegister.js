@@ -5,30 +5,140 @@ const Product = require("../models/Product");
 
 const createWithoutUserAndCart = async (req, res) => {
   try {
-    const { username, email, phone, address, productId, quantity } = req.body;
+    const { 
+      username, 
+      email, 
+      phone, 
+      address, 
+      productId, 
+      quantity,
+      couponCode,
+      discount,
+      paymentMethod
+    } = req.body;
 
+    console.log("📥 Guest order request:", {
+      username,
+      email,
+      phone,
+      address,
+      productId,
+      quantity,
+      couponCode,
+      discount,
+      paymentMethod
+    });
+
+    // Check if at least one product ID is provided
     if (!productId) {
-      return res.status(400).json({ message: "productId is required" });
+      console.error("❌ No product ID provided in guest order");
+      return res.status(400).json({ 
+        message: "productId is required",
+        status: 400,
+        error: "Product ID is required"
+      });
+    }
+
+    // Validate required fields
+    if (!username || !phone || !address) {
+      console.error("❌ Missing required fields in guest order");
+      return res.status(400).json({ 
+        message: "username, phone, and address are required",
+        status: 400,
+        error: "Missing required fields"
+      });
     }
 
     // 1️⃣ إنشاء الزائر
-    const guest = await WithoutRegister.create({ username, email, phone, address });
+    let guest = await WithoutRegister.findOne({ phone });
+    if (!guest) {
+      guest = await WithoutRegister.create({ username, email, phone, address });
+      console.log("✅ Created new guest user");
+    } else {
+      // Update guest info if exists
+      guest.username = username;
+      guest.address = address;
+      if (email) guest.email = email;
+      await guest.save();
+      console.log("✅ Updated existing guest user");
+    }
 
     // 2️⃣ إنشاء Cart مربوط بالزائر
-    const cartItem = await Cart.create({
+    const cartData = {
       guest: guest._id,
-      product: productId,
       quantity: quantity || 1,
       status: "Pending",
+      paymentMethod: paymentMethod || "Cash",
+    };
+
+    // Add product reference
+    if (productId) cartData.product = productId;
+
+    // Add optional fields
+    if (couponCode) cartData.couponCode = couponCode;
+    if (discount) cartData.discount = discount;
+
+    // Check for existing cart item to avoid duplicates
+    let cartItem = await Cart.findOne({
+      guest: guest._id,
+      ...(productId && { product: productId }),
     });
 
-    await cartItem.populate("product");
-    await cartItem.populate("guest");
+    if (cartItem) {
+      // Update existing cart item
+      cartItem.quantity += quantity || 1;
+      if (couponCode) cartItem.couponCode = couponCode;
+      if (discount) cartItem.discount = discount;
+      if (paymentMethod) cartItem.paymentMethod = paymentMethod;
+      await cartItem.save();
+      console.log("✅ Updated existing cart item");
+    } else {
+      // Create new cart item
+      cartItem = await Cart.create(cartData);
+      console.log("✅ Created new cart item");
+    }
 
-    res.status(201).json(cartItem);
+    await cartItem.populate([
+      { path: "product", select: "title category brand description price image stock shippingPrice supportsDiscount" },
+      { path: "guest" }
+    ]);
+
+    res.status(201).json({
+      message: "Order created successfully",
+      cartItem,
+      guest: {
+        _id: guest._id,
+        username: guest.username,
+        email: guest.email,
+        phone: guest.phone,
+        address: guest.address,
+        paymentMethod: paymentMethod || "Cash"
+      }
+    });
   } catch (error) {
     console.error("❌ Error creating guest cart:", error);
-    res.status(500).json({ message: "Error creating guest cart", error: error.message });
+    console.error("❌ Error details:", {
+      message: error.message,
+      code: error.code,
+      name: error.name,
+      stack: error.stack
+    });
+    
+    // Handle duplicate key errors
+    if (error.code === 11000) {
+      console.log("⚠️ Duplicate key error, attempting to handle gracefully");
+      return res.status(400).json({ 
+        message: "This order already exists",
+        status: 400,
+        error: "Duplicate entry"
+      });
+    }
+    
+    res.status(500).json({ 
+      message: "Error creating guest cart",
+      status: 500,
+      error: error.message 
+    });
   }
 };
 
@@ -39,7 +149,7 @@ const getWithoutUsers = async (req, res) => {
 
     const usersWithProducts = await Promise.all(
       users.map(async (user) => {
-        const carts = await Cart.find({ user: user._id }).populate("product");
+        const carts = await Cart.find({ user: user._id }).populate("product", "title category brand description price image shippingPrice supportsDiscount");
         return {
           ...user._doc,
           products: carts.map(cart => ({

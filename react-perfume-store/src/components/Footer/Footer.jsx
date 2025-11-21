@@ -4,6 +4,7 @@ import React from 'react';
 
 const Footer = () => {
   const { t } = useLang();
+  const logo = "/assets/Logo3.png";
 
   return (
     <footer className="footer">
@@ -11,14 +12,10 @@ const Footer = () => {
         <div className="footer-content">
           
           <div className="footer-section">
-            <h3>LUXE PARFUM</h3>
-            <p>{t("hero1sub")}</p>
-            <div className="social-links">
-              <a href="#" className="social-link">📘</a>
-              <a href="#" className="social-link">📷</a>
-              <a href="#" className="social-link">🐦</a>
-              <a href="#" className="social-link">📱</a>
+            <div className="footer-logo">
+              <img src={logo} alt="Makanak Logo" className="footer-logo-img" />
             </div>
+            <p className="footer-tagline">Touches of Heritage</p>
           </div>
 
           {/* --- القسم الثاني --- */}

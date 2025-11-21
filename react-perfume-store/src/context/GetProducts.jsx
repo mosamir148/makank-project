@@ -11,7 +11,9 @@ const GetProducts = ({children }) => {
             const res = await axios.get(`${BASE_URL}/product`);
             setProducts(res.data.products);
         } catch (err) {
-            console.log(err);
+            // Silently handle errors (connection refused, network errors, etc.)
+            // Products array will remain empty if fetch fails
+            setProducts([]);
         }
     };
 

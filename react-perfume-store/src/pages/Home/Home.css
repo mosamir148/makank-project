@@ -1,0 +1,25 @@
+/* Home Page Container Padding */
+.home-page {
+  padding-top: 0;
+  margin-top: 0;
+}
+
+/* Remove any spacing before hero section */
+.home-page > *:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+/* Ensure all containers in home page have consistent padding */
+.home-page .container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+@media screen and (max-width: 768px) {
+  .home-page .container {
+    padding: 0 1rem;
+  }
+}
+

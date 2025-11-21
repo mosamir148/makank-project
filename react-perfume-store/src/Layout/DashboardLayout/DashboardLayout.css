@@ -7,11 +7,104 @@
   display: flex;
   position: relative;
   flex: 1;
+  margin-top: 0;
+  padding-top: 85px; /* Account for fixed header height */
 }
 
 .dashboard-content {
-  padding: 2rem 4vw;
+  padding: 2rem;
   flex: 1;
   background-color: var(--light-gray);
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: auto;
+  transition: all 0.3s ease;
+  min-height: calc(100vh - 5rem);
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* === RTL Layout === */
+body[dir="rtl"] .dashboard-content {
+  margin-right: 300px; /* Sidebar width */
+  margin-left: auto; /* Center the content */
+  transition: margin 0.3s ease;
+}
+
+/* === LTR Layout === */
+body[dir="ltr"] .dashboard-content {
+  margin-left: 300px; /* Sidebar width */
+  margin-right: auto; /* Center the content */
+  transition: margin 0.3s ease;
+}
+
+/* Collapsed Sidebar - RTL Layout */
+body[dir="rtl"] .dashboard-content.sidebar-collapsed {
+  margin-right: 80px; /* Collapsed sidebar width */
+  transition: margin 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Collapsed Sidebar - LTR Layout */
+body[dir="ltr"] .dashboard-content.sidebar-collapsed {
+  margin-left: 80px; /* Collapsed sidebar width */
+  transition: margin 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Sidebar Toggle Button - Removed, using collapse button instead */
+
+/* Sidebar Overlay - Mobile Only */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 85px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  backdrop-filter: blur(2px);
+}
+
+/* === Responsive (mobile) === */
+@media (max-width: 768px) {
+  /* Prevent horizontal overflow on mobile */
+  body, html {
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+  }
+
+  .dashboard-section {
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+  }
+
+  .sidebar-overlay {
+    display: block;
+    top: 75px; /* Match mobile header height */
+  }
+
+  .dashboard-main {
+    padding-top: 75px; /* Smaller padding on mobile for fixed header */
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+  }
+  
+  .dashboard-content {
+    padding: 1rem;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 !important;
+    overflow-x: hidden;
+  }
+  
+  body[dir="rtl"] .dashboard-content,
+  body[dir="ltr"] .dashboard-content {
+    margin: 0 !important;
+    width: 100%;
+    max-width: 100%;
+  }
 }

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import "./Wish.css"; 
+import "../Cart/Cart.css"; 
 import { BASE_URL } from "../../../assets/url";
 import Swal from "sweetalert2";
 import Loading from "../../../components/Loading/Loading";
@@ -181,8 +181,7 @@ const Wish = () => {
             <img src={product.image} alt="product" crossOrigin="anonymous" />
             <p><strong>الاسم:</strong> {product.title}</p>
             <p><strong>الوصف:</strong> {product.description}</p>
-            <p><strong>السعر:</strong> ${product.price}</p>
-            <p><strong>الخصم:</strong> {product.discount || 0}%</p>
+            <p><strong>السعر:</strong> {product.price}</p>
             <p><strong>تاريخ الإنشاء:</strong> {new Date(product.createdAt).toLocaleString()}</p>
             <p><strong>آخر تعديل:</strong> {new Date(product.updatedAt).toLocaleString()}</p>
           </div>
@@ -192,4 +191,4 @@ const Wish = () => {
   );
 };
 
-export default React.memo(Wish);
+export default Wish;

@@ -21,7 +21,7 @@ exports.SignUp = async (req,res)=>{
             image: req.file ? req.file.path : null
         })
          await NewUser.save()
-         const {password:_,...info} = NewUser._doc
+         const {password:_, _id, ...info} = NewUser._doc
         res.status(201).json({ message: "User Created Successfully!" ,User: info})
 
     }catch(err){
@@ -59,7 +59,7 @@ exports.Login = async (req, res) => {
       { expiresIn: "3d" }
     );
 
-    const { password: _, ...info } = user._doc;
+    const { password: _, _id, ...info } = user._doc;
 
     res
       .cookie("token", token, {
@@ -105,10 +105,14 @@ exports.Refetch = async (req, res) => {
     if (err) return res.status(403).json({ message: "Invalid token" });
 
     try {
-      const user = await User.findById(decoded._id).select("-password");
+      const user = await User.findById(decoded._id).select("-password -_id");
       if (!user) return res.status(404).json({ message: "User not found" });
 
-      res.status(200).json(user);
+      // Convert to plain object and ensure _id is not included
+      const userObj = user.toObject();
+      delete userObj._id;
+      
+      res.status(200).json(userObj);
     } catch (err) {
       res.status(500).json({ message: "Server error" });
     }
@@ -117,17 +121,47 @@ exports.Refetch = async (req, res) => {
 
 exports.GetUsers = async (req,res)=>{
     try{
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+
+        console.log("GetUsers API - Request params:", { page, limit, skip });
+        console.log("Query params received:", req.query);
+
+        const totalCount = await User.countDocuments();
+        
         const Users = await User.find()
-        res.status(200).json({Users})
+            .skip(skip)
+            .limit(limit)
+            .select("-password")
+            .lean();
+
+        console.log("GetUsers API - Returning:", {
+            usersCount: Users.length,
+            totalCount,
+            currentPage: page,
+            totalPages: Math.ceil(totalCount / limit)
+        });
+
+        res.status(200).json({
+            Users,
+            totalCount,
+            currentPage: page,
+            totalPages: Math.ceil(totalCount / limit)
+        });
     }catch(err){
-        res.status(500).json({message:err})
+        console.error("GetUsers API Error:", err);
+        res.status(500).json({message:err.message || err})
     }
 }
 
 exports.GetUser = async (req,res)=>{
     try{
         const getUser = await User.findById(req.params.id)
-        const {password,...info} = getUser._doc
+        if (!getUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        const {password, _id, ...info} = getUser._doc
         res.status(200).json({info})
 
     }catch(err){
@@ -139,7 +173,27 @@ exports.UpdateUser = async (req,res) =>{
   try {
     const updateData = { ...req.body };
 
+    // If verifyToken is used (not verifyAdmin), ensure user can only update their own profile
+    if (req.user && req.user._id && req.user.role !== 'admin') {
+      if (req.params.id !== req.user._id.toString()) {
+        return res.status(403).json({ message: "You can only update your own profile" });
+      }
+    }
+
+    // Get old user data to compare changes
+    const oldUser = await User.findById(req.params.id);
+    if (!oldUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
     if (req.file) updateData.image = req.file.path;
+
+    // Hash password if provided
+    if (updateData.password) {
+      const bcrypt = require("bcrypt");
+      const hashedPassword = await bcrypt.hash(updateData.password, 10);
+      updateData.password = hashedPassword;
+    }
 
     const updated = await User.findByIdAndUpdate(
       req.params.id,
@@ -147,7 +201,48 @@ exports.UpdateUser = async (req,res) =>{
       { new: true }
     );
 
-    const { password, ...info } = updated._doc;
+    if (!updated) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // If admin updated user info, notify the user
+    if (req.user.role === "admin" && req.params.id !== req.user._id.toString()) {
+      const { createNotification } = require("./Notification");
+      
+      // Check what fields were changed
+      const changedFields = [];
+      if (updateData.username && oldUser.username !== updateData.username) {
+        changedFields.push("username");
+      }
+      if (updateData.email && oldUser.email !== updateData.email) {
+        changedFields.push("email");
+      }
+      if (updateData.phone && oldUser.phone !== updateData.phone) {
+        changedFields.push("phone");
+      }
+      if (updateData.address && oldUser.address !== updateData.address) {
+        changedFields.push("address");
+      }
+      if (updateData.image) {
+        changedFields.push("profile image");
+      }
+
+      if (changedFields.length > 0) {
+        await createNotification({
+          recipientId: req.params.id,
+          type: "user_info_updated",
+          title: "Profile Information Updated",
+          message: `Admin has updated your ${changedFields.join(", ")}. Please review your profile information.`,
+          relatedUserId: req.params.id,
+          metadata: {
+            changedFields,
+            updatedBy: req.user._id,
+          },
+        });
+      }
+    }
+
+    const { password, _id, ...info } = updated._doc;
     res.status(200).json({ message: "User Updated Successfully", info });
   } catch (err) {
     res.status(500).json({ message: err.message });

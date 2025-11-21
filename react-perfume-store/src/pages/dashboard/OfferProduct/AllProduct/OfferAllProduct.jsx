@@ -3,6 +3,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
+import "./../../Product/AllProduct/AllProduct.css";
 import { productsContext } from "../../../../context/GetProducts";
 import { BASE_URL } from "../../../../assets/url";
 import Loading from "../../../../components/Loading/Loading";
@@ -109,8 +110,8 @@ const OfferAllProduct = () => {
                       />
                     </td>
                     <td>{item.title}</td>
-                    <td>${item.price}</td>
-                    <td>${item.discount}</td>
+                    <td>{item.price}</td>
+                    <td>{item.discount}</td>
                     <td>{item.category}</td>
                     <td>{new Date(item.startDate).toLocaleDateString()}</td>
                     <td>{new Date(item.endDate).toLocaleDateString()}</td>

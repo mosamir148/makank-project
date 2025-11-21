@@ -17,13 +17,12 @@ const YourCart = () => {
   const [showLoginForm, setShowLoginForm] = useState(false);
   const [showRegisterForm, setShowRegisterForm] = useState(false);
   const {setUser, user, loading: userLoading} = useContext(userContext);
-  // Check if user is logged in - check for _id, id, or userId (handle different user object structures)
-  // Also ensure user is not an empty object
-  const isLoggedIn = user && 
-    user !== null && 
+  // Check if user is logged in - simplified and more reliable check
+  // If user object exists and has properties, consider logged in (backend will validate)
+  const isLoggedIn = user !== null && 
+    user !== undefined &&
     typeof user === 'object' && 
-    Object.keys(user).length > 0 &&
-    (user._id || user.id || user.userId);
+    Object.keys(user).length > 0;
   const { t } = useLang()
   const [guestData, setGuestData] = useState({
     username: "",
@@ -32,6 +31,11 @@ const YourCart = () => {
     phoneWhats: "",
     email: "",
   });
+
+  // COUPON state - declared early so it can be used in useEffect
+  const [couponCode, setCouponCode] = useState("");
+  const [discount, setDiscount] = useState(0);
+  const [couponData, setCouponData] = useState(null); // Store coupon data including eligible products
 
   // LOGIN
 
@@ -111,17 +115,14 @@ const YourCart = () => {
       withCredentials: true,
       headers: { "Content-Type": "multipart/form-data" },
     });
-    console.log("Full response:", res);
     const newUser = res.data.User;
     setUser(newUser);
-    console.log("User registered:", newUser);
     await AddAllToCart({ userId: res.data.User._id });
  
     toast.success("✅ تم تسجيل طلبك بنجاح وسيتم التواصل معك قريبًا");
     setShowRegisterForm(false);
 
   } catch (err) {
-    console.error("Register error:", err);
     if (err.response) {
       if (err.response.status === 400) toast.error("البريد الإلكتروني موجود بالفعل");
       else toast.error(err.response.data.message || "فشل إنشاء الحساب");
@@ -140,20 +141,37 @@ const YourCart = () => {
     try {
       const res = await axios.get(`${BASE_URL}/wish/mywishlist`, { withCredentials: true });
       const dbArray = Array.isArray(res?.data) ? res.data : [];
-      console.log("DB Wishlist:", res.data);
 
       const dbItems = dbArray.map((item) => {
         let product = null;
 
-        if (item.product) product = { ...item.product, type: "product" };
-        else if (item.featuredProduct) product = { ...item.featuredProduct, type: "featured" };
-        else if (item.onlineProduct) product = { ...item.onlineProduct, type: "online" };
-        else if (item.offerProduct) product = { ...item.offerProduct, type: "offer" };
-        else product = { ...item, type: "product" };
+        // Try to get product from populated fields
+        if (item.product && item.product._id) {
+          product = { ...item.product, type: "product" };
+        } else if (item.featuredProduct && item.featuredProduct._id) {
+          product = { ...item.featuredProduct, type: "featured" };
+        } else if (item.onlineProduct && item.onlineProduct._id) {
+          product = { ...item.onlineProduct, type: "online" };
+        } else if (item.offerProduct && item.offerProduct._id) {
+          product = { ...item.offerProduct, type: "offer" };
+        }
+        
+        // If product is still null, try to use raw IDs to create a minimal product object
+        if (!product) {
+          const productId = item.rawProductId || item.rawFeaturedProductId || item.rawOnlineProductId || item.rawOfferProductId;
+          if (productId) {
+            console.warn("⚠️ Product populate failed for wishlist item:", item._id, "productId:", productId);
+            // Create a minimal product object with the ID so the frontend can handle it
+            product = { _id: productId, type: "product" };
+          } else {
+            // Last resort: use item itself
+            product = { ...item, type: "product" };
+          }
+        }
 
         return {
-          _id: item._id || product._id,
-          product,
+          _id: item._id || product?._id,
+          product: product || {},
           quantity: item.quantity || 1,
           from: "db",
         };
@@ -161,7 +179,7 @@ const YourCart = () => {
 
       allItems = [...allItems, ...dbItems];
     } catch (err) {
-      console.log("❌ DB Fetch Error:", err);
+      // DB Fetch Error - silently handled
     }
 
 
@@ -171,7 +189,7 @@ const YourCart = () => {
       const local2 = JSON.parse(localStorage.getItem("guestWishlist")) || [];
       localWishlist = [...local1, ...local2];
     } catch (err) {
-      console.log("⚠️ LocalStorage Parse Error:", err);
+      // LocalStorage Parse Error - silently handled
     }
 
     if (Array.isArray(localWishlist) && localWishlist.length > 0) {
@@ -197,7 +215,7 @@ const YourCart = () => {
 
     setCart(allItems);
   } catch (err) {
-    console.log("❌ MyCart Global Error:", err);
+    // MyCart Global Error - silently handled
   }
 };
 
@@ -267,12 +285,76 @@ const YourCart = () => {
     );
   };
 
+  // Recalculate coupon discount when cart or couponData changes
+  useEffect(() => {
+    if (!couponData || cart.length === 0) return;
+
+    const eligibleProductIds = couponData.products || [];
+    const eligibleItems = [];
+
+    cart.forEach((item) => {
+      const productId = item.product?._id || item._id;
+      if (productId && eligibleProductIds.includes(productId.toString())) {
+        const product = item.product || item;
+        const itemPrice = product.finalPrice || product.price || 0;
+        const quantity = item.quantity || 1;
+        eligibleItems.push({
+          item,
+          productId: productId.toString(),
+          itemPrice,
+          quantity,
+          subtotal: itemPrice * quantity
+        });
+      }
+    });
+
+    if (eligibleItems.length === 0) {
+      setDiscount(0);
+      setCouponData(null);
+      setCouponCode("");
+      return;
+    }
+
+    // Select only ONE item based on couponApplyTo configuration
+    const applyTo = couponData.couponApplyTo || "first"; // Default to "first"
+    let selectedItem = null;
+
+    if (applyTo === "first") {
+      selectedItem = eligibleItems[0];
+    } else if (applyTo === "lowest") {
+      selectedItem = eligibleItems.reduce((lowest, current) => {
+        return current.itemPrice < lowest.itemPrice ? current : lowest;
+      });
+    } else if (applyTo === "highest") {
+      selectedItem = eligibleItems.reduce((highest, current) => {
+        return current.itemPrice > highest.itemPrice ? current : highest;
+      });
+    }
+
+    // Calculate coupon discount only for the selected item
+    if (selectedItem) {
+      const itemSubtotal = selectedItem.subtotal;
+      let itemCouponDiscount = 0;
+
+      if (couponData.discountType === "percent" || couponData.discountType === "percentage") {
+        itemCouponDiscount = (itemSubtotal * couponData.discountValue) / 100;
+      } else {
+        itemCouponDiscount = Math.min(couponData.discountValue, itemSubtotal);
+      }
+
+      setDiscount(itemCouponDiscount);
+    } else {
+      setDiscount(0);
+      setCouponData(null);
+      setCouponCode("");
+    }
+  }, [cart, couponData]);
+
 
 const AddAllToCart = async ({ userId, guestId }) => {
   try {
     for (const item of cart) {
       if (!item.product?._id) {
-        console.warn("Skipping item without ID:", item);
         continue;
       }
 
@@ -302,91 +384,46 @@ const AddAllToCart = async ({ userId, guestId }) => {
           payload.productId = item.product._id;
       }
 
-      console.log("🛒 Adding to cart:", payload);
       await axios.post(`${BASE_URL}/cart/add`, payload, { withCredentials: true });
     }
 
     toast.success("✅ تم طلب المنتجات بنجاح وسيتم التواصل معك قريبًا");
   } catch (err) {
-    console.error("❌ AddAllToCart error:", err.response?.data || err);
     toast.error("حدث خطأ أثناء تنفيذ الطلب");
   }
 };
 
 
   const handleCheckout = async () => {
-    // Debug logging
-    const hasToken = document.cookie.includes("token");
-    console.log("🔍 Checkout clicked - Auth check:", {
-      user: user,
-      userLoading: userLoading,
-      isLoggedIn: isLoggedIn,
-      hasUserId: !!user?._id,
-      hasToken: hasToken,
-      userKeys: user ? Object.keys(user) : [],
-      userString: JSON.stringify(user)
-    });
-
     // Wait for user context to load
     if (userLoading) {
       toast.info("جاري التحقق من تسجيل الدخول...");
       return;
     }
 
-    // Check authentication - use user context first, fallback to cookie check
+    if (cart.length === 0) {
+      toast.error("السلة فارغة");
+      return;
+    }
+
+    // Check authentication - prioritize user object, then check cookie as fallback
+    const hasToken = document.cookie.split(';').some(cookie => cookie.trim().startsWith('token='));
     const authenticated = isLoggedIn || (hasToken && !userLoading);
     
-    if (authenticated) {
-      try {
-        if (cart.length === 0) {
-          toast.error("السلة فارغة");
-          return;
-        }
-
-        // Prepare items array for createOrder endpoint
-        const items = cart.map(item => ({
-          productId: item.product?._id,
-          quantity: item.quantity || 1
-        })).filter(item => item.productId); // Filter out items without productId
-
-        if (items.length === 0) {
-          toast.error("لا توجد منتجات صالحة في السلة");
-          return;
-        }
-
-        const orderData = {
-          items: items,
-          couponCode: couponCode || null,
-          discount: discount || 0,
-          paymentMethod: "Cash"
-        };
-
-        console.log("📤 Creating order for logged-in user:", {
-          userId: user._id || user.id || user.userId,
-          itemsCount: items.length
-        });
-
-        const res = await axios.post(`${BASE_URL}/cart/createOrder`, orderData, {
-          withCredentials: true
-        });
-
-        // Clear cart after successful order
-        setCart([]);
-        localStorage.removeItem("guestWishlist");
-        localStorage.removeItem("localWish");
-        
-        toast.success("✅ تم إنشاء الطلب بنجاح!");
-        // Navigate to order success page or orders page
-        navigate("/order-success", { state: { order: res.data } });
-      } catch (err) {
-        console.error("❌ Create order error:", err.response?.data || err);
-        toast.error(err.response?.data?.message || "حدث خطأ أثناء إنشاء الطلب");
-      }
-    } else {
-      // If not logged in, show popup to login/register/guest
-      console.log("⚠️ User not logged in, showing popup");
-      setShowPopup(true);
-    }
+    // Set flag to indicate legitimate navigation from cart
+    sessionStorage.setItem("navigatingFromCart", "true");
+    
+    // Navigate to checkout page with cart data for review
+    // Guest users will see the guest information form on checkout page
+    navigate("/checkout", { 
+      state: { 
+        cart: cart,
+        couponCode: couponCode,
+        discount: discount,
+        fromCart: true,
+        isGuest: !authenticated
+      } 
+    });
   };
 
   const handleGuestContinue = async () => {
@@ -447,7 +484,6 @@ const handleGuestSubmit = async (e) => {
     toast.success("✅ تم تسجيل طلبك بنجاح وسيتم التواصل معك قريبًا");
 
   } catch (err) {
-    console.error("Guest submit error:", err.response?.data || err);
     toast.error(err.response?.data?.message || "حدث خطأ أثناء تسجيل الطلب");
   }
 };
@@ -465,28 +501,86 @@ const handleGuestSubmit = async (e) => {
   // total is subtotal after item-level discounts, before coupon discount
   const total = totalAfterDiscount;
 
-// COUPON
-const [couponCode, setCouponCode] = useState("");
-const [discount, setDiscount] = useState(0);
-const applyCoupon = async () => {
+  // COUPON function
+  const applyCoupon = async () => {
   if (!couponCode) return toast("من فضلك أدخل كود الكوبون");
 
   try {
     const res = await axios.post(`${BASE_URL}/coupon/validate`, { code: couponCode });
     const coupon = res.data.coupon;
+    
+    // Store coupon data including eligible product IDs
+    setCouponData(coupon);
 
-    // Calculate coupon discount based on subtotal (total after item discounts)
-    if (coupon.discountType === "percent" || coupon.discountType === "percentage") {
-      setDiscount((total * coupon.discountValue) / 100);
-    } else {
-      // Fixed amount discount - don't exceed subtotal
-      setDiscount(Math.min(coupon.discountValue, total));
+    // Find all eligible items (items whose products are in the coupon's products list)
+    const eligibleProductIds = coupon.products || [];
+    const eligibleItems = [];
+
+    cart.forEach((item) => {
+      const productId = item.product?._id || item._id;
+      if (productId && eligibleProductIds.includes(productId.toString())) {
+        const product = item.product || item;
+        const itemPrice = product.finalPrice || product.price || 0;
+        const quantity = item.quantity || 1;
+        eligibleItems.push({
+          item,
+          productId: productId.toString(),
+          itemPrice,
+          quantity,
+          subtotal: itemPrice * quantity
+        });
+      }
+    });
+
+    if (eligibleItems.length === 0) {
+      toast.error("الكوبون غير صالح للمنتجات الموجودة في السلة");
+      setDiscount(0);
+      setCouponData(null);
+      return;
     }
 
-    toast.success(`✅ تم تطبيق الكوبون (${coupon.code}) بنجاح!`);
+    // Select only ONE item based on couponApplyTo configuration
+    const applyTo = coupon.couponApplyTo || "first"; // Default to "first"
+    let selectedItem = null;
+
+    if (applyTo === "first") {
+      // Apply to the first eligible item
+      selectedItem = eligibleItems[0];
+    } else if (applyTo === "lowest") {
+      // Apply to the eligible item with the lowest price
+      selectedItem = eligibleItems.reduce((lowest, current) => {
+        return current.itemPrice < lowest.itemPrice ? current : lowest;
+      });
+    } else if (applyTo === "highest") {
+      // Apply to the eligible item with the highest price
+      selectedItem = eligibleItems.reduce((highest, current) => {
+        return current.itemPrice > highest.itemPrice ? current : highest;
+      });
+    }
+
+    // Calculate coupon discount only for the selected item
+    if (selectedItem) {
+      const itemSubtotal = selectedItem.subtotal;
+      let itemCouponDiscount = 0;
+
+      if (coupon.discountType === "percent" || coupon.discountType === "percentage") {
+        itemCouponDiscount = (itemSubtotal * coupon.discountValue) / 100;
+      } else {
+        // Fixed amount discount - don't exceed item subtotal
+        itemCouponDiscount = Math.min(coupon.discountValue, itemSubtotal);
+      }
+
+      setDiscount(itemCouponDiscount);
+      toast.success(`✅ تم تطبيق الكوبون (${coupon.code}) بنجاح!`);
+    } else {
+      toast.error("الكوبون غير صالح للمنتجات الموجودة في السلة");
+      setDiscount(0);
+      setCouponData(null);
+    }
   } catch (err) {
     toast.error(err.response?.data?.message || "كود غير صالح");
     setDiscount(0);
+    setCouponData(null);
   }
 };
 
@@ -560,45 +654,39 @@ const [timers, setTimers] = useState({});
           <p className="empty">🛒 {t("noProduct")}</p>
         ) : (
           cart.map((cartItem, index) => {
-            const product = 
-            cartItem?.product?.featuredProduct || 
-            cartItem?.product?.onlineProduct || 
-            cartItem?.product?.offerProduct || 
-            cartItem?.product || 
-            {};
+            // Product is already extracted in MyCart function and stored in cartItem.product
+            // The structure is: { _id, product: {...product data...}, quantity, from }
+            const product = cartItem?.product || {};
 
             return (  
               <div key={index} className="cart-card">
                 <div className="cart-image">
                   <img
-                  loading='lazy'
-                     src={product.image || "default-image.jpg"}
-                      alt={product.title ||  "منتج"}
+                    loading='lazy'
+                    src={product.image || "default-image.jpg"}
+                    alt={product.title || "منتج"}
                   />
                 </div>
                 <div className="cart-info">
-                  <h3>{product.title  ||  "منتج بدون عنوان"} </h3>
-                  <h3>{product.brand ||  "منتج بدون براند"}</h3>
-                  <p className="cart-desc">{product.category || "منتج بدون كاتيجوري"}</p>
-                  <p className="cart-desc">{product.description || "منتج بدون وصف"}</p>
-                  <div className="cart-price">
-                    {product.finalPrice && product.finalPrice !== product.price ? (
-                      <>
-                        <p className="cart-desc original-price" style={{ textDecoration: 'line-through', color: '#999' }}>
-                          {product.price || product.originalPrice || 0}
-                        </p>
-                        <p className="cart-desc final-price" style={{ color: '#D4AF37', fontWeight: 'bold' }}>
-                          {product.finalPrice}
-                        </p>
-                        {product.discountAmount && (
-                          <p className="cart-desc discount-badge" style={{ color: '#22C55E', fontSize: '0.9em' }}>
-                            خصم: {product.discountAmount}
-                          </p>
-                        )}
-                      </>
-                    ) : (
-                      <p className="cart-desc">{product.price || product.originalPrice || 0}</p>
-                    )}
+                  <div className="cart-header">
+                    <h3 className="cart-title-text">{product.title || "منتج بدون عنوان"}</h3>
+                    <h4 className="cart-brand">{product.brand || "منتج بدون براند"}</h4>
+                  </div>
+                  
+                  <div className="cart-price-section">
+                    <div className="cart-price">
+                      {product.finalPrice && product.finalPrice !== product.price ? (
+                        <>
+                          <span className="original-price">{product.price || product.originalPrice || 0} ج.م</span>
+                          <span className="final-price">{product.finalPrice} ج.م</span>
+                          {product.discountAmount && (
+                            <span className="discount-badge">خصم {product.discountAmount} ج.م</span>
+                          )}
+                        </>
+                      ) : (
+                        <span className="final-price">{product.price || product.originalPrice || 0} ج.م</span>
+                      )}
+                    </div>
                   </div>
                       
                   {product.startDate && product.endDate && (
@@ -607,18 +695,21 @@ const [timers, setTimers] = useState({});
                     </div>
                   )}
 
-                  <div className="quantity-controls">
-                    <button className="qty-btn" onClick={() => handleDecrease(index)}>−</button>
-                    <span className="qty-value">{cartItem.quantity || 1}</span>
-                    <button className="qty-btn" onClick={() => handleIncrease(index)}>+</button>
+                  <div className="cart-actions">
+                    <div className="quantity-controls">
+                      <button className="qty-btn" onClick={() => handleDecrease(index)}>−</button>
+                      <span className="qty-value">{cartItem.quantity || 1}</span>
+                      <button className="qty-btn" onClick={() => handleIncrease(index)}>+</button>
+                    </div>
+                    <button
+                      onClick={() => DeleteCart(cartItem._id, cartItem.from)}
+                      className="delete-btn"
+                      aria-label="حذف المنتج"
+                    >
+                      <RiDeleteBack2Fill size={22} />
+                    </button>
                   </div>
                 </div>
-                <button
-                  onClick={() => DeleteCart(cartItem._id, cartItem.from)}
-                  className="delete-btn"
-                >
-                  <RiDeleteBack2Fill size={26} />
-                </button>
               </div>
             );
           })

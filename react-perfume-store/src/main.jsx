@@ -7,6 +7,9 @@ import UserContextProvider from './context/UserContext.jsx'
 import { Toaster } from 'react-hot-toast'
 import GetProducts from './context/GetProducts.jsx'
 import { LangProvider } from './context/LangContext.jsx'
+import NotificationContextProvider from './context/NotificationContext.jsx'
+// Initialize axios interceptors
+import './utils/axiosConfig'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -14,8 +17,10 @@ createRoot(document.getElementById('root')).render(
       <UserContextProvider>
         <GetProducts>
           <LangProvider>
-            <Toaster position="top-center" />
-            <App />
+            <NotificationContextProvider>
+              <Toaster position="top-center" />
+              <App />
+            </NotificationContextProvider>
           </LangProvider>
         </GetProducts>
       </UserContextProvider>

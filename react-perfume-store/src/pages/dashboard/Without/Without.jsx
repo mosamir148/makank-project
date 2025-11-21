@@ -193,8 +193,7 @@ const handleDeleteProduct = async (userId) => {
             <img loading='lazy' src={product.product.image} alt={product.product.name} crossOrigin="anonymous" />
             <p><strong>الاسم:</strong> {product.product.title}</p>
             <p><strong>الوصف:</strong> {product.product.description}</p>
-            <p><strong>السعر:</strong> ${product.product.price}</p>
-            <p><strong>الخصم:</strong> {product.product.discount || 0}%</p>
+            <p><strong>السعر:</strong> {product.product.price}</p>
             <p><strong>الكمية:</strong> {product.quantity}</p>
           </div>
         </div>

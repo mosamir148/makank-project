@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-// import "./AddProduct.css";
+import "./../../Product/AddProduct/AddProduct.css";
 import { BASE_URL } from "../../../../assets/url";
 
 const FeaturedAddProduct = () => {

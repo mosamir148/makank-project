@@ -1,0 +1,632 @@
+.add-edit-offer-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: var(--light-gray);
+  min-height: 100vh;
+  transition: background-color var(--transition);
+}
+
+/* Dark mode container */
+body.dark .add-edit-offer-container {
+  background-color: var(--dark-gray);
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.back-btn {
+  padding: 0.5rem 1rem;
+  background-color: #f1f5f9;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #1a202c;
+  transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+  background-color: #e2e8f0;
+}
+
+/* Dark mode back button */
+body.dark .back-btn {
+  background-color: var(--medium-gray);
+  border-color: var(--light-gray);
+  color: var(--white);
+}
+
+body.dark .back-btn:hover {
+  background-color: var(--light-gray);
+}
+
+.page-header h2 {
+  margin: 0;
+  color: #1a202c;
+  transition: color var(--transition);
+}
+
+/* Dark mode header */
+body.dark .page-header h2 {
+  color: var(--white);
+}
+
+.offer-form-page {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  transition: background-color var(--transition), box-shadow var(--transition);
+}
+
+/* Dark mode form */
+body.dark .offer-form-page {
+  background: var(--medium-gray);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #1a202c;
+  transition: color var(--transition);
+}
+
+/* Dark mode labels */
+body.dark .form-group label {
+  color: var(--white);
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group input[type="datetime-local"],
+.form-group select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease, background-color var(--transition), color var(--transition);
+  background-color: white;
+  color: #1a202c;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #d4af37;
+}
+
+/* Dark mode inputs */
+body.dark .form-group input[type="text"],
+body.dark .form-group input[type="number"],
+body.dark .form-group input[type="datetime-local"],
+body.dark .form-group select {
+  background-color: var(--dark-gray);
+  border-color: var(--light-gray);
+  color: var(--white);
+}
+
+body.dark .form-group input:focus,
+body.dark .form-group select:focus {
+  border-color: var(--primary-gold);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.radio-group {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  color: #1a202c;
+}
+
+.radio-label:hover {
+  border-color: #d4af37;
+  background-color: #fef9e7;
+}
+
+.radio-label input[type="radio"] {
+  width: auto;
+  margin: 0;
+  cursor: pointer;
+}
+
+.radio-label input[type="radio"]:checked + span {
+  color: #d4af37;
+  font-weight: 600;
+}
+
+/* Dark mode radio labels */
+body.dark .radio-label {
+  border-color: var(--light-gray);
+  color: var(--white);
+  background-color: var(--dark-gray);
+}
+
+body.dark .radio-label span {
+  color: var(--white);
+}
+
+body.dark .radio-label:hover {
+  border-color: var(--primary-gold);
+  background-color: rgba(212, 175, 55, 0.1);
+}
+
+body.dark .radio-label:hover span {
+  color: var(--white);
+}
+
+body.dark .radio-label input[type="radio"]:checked + span {
+  color: var(--primary-gold);
+}
+
+.products-selection {
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  max-height: 800px;
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  transition: border-color var(--transition);
+}
+
+/* Dark mode products selection */
+body.dark .products-selection {
+  border-color: var(--light-gray);
+}
+
+.search-bar {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: white;
+  border-bottom: 2px solid #e2e8f0;
+  flex-shrink: 0;
+  z-index: 10;
+  transition: background-color var(--transition), border-color var(--transition);
+}
+
+.search-bar input {
+  flex: 1;
+  padding: 0.75rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 6px;
+  background-color: white;
+  color: #1a202c;
+  transition: border-color var(--transition), background-color var(--transition), color var(--transition);
+}
+
+/* Dark mode search bar */
+body.dark .search-bar {
+  background: var(--medium-gray);
+  border-bottom-color: var(--light-gray);
+}
+
+body.dark .search-bar input {
+  background-color: var(--dark-gray);
+  border-color: var(--light-gray);
+  color: var(--white);
+}
+
+.select-all-btn {
+  padding: 0.75rem 1rem;
+  background-color: #f1f5f9;
+  border: 2px solid #e2e8f0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  color: #1a202c;
+}
+
+.select-all-btn:hover {
+  background-color: #e2e8f0;
+}
+
+/* Dark mode select all button */
+body.dark .select-all-btn {
+  background-color: var(--dark-gray);
+  border-color: var(--light-gray);
+  color: var(--white);
+}
+
+body.dark .select-all-btn:hover {
+  background-color: var(--light-gray);
+}
+
+.products-grid-wrapper {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  padding: 0;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.product-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: white;
+}
+
+.product-card:hover {
+  border-color: #d4af37;
+  background-color: #fef9e7;
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.15);
+}
+
+.product-card.selected {
+  border-color: #d4af37;
+  background-color: #fef9e7;
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.25);
+}
+
+/* Dark mode product cards */
+body.dark .product-card {
+  background: var(--medium-gray);
+  border-color: var(--light-gray);
+}
+
+body.dark .product-card:hover {
+  border-color: var(--primary-gold);
+  background-color: rgba(212, 175, 55, 0.1);
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.2);
+}
+
+body.dark .product-card.selected {
+  border-color: var(--primary-gold);
+  background-color: rgba(212, 175, 55, 0.15);
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+}
+
+.product-card input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+  margin-top: 0.25rem;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.product-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.product-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1a202c;
+  margin-bottom: 0.25rem;
+  line-height: 1.4;
+  transition: color var(--transition);
+}
+
+/* Dark mode product name */
+body.dark .product-name {
+  color: var(--white);
+}
+
+.product-price-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #e2e8f0;
+  transition: border-color var(--transition);
+}
+
+/* Dark mode price details */
+body.dark .product-price-details {
+  border-top-color: var(--light-gray);
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+.price-label {
+  color: #64748b;
+  font-weight: 500;
+  transition: color var(--transition);
+}
+
+.original-price {
+  color: #64748b;
+  text-decoration: line-through;
+  font-size: 0.8rem;
+  transition: color var(--transition);
+}
+
+/* Dark mode price labels */
+body.dark .price-label,
+body.dark .original-price {
+  color: #9CA3AF;
+}
+
+.discount-value {
+  color: #e74c3c;
+  font-weight: 600;
+}
+
+.discount-amount {
+  color: #f59e0b;
+  font-weight: 600;
+}
+
+.final-price-row {
+  margin-top: 0.25rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #e2e8f0;
+  transition: border-color var(--transition);
+}
+
+/* Dark mode final price row */
+body.dark .final-price-row {
+  border-top-color: var(--light-gray);
+}
+
+.final-price {
+  color: #10b981;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.selected-products-section {
+  border: 2px solid #d4af37;
+  border-radius: 8px;
+  padding: 1rem;
+  background: #fef9e7;
+  margin-bottom: 1.5rem;
+  transition: background-color var(--transition), border-color var(--transition);
+}
+
+/* Dark mode selected products section */
+body.dark .selected-products-section {
+  background: rgba(212, 175, 55, 0.1);
+  border-color: var(--primary-gold);
+}
+
+.selected-products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.selected-product-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 2px solid #d4af37;
+  border-radius: 8px;
+  background: white;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.selected-product-card:hover {
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.25);
+}
+
+/* Dark mode selected product card */
+body.dark .selected-product-card {
+  background: var(--medium-gray);
+  border-color: var(--primary-gold);
+}
+
+body.dark .selected-product-card:hover {
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+}
+
+.remove-product-btn {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  font-size: 1.25rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 5;
+}
+
+.remove-product-btn:hover {
+  background-color: #dc2626;
+  transform: scale(1.1);
+}
+
+.pagination-container {
+  padding: 1rem;
+  border-top: 2px solid #e2e8f0;
+  background: white;
+  flex-shrink: 0;
+  z-index: 10;
+  transition: background-color var(--transition), border-color var(--transition);
+}
+
+/* Dark mode pagination container */
+body.dark .pagination-container {
+  background: var(--medium-gray);
+  border-top-color: var(--light-gray);
+}
+
+.products-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem;
+  min-height: 200px;
+  flex: 1;
+}
+
+.no-products-message {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 3rem;
+  color: #64748b;
+  font-size: 1rem;
+  transition: color var(--transition);
+}
+
+/* Dark mode no products message */
+body.dark .no-products-message {
+  color: #9CA3AF;
+}
+
+.selected-count {
+  padding: 1rem;
+  text-align: center;
+  color: #64748b;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: color var(--transition);
+}
+
+/* Dark mode selected count */
+body.dark .selected-count {
+  color: #9CA3AF;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e2e8f0;
+  transition: border-color var(--transition);
+}
+
+/* Dark mode form actions */
+body.dark .form-actions {
+  border-top-color: var(--light-gray);
+}
+
+.save-btn,
+.cancel-btn {
+  padding: 0.75rem 2rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.save-btn {
+  background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+  color: #1a202c;
+}
+
+.save-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+
+.save-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.cancel-btn {
+  background-color: #e2e8f0;
+  color: #1a202c;
+}
+
+.cancel-btn:hover {
+  background-color: #cbd5e1;
+}
+
+/* Dark mode cancel button */
+body.dark .cancel-btn {
+  background-color: var(--light-gray);
+  color: var(--white);
+}
+
+body.dark .cancel-btn:hover {
+  background-color: var(--medium-gray);
+}
+
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .products-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .radio-group {
+    flex-direction: column;
+  }
+
+  .product-card {
+    padding: 0.75rem;
+  }
+
+  .product-name {
+    font-size: 0.875rem;
+  }
+
+  .price-row {
+    font-size: 0.8rem;
+  }
+
+  .final-price {
+    font-size: 0.9rem;
+  }
+}
+

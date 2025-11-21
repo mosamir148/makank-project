@@ -1,0 +1,141 @@
+.not-found-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  padding-top: 120px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.not-found-container {
+  max-width: 800px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+  background: white;
+  padding: 3rem;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.not-found-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.error-code {
+  font-size: 6rem;
+  font-weight: 900;
+  color: var(--primary-gold, #d4af37);
+  line-height: 1;
+  font-family: var(--arabic-font, 'Arial');
+}
+
+.error-title {
+  font-size: 2rem;
+  color: var(--dark-gold, #b8941f);
+  margin: 0;
+  font-weight: 700;
+  font-family: var(--arabic-font, 'Arial');
+}
+
+.error-message {
+  font-size: 1.1rem;
+  color: var(--dark-gray, #7f8c8d);
+  line-height: 1.6;
+  margin: 0;
+  font-family: var(--arabic-font, 'Arial');
+}
+
+.not-found-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.btn-home,
+.btn-back {
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: var(--arabic-font, 'Arial');
+  min-width: 150px;
+}
+
+.btn-home {
+  background: var(--primary-gold, #d4af37);
+  color: var(--black, #2c3e50);
+}
+
+.btn-home:hover {
+  background: var(--dark-gold, #b8941f);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+
+.btn-back {
+  background: transparent;
+  color: var(--primary-gold, #d4af37);
+  border: 2px solid var(--primary-gold, #d4af37);
+}
+
+.btn-back:hover {
+  background: var(--primary-gold, #d4af37);
+  color: var(--black, #2c3e50);
+  transform: translateY(-2px);
+}
+
+.not-found-illustration {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.6;
+}
+
+@media (max-width: 768px) {
+  .not-found-page {
+    padding-top: 100px;
+  }
+
+  .not-found-container {
+    grid-template-columns: 1fr;
+    text-align: center;
+    padding: 2rem 1.5rem;
+  }
+
+  .error-code {
+    font-size: 4rem;
+  }
+
+  .error-title {
+    font-size: 1.5rem;
+  }
+
+  .not-found-actions {
+    flex-direction: column;
+  }
+
+  .btn-home,
+  .btn-back {
+    width: 100%;
+  }
+
+  .not-found-illustration {
+    order: -1;
+  }
+
+  .not-found-illustration svg {
+    width: 200px;
+    height: 200px;
+  }
+}
+

@@ -25,8 +25,21 @@ const ProductSchema = new mongoose.Schema({
         required:true,
         min:0
     },
-    discount: {
-        type: Number, 
+    supportsDiscount:{
+        type:Boolean,
+        default:true
+    },
+    purchasePrice: {
+        type: Number,
+        default: 0,
+    },
+    stock: {
+        type: Number,
+        default: 0,
+        min:0
+    },
+    shippingPrice: {
+        type: Number,
         default: 0,
     },
     image:{

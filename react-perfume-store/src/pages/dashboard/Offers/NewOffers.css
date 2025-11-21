@@ -1,0 +1,284 @@
+.new-offers-container {
+  padding: 0;
+  max-width: 100%;
+  margin: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.offers-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.offers-header h2 {
+  margin: 0;
+  color: #1a202c;
+}
+
+.add-offer-btn {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+  color: #1a202c;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.add-offer-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+
+.offers-table-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+  overflow-y: visible;
+  width: 100%;
+}
+
+.offers-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 1000px; /* Ensure table has minimum width for all columns */
+}
+
+.offers-table thead {
+  background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+}
+
+.offers-table th {
+  padding: 1rem;
+  text-align: right;
+  color: white;
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+}
+
+.offers-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.offers-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.type-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.type-badge.coupon {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.type-badge.discount {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.discount-type-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  background-color: #e0e7ff;
+  color: #4f46e5;
+}
+
+.discount-value {
+  color: #e74c3c;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.status-active {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.status-upcoming {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.status-expired {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.edit-btn,
+.delete-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.edit-btn {
+  background-color: #10b981;
+  color: white;
+}
+
+.edit-btn:hover {
+  background-color: #059669;
+}
+
+.delete-btn {
+  background-color: #ef4444;
+  color: white;
+}
+
+.delete-btn:hover {
+  background-color: #dc2626;
+}
+
+.no-offers {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.empty-state p {
+  color: var(--black);
+  font-size: 1.1rem;
+}
+
+.empty-state button {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+  color: #1a202c;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.empty-state button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+
+/* Dark Mode Styles */
+body.dark .new-offers-container {
+  background-color: var(--dark-gray);
+}
+
+body.dark .offers-header h2 {
+  color: var(--white);
+}
+
+body.dark .offers-table-container {
+  background: var(--medium-gray);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+body.dark .offers-table thead {
+  background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+}
+
+body.dark .offers-table th {
+  color: var(--white);
+}
+
+body.dark .offers-table td {
+  color: var(--white);
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+body.dark .offers-table tbody tr:hover {
+  background-color: var(--light-gray);
+}
+
+body.dark .type-badge.coupon {
+  background-color: rgba(59, 130, 246, 0.2);
+  color: #93c5fd;
+}
+
+body.dark .type-badge.discount {
+  background-color: rgba(251, 191, 36, 0.2);
+  color: #fde68a;
+}
+
+body.dark .discount-type-badge {
+  background-color: rgba(99, 102, 241, 0.2);
+  color: #a5b4fc;
+}
+
+body.dark .discount-value {
+  color: #f87171;
+}
+
+body.dark .status-active {
+  background-color: rgba(16, 185, 129, 0.2);
+  color: #6ee7b7;
+}
+
+body.dark .status-upcoming {
+  background-color: rgba(59, 130, 246, 0.2);
+  color: #93c5fd;
+}
+
+body.dark .status-expired {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+}
+
+body.dark .empty-state p {
+  color: var(--white);
+}
+
+body.dark .empty-state button {
+  background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+  color: #1a202c;
+}
+
+body.dark .empty-state button:hover {
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+}
+
+@media (max-width: 768px) {
+  .offers-table {
+    font-size: 0.875rem;
+  }
+  
+  .offers-table th,
+  .offers-table td {
+    padding: 0.5rem;
+  }
+}
+

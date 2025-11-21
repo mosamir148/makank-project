@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-// import "./UpdateProduct.css";
+import "../../Product/UpdateProduct/UpdateProduct.css";
 import { BASE_URL } from "../../../../assets/url";
 import Loading from "../../../../components/Loading/Loading";
 

@@ -8,17 +8,59 @@ import { userContext } from "../../../context/UserContext";
 import { useLang } from "../../../context/LangContext";
 
 const Offer = () => {
-  const [offers, setOffers] = useState([]);
+  const [productsWithOffers, setProductsWithOffers] = useState([]);
   const [loading, setLoading] = useState(true);
   const {user} = useContext(userContext)
-  const { t } = useLang();
+  const { t, lang } = useLang();
+  
   useEffect(() => {
     const fetchOffers = async () => {
       try {
-        const res = await axios.get(`${BASE_URL}/offerProduct`);
-        setOffers(res.data.offers); 
+        // Fetch active offers
+        const res = await axios.get(`${BASE_URL}/offer/active`);
+        const allOffers = res.data.offers || [];
+        
+        // Filter for discount type offers only (not coupon)
+        const discountOffers = allOffers.filter((offer) => offer.type === "discount");
+        
+        // Flatten products from all discount offers with offer details
+        const products = [];
+        discountOffers.forEach((offer) => {
+          if (offer.products && offer.products.length > 0) {
+            offer.products.forEach((product) => {
+              // Calculate discount price
+              const originalPrice = product.price || 0;
+              let discountAmount = 0;
+              let finalPrice = originalPrice;
+              
+              if (offer.discountType === "percentage") {
+                discountAmount = (originalPrice * offer.discountValue) / 100;
+                finalPrice = originalPrice - discountAmount;
+              } else if (offer.discountType === "value") {
+                discountAmount = offer.discountValue;
+                finalPrice = originalPrice - discountAmount;
+              }
+              
+              products.push({
+                ...product,
+                offerId: offer._id,
+                offerName: offer.name,
+                discountType: offer.discountType,
+                discountValue: offer.discountValue,
+                discountAmount,
+                finalPrice,
+                originalPrice,
+                startDate: offer.startDate,
+                endDate: offer.endDate,
+              });
+            });
+          }
+        });
+        
+        setProductsWithOffers(products); 
       } catch (err) {
         console.error("Error fetching offers:", err);
+        setProductsWithOffers([]);
       } finally {
         setLoading(false);
       }
@@ -29,93 +71,100 @@ const Offer = () => {
 
    const AddToWish = async (product) => {
   try {
-    console.log("Adding offer product ID:", product._id);
     if (user && user._id) {
       await axios.post(
         `${BASE_URL}/wish/add`,
         {
           userId: user._id,
-          offerProductId: product._id, // ✅ خليه كده زي ما هو، السيرفر متعود على ده
+          productId: product._id, // Regular product, not offerProduct
         },
         { withCredentials: true }
       );
-      toast.success("تمت إضافة المنتج إلى المفضلة بنجاح ✅");
+      toast.success(lang === "ar" ? "تمت إضافة المنتج إلى السلة بنجاح ✅" : "Product added to cart successfully ✅");
+      window.dispatchEvent(new Event("wishlistUpdated"));
     } else {
       let localWish = JSON.parse(localStorage.getItem("localWish")) || [];
 
       const exists = localWish.find((item) => item._id === product._id);
       if (exists) {
-        toast("هذا المنتج موجود بالفعل في المفضلة ❤️");
+        toast(lang === "ar" ? "هذا المنتج موجود بالفعل في السلة ❤️" : "This product is already in cart ❤️");
         return;
       }
 
       localWish.push({
         _id: product._id,
-        title: product.title || "منتج بدون عنوان",
-        price: product.price || "غير محدد",
+        title: product.title || (lang === "ar" ? "منتج بدون عنوان" : "Product without title"),
+        price: product.finalPrice || product.originalPrice || 0,
         image: product.image || "/placeholder.png",
-        description: product.description || "منتج بدون وصف",
-        brand: product.brand || "منتج بدون براند",
-        category: product.category || "منتج بدون كاتيجوري",
-        type: "offer", // 💡 عشان تميّزهم في localStorage
+        type: "product",
+        quantity: 1,
+        // Store offer info for display
+        offerInfo: {
+          discountType: product.discountType,
+          discountValue: product.discountValue,
+          originalPrice: product.originalPrice,
+          finalPrice: product.finalPrice,
+          endDate: product.endDate,
+        },
       });
 
       localStorage.setItem("localWish", JSON.stringify(localWish));
-      toast.success("✅ تمت إضافة المنتج للمفضلة بنجاح");
+      toast.success(lang === "ar" ? "✅ تمت إضافة المنتج للسلة بنجاح" : "✅ Product added to cart successfully");
+      window.dispatchEvent(new Event("wishlistUpdated"));
     }
   } catch (err) {
     console.log(err);
-    toast.error("حدث خطأ أثناء الإضافة إلى المفضلة");
+    toast.error(lang === "ar" ? "حدث خطأ أثناء الإضافة إلى السلة" : "Error adding to cart");
   }
 };
 
 
   if (loading) return <Loading />
+  
+  // Hide section if no discount offers
+  if (productsWithOffers.length === 0) return null;
 
   return (
      <section className="special-offers" id="special-offers">
       <div className="container">
         <div className="section-header">
-          <h2 className="section-title">{t("specialOffers")}</h2>
-          <p className="section-subtitle">{t("specialOffersSub")}</p>
+          <h2 className="section-title">{t("offers") || "Offers"}</h2>
+          <p className="section-subtitle">{t("offersSub") || t("specialOffersSub")}</p>
         </div>
 
         <div className="offers-grid">
-          {offers.map((offer, index) => (
+          {productsWithOffers.map((product, index) => (
             <div
-              key={offer._id}
+              key={`${product._id}-${index}`}
               className="offer-card"
               data-aos="fade-up"
               data-aos-delay={index * 100}
             >
               <div className="offer-badge">
-                {offer.discount
-                  ? `${offer.discount}% ${t("off")}`
-                  : t("specialOffer")}
+                {product.discountType === "percentage"
+                  ? `${product.discountValue}% ${t("off") || "OFF"}`
+                  : `${product.discountValue} ${t("off") || "OFF"}`}
               </div>
 
               <div
                 className="offer-image"
                 style={{
                   background: `url('${
-                    offer.image || "https://via.placeholder.com/400"
+                    product.image || "/assets/Logo3.png"
                   }') center/cover`,
                 }}
               ></div>
 
               <div className="offer-content">
-                <h3 className="offer-name">{offer.title}</h3>
-                <p className="offer-description">{offer.description}</p>
-                <p className="offer-description">{offer.brand}</p>
-                <p className="offer-description">{offer.category}</p>
+                <h3 className="offer-name">{product.title}</h3>
+                {product.description && (
+                  <p className="offer-description">{product.description}</p>
+                )}
 
                 <div className="offer-price">
-                  <span className="old-price">${offer.price}</span>
+                  <span className="old-price">{product.originalPrice.toFixed(2)}</span>
                   <span className="new-price">
-                    $
-                    {offer.discount
-                      ? (offer.price - (offer.price * offer.discount) / 100).toFixed(2)
-                      : offer.price}
+                    {product.finalPrice.toFixed(2)}
                   </span>
                 </div>
 
@@ -137,23 +186,23 @@ const Offer = () => {
                       marginBottom: "5px",
                     }}
                   >
-                    {t("offerEndsIn")}
+                    {t("offerEndsIn") || (lang === "ar" ? "ينتهي العرض في" : "Offer Ends In")}
                   </div>
-                  <OfferCountdown endDate={offer.endDate} />
+                  <OfferCountdown endDate={product.endDate} />
                 </div>
 
                 <a
-                  href={`/offerProduct/${offer._id}`}
+                  href={`/product/${product._id}`}
                   className="btn btn-primary offersbtn"
                 >
-                  {t("shopNow")}
+                  {t("shopNow") || (lang === "ar" ? "تسوق الآن" : "Shop Now")}
                 </a>
 
                 <button
                   className="btn btn-primary offersbtn"
-                  onClick={() => AddToWish(offer)}
+                  onClick={() => AddToWish(product)}
                 >
-                  {t("addToCart")} ❤️
+                  {t("addToCart") || (lang === "ar" ? "أضف للسلة" : "Add to Cart")} ❤️
                 </button>
               </div>
             </div>
@@ -166,6 +215,7 @@ const Offer = () => {
 
 
 const OfferCountdown = ({ endDate }) => {
+  const { lang } = useLang();
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0 , seconds: 0});
 
   useEffect(() => {
@@ -188,20 +238,27 @@ const OfferCountdown = ({ endDate }) => {
 
     return () => clearInterval(interval);
   }, [endDate]);
-
+  
   return (
-    <div style={{ display: "flex", gap: "10px", justifyContent: "center", fontWeight: 700, fontSize: "18px" }}>
-      <div>
-        <span style={{ color: "var(--primary-gold)" }}>{timeLeft.days}</span> Days
+    <div className="offer-countdown-container">
+      <div className="countdown-item">
+        <span className="countdown-value">{String(timeLeft.days).padStart(2, '0')}</span>
+        <span className="countdown-label">{lang === "ar" ? "يوم" : "Days"}</span>
       </div>
-      <div>
-        <span style={{ color: "var(--primary-gold)" }}>{timeLeft.hours}</span> Hours
+      <span className="countdown-separator">:</span>
+      <div className="countdown-item">
+        <span className="countdown-value">{String(timeLeft.hours).padStart(2, '0')}</span>
+        <span className="countdown-label">{lang === "ar" ? "ساعة" : "Hours"}</span>
       </div>
-      <div>
-        <span style={{ color: "var(--primary-gold)" }}>{timeLeft.minutes}</span> Minutes
+      <span className="countdown-separator">:</span>
+      <div className="countdown-item">
+        <span className="countdown-value">{String(timeLeft.minutes).padStart(2, '0')}</span>
+        <span className="countdown-label">{lang === "ar" ? "دقيقة" : "Mins"}</span>
       </div>
-      <div>
-        <span style={{ color: "var(--primary-gold)" }}>{timeLeft.seconds}</span> Seconds
+      <span className="countdown-separator">:</span>
+      <div className="countdown-item">
+        <span className="countdown-value">{String(timeLeft.seconds).padStart(2, '0')}</span>
+        <span className="countdown-label">{lang === "ar" ? "ثانية" : "Secs"}</span>
       </div>
     </div>
   );

@@ -22,7 +22,7 @@
     border-radius: 15px;
     overflow: hidden;
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(212, 175, 55, 0.2);
+    border: 2px solid rgba(212, 175, 55, 0.5);
     transition: var(--transition);
     position: relative;
     display: flex;

@@ -47,28 +47,31 @@ const Online = () => {
           { withCredentials: true }
         );
         toast.success("تمت إضافة المنتج إلى المفضلة بنجاح ✅");
+        window.dispatchEvent(new Event("wishlistUpdated"));
       } else {
         let localWish = JSON.parse(localStorage.getItem("localWish")) || [];
 
-        const exists = localWish.find((item) => item._id === data._id);
+        const exists = localWish.find((item) => item._id === product._id);
         if (exists) {
           toast("هذا المنتج موجود بالفعل في المفضلة ❤️");
           return;
         }
 
         localWish.push({
-          _id: data._id,
-          title: data.title || "منتج بدون عنوان",
-          price: data.price || "غير محدد",
-          image: data.image || "/placeholder.png",
-          description: data.description || "منتج بدون وصف",
-          brand: data.brand || "منتج بدون براند",
-          category: data.category || "منتج بدون كاتيجوري",
+          _id: product._id,
+          title: product.title || "منتج بدون عنوان",
+          price: product.price || "غير محدد",
+          image: product.image || "/placeholder.png",
+          description: product.description || "منتج بدون وصف",
+          brand: product.brand || "منتج بدون براند",
+          category: product.category || "منتج بدون كاتيجوري",
           type: "online", // فرق نوع المنتج
+          quantity: 1,
         });
 
         localStorage.setItem("localWish", JSON.stringify(localWish));
         toast.success("✅ تمت إضافة المنتج للمفضلة بنجاح");
+        window.dispatchEvent(new Event("wishlistUpdated"));
       }
     } catch (err) {
       console.log(err);
@@ -101,8 +104,7 @@ const Online = () => {
             <div className="exclusive-content">
               <h3>{product.title}</h3>
               <div className="exclusive-features">
-                <span>{t("price")}: ${product.price}</span>
-                <span>{t("discount")}: ${product.discount}</span>
+                <span>{t("price")}: {product.price}</span>
                 <span>{t("category")}: {product.category}</span>
                 <span>{t("description")}: {product.description}</span>
               </div>

@@ -3,19 +3,32 @@ const Product = require("../models/Product")
 
 exports.CreateProduct = async (req, res) => {
   try {
-    const { title, description, price, category, discount, brand } = req.body;
+    const { title, description, price, category, brand, purchasePrice, stock, shippingPrice } = req.body;
 
     if (!title || !description || price === undefined) {
       return res.status(404).json({ message: "title, description, price are required" });
+    }
+
+    // Convert price fields to numbers (preserve exact decimal values)
+    const priceNum = parseFloat(price);
+    const purchasePriceNum = purchasePrice ? parseFloat(purchasePrice) : priceNum;
+    const stockNum = stock ? parseInt(stock) : 0;
+    const shippingPriceNum = shippingPrice ? parseFloat(shippingPrice) : 0;
+
+    // Validate price is a valid number
+    if (isNaN(priceNum) || priceNum < 0) {
+      return res.status(400).json({ message: "Invalid price value" });
     }
 
     const NewProduct = new Product({
       title,
       description,
       brand,
-      price,
+      price: priceNum, // Store as number, preserving exact decimal precision
       category,
-      discount,
+      purchasePrice: purchasePriceNum,
+      stock: stockNum,
+      shippingPrice: shippingPriceNum,
       image: req.files?.image ? req.files.image[0].path : null,
       images: req.files?.images ? req.files.images.map(file => file.path) : []
     });
@@ -23,10 +36,15 @@ console.log("BODY:", req.body);
 console.log("FILES:", req.files);
     await NewProduct.save();
 
+    // Exclude sensitive fields (purchasePrice and stock) from response
+    const productResponse = NewProduct.toObject();
+    delete productResponse.purchasePrice;
+    delete productResponse.stock;
+
     res.status(201).json({
       status: "Success",
       message: "Product Created Successfully!",
-      product: NewProduct
+      product: productResponse
     });
   } catch (err) {
      console.error("Product create error:", err);
@@ -45,18 +63,37 @@ exports.GetProducts = async (req, res) => {
 
     const filter = {};
 
+    // Search functionality
+    if (req.query.search && req.query.search.trim() !== '') {
+      const searchRegex = new RegExp(req.query.search.trim(), 'i');
+      filter.$or = [
+        { title: searchRegex },
+        { description: searchRegex },
+        { brand: searchRegex },
+        { category: searchRegex }
+      ];
+    }
+
     // فلترة الكاتيجوري
-    if (req.query.categories) {
+    if (req.query.categories && req.query.categories.trim() !== '') {
       // لو الفلتر جاي كمصفوفة أو قيمة واحدة
-      const categories = req.query.categories.split(','); // تحويل السلسلة لمصفوفة
-      filter.category = { $in: categories };
+      const categories = req.query.categories.split(',').filter(cat => cat.trim() !== ''); // تحويل السلسلة لمصفوفة وإزالة القيم الفارغة
+      if (categories.length > 0) {
+        filter.category = { $in: categories };
+        console.log('Filtering by categories:', categories);
+      }
     }
 
     // فلترة البراند
-    if (req.query.brands) {
-      const brands = req.query.brands.split(','); // تحويل السلسلة لمصفوفة
-      filter.brand = { $in: brands };
+    if (req.query.brands && req.query.brands.trim() !== '') {
+      const brands = req.query.brands.split(',').filter(brand => brand.trim() !== ''); // تحويل السلسلة لمصفوفة وإزالة القيم الفارغة
+      if (brands.length > 0) {
+        filter.brand = { $in: brands };
+        console.log('Filtering by brands:', brands);
+      }
     }
+
+    console.log('Final filter:', JSON.stringify(filter));
 
     let query = Product.find(filter);
 
@@ -65,11 +102,14 @@ exports.GetProducts = async (req, res) => {
       query = query.sort({ price: 1 });
     } else if (req.query.sort === "high-low") {
       query = query.sort({ price: -1 });
+    } else {
+      // Default: Sort by newest first (createdAt descending)
+      query = query.sort({ createdAt: -1 });
     }
 
     const totalProducts = await Product.countDocuments(filter);
 
-    const products = await query.skip(skip).limit(limit);
+    const products = await query.skip(skip).limit(limit).select("-purchasePrice -stock");
 
     res.status(200).json({
       status: "Success",
@@ -88,6 +128,24 @@ exports.UpdateProduct = async (req, res) => {
   try {
     const updateData = { ...req.body };
 
+    // Convert price fields to numbers if they exist (preserve exact decimal values)
+    if (updateData.price !== undefined) {
+      const priceNum = parseFloat(updateData.price);
+      if (isNaN(priceNum) || priceNum < 0) {
+        return res.status(400).json({ message: "Invalid price value" });
+      }
+      updateData.price = priceNum;
+    }
+    if (updateData.purchasePrice !== undefined) {
+      updateData.purchasePrice = updateData.purchasePrice ? parseFloat(updateData.purchasePrice) : updateData.price || 0;
+    }
+    if (updateData.stock !== undefined) {
+      updateData.stock = updateData.stock ? parseInt(updateData.stock) : 0;
+    }
+    if (updateData.shippingPrice !== undefined) {
+      updateData.shippingPrice = updateData.shippingPrice ? parseFloat(updateData.shippingPrice) : 0;
+    }
+
     if (req.files?.image) updateData.image = req.files.image[0].path;
     if (req.files?.images) updateData.images = req.files.images.map(file => file.path);
 
@@ -95,7 +153,12 @@ exports.UpdateProduct = async (req, res) => {
 
     if (!updatedProduct) return res.status(404).json({ message: "Product not found" });
 
-    res.status(200).json({ status: "Success", message: "Product Updated Successfully!", product: updatedProduct });
+    // Exclude sensitive fields (purchasePrice and stock) from response
+    const productResponse = updatedProduct.toObject();
+    delete productResponse.purchasePrice;
+    delete productResponse.stock;
+
+    res.status(200).json({ status: "Success", message: "Product Updated Successfully!", product: productResponse });
   } catch (err) {
     res.status(500).json(err);
   }
@@ -113,7 +176,7 @@ exports.DeleteProduct = async (req,res)=>{
 
 exports.GetProduct = async (req,res)=>{
     try{
-        const GetProduct = await Product.findById(req.params.id)
+        const GetProduct = await Product.findById(req.params.id).select("-purchasePrice -stock")
         if(!GetProduct){
           return res.status(404).json({ message: "Product Not Found!" });
         }

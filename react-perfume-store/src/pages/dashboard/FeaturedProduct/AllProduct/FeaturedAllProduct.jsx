@@ -3,7 +3,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
-// import "./AllProduct.css";
+ import "./../../Product/AllProduct/AllProduct.css";
 import { productsContext } from "../../../../context/GetProducts";
 import { BASE_URL } from "../../../../assets/url";
 import Loading from "../../../../components/Loading/Loading";
@@ -88,8 +88,8 @@ const FeaturedAllProduct = () => {
                     />
                   </td>
                   <td>{item.title}</td>
-                  <td>${item.price}</td>
-                  <td>${item.discount}</td>
+                  <td>{item.price}</td>
+                  <td>{item.discount}</td>
                   <td>{item.category}</td>
                   <td className="text-center">
                     <Link className="edit-btn" to={`update-product/${item._id}`}>

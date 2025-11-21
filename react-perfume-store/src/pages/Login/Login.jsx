@@ -20,6 +20,17 @@ const Login = () => {
         // SIGNED USER 
         try{
             const res = await axios.post(`${BASE_URL}/user/login`,{password,email},{ withCredentials: true })
+            
+            // Store token in localStorage for axios interceptor
+            if (res.data.token) {
+                localStorage.setItem('token', res.data.token);
+            }
+            
+            // Clear any old cart items from localStorage to prevent showing previous user's items
+            // Items will be loaded from database for the logged-in user
+            localStorage.removeItem('localWish')
+            localStorage.removeItem('guestWishlist')
+            
             setUser(res.data.info)
             toast.success("Logged Successfully")
             navigate("/")
@@ -44,7 +55,7 @@ const Login = () => {
      <div className="auth-page">
       <div className="auth-container">
         <div className="auth-header">
-          <h1 className="auth-logo">LUXE PARFUM</h1>
+          <h1 className="auth-logo">Makanak</h1>
           <p className="auth-subtitle">{t("authSubtitle")}</p>
         </div>
 

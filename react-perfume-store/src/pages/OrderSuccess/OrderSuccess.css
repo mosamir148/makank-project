@@ -1,0 +1,327 @@
+.order-success-page {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  padding-top: 120px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  transition: background var(--transition);
+}
+
+.dark .order-success-page {
+  background: linear-gradient(135deg, var(--dark-gray) 0%, var(--medium-gray) 100%);
+}
+
+.order-success-container {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 3rem;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: background var(--transition), box-shadow var(--transition);
+}
+
+.dark .order-success-container {
+  background: var(--medium-gray);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(212, 175, 55, 0.1);
+}
+
+.success-icon {
+  margin-bottom: 1.5rem;
+  animation: scaleIn 0.5s ease-out;
+}
+
+.success-check-icon {
+  stroke: #4CAF50;
+  transition: stroke var(--transition);
+}
+
+.dark .success-check-icon {
+  stroke: var(--primary-gold);
+}
+
+.success-check-icon circle {
+  stroke: inherit;
+}
+
+.success-check-icon path {
+  stroke: inherit;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.success-title {
+  font-size: 2rem;
+  color: var(--black);
+  margin-bottom: 1rem;
+  font-weight: 700;
+  transition: color var(--transition);
+}
+
+.success-message {
+  font-size: 1.1rem;
+  color: var(--black);
+  opacity: 0.7;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+  transition: color var(--transition);
+}
+
+.order-number {
+  background: var(--light-gray);
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+  color: var(--black);
+  transition: background var(--transition), color var(--transition);
+}
+
+.dark .order-number {
+  background: var(--dark-gray);
+  color: var(--white);
+}
+
+.delivery-address-section {
+  background: var(--light-gray);
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  text-align: left;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.dark .delivery-address-section {
+  background: var(--dark-gray);
+  border-color: rgba(212, 175, 55, 0.15);
+}
+
+.delivery-address-section h3 {
+  color: var(--black);
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  text-align: center;
+  font-weight: 600;
+  transition: color var(--transition);
+}
+
+.dark .delivery-address-section h3 {
+  color: var(--primary-gold);
+}
+
+.delivery-address-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.address-item {
+  color: var(--black);
+  font-size: 1rem;
+  line-height: 1.6;
+  transition: color var(--transition);
+}
+
+.dark .address-item {
+  color: var(--white);
+}
+
+.address-item strong {
+  color: var(--black);
+  margin-inline-end: 0.5rem;
+  font-weight: 600;
+  transition: color var(--transition);
+}
+
+.dark .address-item strong {
+  color: var(--primary-gold);
+}
+
+.tracking-section {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: var(--light-gray);
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.dark .tracking-section {
+  background: var(--dark-gray);
+  border-color: rgba(212, 175, 55, 0.15);
+}
+
+.tracking-section h3 {
+  color: var(--black);
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+  transition: color var(--transition);
+}
+
+.dark .tracking-section h3 {
+  color: var(--primary-gold);
+}
+
+.tracking-link-container {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.tracking-link-input {
+  flex: 1;
+  padding: 0.75rem;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-family: monospace;
+  background: var(--white);
+  color: var(--black);
+  cursor: text;
+  transition: background var(--transition), color var(--transition), border-color var(--transition);
+}
+
+.dark .tracking-link-input {
+  background: var(--medium-gray);
+  color: var(--white);
+  border-color: rgba(212, 175, 55, 0.2);
+}
+
+.tracking-link-input:focus {
+  outline: none;
+  border-color: var(--primary-gold);
+}
+
+.copy-btn {
+  padding: 0.75rem 1.5rem;
+  background: var(--primary-gold);
+  color: var(--black);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background var(--transition), color var(--transition);
+}
+
+.copy-btn:hover {
+  background: var(--dark-gold);
+}
+
+.save-link-warning {
+  color: #e67e22;
+  font-size: 0.95rem;
+  margin-top: 1rem;
+  font-weight: 500;
+}
+
+.dark .save-link-warning {
+  color: #ffa366;
+}
+
+.tracking-section.registered p {
+  color: var(--black);
+  opacity: 0.7;
+  font-size: 1rem;
+  transition: color var(--transition);
+}
+
+.dark .tracking-section.registered p {
+  color: var(--white);
+  opacity: 0.8;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-track,
+.btn-continue {
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  min-width: 150px;
+}
+
+.btn-track {
+  background: #3498db;
+  color: white;
+}
+
+.btn-track:hover {
+  background: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+}
+
+.dark .btn-track {
+  background: #2980b9;
+}
+
+.dark .btn-track:hover {
+  background: #1f6fa8;
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.5);
+}
+
+.btn-continue {
+  background: var(--primary-gold);
+  color: var(--black);
+}
+
+.btn-continue:hover {
+  background: var(--dark-gold);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+
+.dark .btn-continue:hover {
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.5);
+}
+
+@media (max-width: 768px) {
+  .order-success-page {
+    padding-top: 100px;
+  }
+
+  .order-success-container {
+    padding: 2rem 1.5rem;
+  }
+
+  .success-title {
+    font-size: 1.5rem;
+  }
+
+  .tracking-link-container {
+    flex-direction: column;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .btn-track,
+  .btn-continue {
+    width: 100%;
+  }
+}
+

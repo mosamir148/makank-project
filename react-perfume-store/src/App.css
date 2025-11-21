@@ -7,7 +7,9 @@
     --light-gray: #f5f5f5;
     --white: #ffffff;
     --beige: #F5F5DC;
+    --warm-beige: #F5E6D3;
     --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --arabic-font: 'Cairo', 'Amiri', 'Segoe UI', sans-serif;
 }
 
 
@@ -31,6 +33,7 @@ body{
     padding: 0;
     box-sizing: border-box;
     scroll-behavior: smooth;
+    font-family: var(--arabic-font);
 }
 
 section {
@@ -44,7 +47,7 @@ section {
 }
 
 .section-title {
-    font-family: 'Playfair Display', serif;
+    font-family: var(--arabic-font);
     font-size: 48px;
     font-weight: 700;
     color: var(--dark-gold);
@@ -76,18 +79,130 @@ section {
   align-items: center;
   height: 100vh;
   width: 100vw;
-  background-color: var(--black); 
+  background: 
+    repeating-linear-gradient(
+      0deg,
+      var(--black) 0px,
+      var(--black) 2px,
+      rgba(212, 175, 55, 0.02) 2px,
+      rgba(212, 175, 55, 0.02) 4px
+    ),
+    radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.05) 0%, transparent 50%),
+    var(--black);
+  background-size: 100% 100%, 100% 100%, 100% 100%;
   flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.splash-loading::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 1px 1px, rgba(212, 175, 55, 0.15) 1px, transparent 0);
+  background-size: 20px 20px;
+  opacity: 0.3;
+  pointer-events: none;
+  animation: paper-move 20s linear infinite;
+}
+
+@keyframes paper-move {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(20px, 20px);
+  }
+}
+
+.logo-circle {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: var(--black);
+  border: 3px solid var(--primary-gold);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 40px;
+  position: relative;
+  opacity: 0;
+  animation: logo-fade-in 0.6s ease-out forwards;
+  box-shadow: 
+    0 0 20px rgba(212, 175, 55, 0.2),
+    inset 0 0 15px rgba(212, 175, 55, 0.05);
+  overflow: visible;
+}
+
+.logo-circle::after {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  right: -8px;
+  bottom: -8px;
+  border: 2px dashed rgba(212, 175, 55, 0.2);
+  border-radius: 50%;
+  animation: circle-dash 3s linear infinite;
+  pointer-events: none;
+}
+
+
+@keyframes circle-dash {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .splash-logo {
-  width: 150px;
+  width: 120px;
   height: auto;
-  animation: splash-zoom 1.5s ease-in-out infinite alternate;
-  margin-top: 100px;
+  position: relative;
+  z-index: 1;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(212, 175, 55, 0.3));
+  animation: logo-sketch 4s ease-in-out infinite;
 }
 
-@keyframes splash-zoom {
-  0% { transform: scale(0.8); opacity: 0.7; }
-  100% { transform: scale(1); opacity: 1; }
+@keyframes logo-sketch {
+  0%, 100% {
+    transform: rotate(0deg) translateY(0);
+  }
+  25% {
+    transform: rotate(-0.5deg) translateY(-1px);
+  }
+  50% {
+    transform: rotate(0.5deg) translateY(0);
+  }
+  75% {
+    transform: rotate(-0.3deg) translateY(1px);
+  }
+}
+
+@keyframes logo-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.9) rotate(-2deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+}
+
+.splash-loading.fade-out {
+  animation: fade-out 0.3s ease-out forwards;
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }

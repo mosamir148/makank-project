@@ -12,15 +12,15 @@ const wishlistSchema = new mongoose.Schema(
     },
     featuredProduct: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "FeaturedProduct",
+      ref: "Product",
     },
     onlineProduct: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "OnlineProduct",
+      ref: "Product",
     },
     offerProduct: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "OfferProduct",
+      ref: "Product",
     },
   },
   { timestamps: true }

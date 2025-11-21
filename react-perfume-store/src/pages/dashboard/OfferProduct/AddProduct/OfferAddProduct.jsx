@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-// import "./AddProduct.css";
+import "../../Product/AddProduct/AddProduct.css";
 import { BASE_URL } from "../../../../assets/url";
 
 const OfferAddProduct = () => {
@@ -41,7 +41,7 @@ const OfferAddProduct = () => {
 
       toast.success("Product uploaded successfully!");
       setTitle(""); setPrice(""); setDiscount(""); setCategory(""); setBrand(""); setDescription(""); setStartDate(""); setEndDate(""); setImage(null); setImages([]);
-      navigate("/dashboard/offer-products");
+      navigate("/dashboard/products");
       window.location.reload();
     } catch (err) {
       console.error(err.response?.data);

@@ -1,0 +1,144 @@
+.common-questions-page {
+  padding-top: 85px;
+  min-height: calc(100vh - 85px);
+  background: var(--white);
+}
+
+.dark .common-questions-page {
+  background: var(--dark-gray);
+}
+
+.faq-section {
+  background: var(--white);
+  padding: 4rem 0;
+}
+
+.dark .faq-section {
+  background: var(--dark-gray);
+}
+
+.accordion {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.accordion-item {
+  margin-bottom: 20px;
+  border: 1px solid var(--medium-gray);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: var(--transition);
+  background: var(--white);
+}
+
+.dark .accordion-item {
+  background: var(--medium-gray);
+  border-color: var(--light-gray);
+}
+
+.accordion-item:hover {
+  border-color: var(--primary-gold);
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.1);
+}
+
+.accordion-header {
+  width: 100%;
+  padding: 25px 30px;
+  background: var(--white);
+  border: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--black);
+  transition: var(--transition);
+  text-align: right;
+}
+
+.dark .accordion-header {
+  background: var(--medium-gray);
+  color: var(--black);
+}
+
+.accordion-header:hover {
+  background: var(--light-gray);
+}
+
+.dark .accordion-header:hover {
+  background: var(--light-gray);
+}
+
+.accordion-icon {
+  font-size: 28px;
+  color: var(--primary-gold);
+  transition: var(--transition);
+}
+
+.accordion-item.active .accordion-icon {
+  transform: rotate(45deg);
+}
+
+.accordion-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+  background: var(--light-gray);
+}
+
+.dark .accordion-content {
+  background: var(--light-gray);
+}
+
+.accordion-item.active .accordion-content {
+  max-height: 500px;
+}
+
+.accordion-content p {
+  padding: 25px 30px;
+  color: var(--black);
+  line-height: 1.8;
+  opacity: 0.8;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  color: var(--dark-gold);
+  margin-bottom: 1rem;
+}
+
+.section-subtitle {
+  font-size: 1.1rem;
+  color: var(--black);
+  opacity: 0.7;
+}
+
+@media (max-width: 768px) {
+  .common-questions-page {
+    padding-top: 75px;
+  }
+
+  .faq-section {
+    padding: 2rem 0;
+  }
+
+  .section-title {
+    font-size: 2rem;
+  }
+
+  .accordion-header {
+    padding: 20px;
+    font-size: 16px;
+  }
+
+  .accordion-content p {
+    padding: 20px;
+  }
+}
+

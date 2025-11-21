@@ -16,6 +16,7 @@
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
     transition: var(--transition);
     position: relative;
+    border: 2px solid rgba(212, 175, 55, 0.4);
 }
 
 .product-card:hover {

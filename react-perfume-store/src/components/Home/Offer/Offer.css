@@ -17,6 +17,7 @@
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
     transition: var(--transition);
     position: relative;
+    border: 2px solid rgba(212, 175, 55, 0.4);
 }
 
 .offer-card:hover {
@@ -46,22 +47,50 @@
 }
 
 .offer-content {
-    padding: 30px;
+    padding: 28px 30px;
     display: flex;
     flex-direction: column;
+    gap: 8px;
 }
 
 .offer-name {
     font-family: 'Playfair Display', serif;
-    font-size: 24px;
-    margin-bottom: 10px;
-    color: var(--dark-gray);
+    font-size: 26px;
+    font-weight: 800;
+    margin-bottom: 16px;
+    color: var(--dark-gold);
+    line-height: 1.4;
+    letter-spacing: 0.5px;
+    min-height: 72px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .offer-description {
-    font-size: 14px;
-    color: #666;
+    font-size: 17px;
+    color: var(--dark-gold);
     margin-bottom: 20px;
+    line-height: 1.7;
+    font-weight: 500;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+body.dark .offer-description {
+    color: var(--dark-gold);
+}
+
+body.dark .offer-name {
+    color: var(--dark-gold);
+    text-shadow: 0 1px 3px rgba(212, 175, 55, 0.3);
 }
 
 .offer-price {
@@ -88,4 +117,162 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+/* Professional Countdown Timer Styles */
+.offer-countdown-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.05) 100%);
+  border-radius: 12px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+body.dark .offer-countdown-container {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(212, 175, 55, 0.08) 100%);
+  border-color: rgba(212, 175, 55, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3), 0 0 20px rgba(212, 175, 55, 0.1);
+}
+
+.countdown-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 50px;
+}
+
+.countdown-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--primary-gold);
+  line-height: 1;
+  font-family: 'Courier New', monospace;
+  text-shadow: 0 2px 4px rgba(212, 175, 55, 0.3);
+  transition: all 0.3s ease;
+}
+
+body.dark .countdown-value {
+  color: var(--primary-gold);
+  text-shadow: 0 2px 8px rgba(212, 175, 55, 0.5), 0 0 12px rgba(212, 175, 55, 0.3);
+}
+
+.countdown-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--dark-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.8;
+}
+
+body.dark .countdown-label {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.countdown-separator {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--primary-gold);
+  opacity: 0.6;
+  margin: 0 2px;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+body.dark .countdown-separator {
+  color: var(--primary-gold);
+  opacity: 0.8;
+  text-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .offer-content {
+    padding: 24px 20px;
+  }
+
+  .offer-name {
+    font-size: 24px;
+    min-height: 66px;
+    margin-bottom: 14px;
+  }
+
+  .offer-description {
+    font-size: 16px;
+    margin-bottom: 18px;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  .offer-countdown-container {
+    gap: 6px;
+    padding: 10px 12px;
+  }
+  
+  .countdown-value {
+    font-size: 20px;
+  }
+  
+  .countdown-label {
+    font-size: 9px;
+  }
+  
+  .countdown-separator {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .offer-content {
+    padding: 20px 18px;
+  }
+
+  .offer-name {
+    font-size: 22px;
+    min-height: 60px;
+    margin-bottom: 12px;
+  }
+
+  .offer-description {
+    font-size: 15px;
+    margin-bottom: 16px;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  .offer-countdown-container {
+    gap: 4px;
+    padding: 8px 10px;
+  }
+  
+  .countdown-value {
+    font-size: 18px;
+  }
+  
+  .countdown-label {
+    font-size: 8px;
+  }
+  
+  .countdown-separator {
+    font-size: 14px;
+  }
+  
+  .countdown-item {
+    min-width: 40px;
+  }
 }

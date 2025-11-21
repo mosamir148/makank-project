@@ -44,6 +44,7 @@ const Special = () => {
           { withCredentials: true }
         );
         toast.success("تمت إضافة المنتج إلى المفضلة بنجاح ✅");
+        window.dispatchEvent(new Event("wishlistUpdated"));
       } else {
         let localWish = JSON.parse(localStorage.getItem("localWish")) || [];
 
@@ -69,6 +70,7 @@ const Special = () => {
 
         localStorage.setItem("localWish", JSON.stringify(localWish));
         toast.success("✅ تمت إضافة المنتج للمفضلة بنجاح");
+        window.dispatchEvent(new Event("wishlistUpdated"));
       }
     } catch (err) {
       console.log(err);
@@ -94,7 +96,6 @@ const Special = () => {
           data-aos="zoom-in"
           data-aos-delay={product.delay}
         >
-          <div className="product-badge">{product.discount} EGY</div>
 
           <div
             className="product-image"

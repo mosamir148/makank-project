@@ -67,7 +67,7 @@ export default {
   CustomerService: "خدمة العملاء",
   PrivacyPolicy: "سياسة الخصوصية",
   TermsConditions: "الشروط والأحكام",
-  reserved: "© 2024 LUXE PARFUM. جميع الحقوق محفوظة.",
+  reserved: "© 2024 مكانك. جميع الحقوق محفوظة.",
   addToCart: "أضف إلى السلة",
   viewDetails: "عرض التفاصيل",
   SubscribeNow: "اشترك الآن",
@@ -114,10 +114,6 @@ export default {
   // Contact Page
   contactTitle: "تواصل معنا",
   contactSubtitle: "نحن هنا لمساعدتك",
-  contactFormName: "اسمك",
-  contactFormEmail: "بريدك الإلكتروني",
-  contactFormMessage: "رسالتك",
-  contactFormSubmit: "إرسال الرسالة",
 
   // Footer
   followUs: "تابعنا",
@@ -170,58 +166,413 @@ export default {
   Prev   : "السابق",
   Next   : "التالي",
   Related   : "ذات الصلة",
-authSubtitle: "مرحباً بك في عالم العطور الفاخرة",
+  authSubtitle: "مرحباً بك في عالم العطور الفاخرة",
   loginTitle: "تسجيل الدخول",
   emailLabel: "البريد الإلكتروني",
   emailPlaceholder: "أدخل بريدك الإلكتروني",
   passwordLabel: "كلمة المرور",
-  passwordPlaceholder: "أدخل كلمة المرور",
+  passwordPlaceholder: "إدخال كلمة المرور",
   togglePasswordShow: "إظهار كلمة المرور",
   togglePasswordHide: "إخفاء كلمة المرور",
   loginButton: "تسجيل الدخول",
   noAccount: "ليس لديك حساب؟",
   registerLink: "إنشاء حساب جديد",
-   authSubtitle: "مرحباً بك في عالم العطور الفاخرة",
   registerTitle: "إنشاء حساب جديد",
   fullNameLabel: "الاسم الكامل",
   fullNamePlaceholder: "أدخل اسمك الكامل",
-  emailLabel: "البريد الإلكتروني",
-  emailPlaceholder: "أدخل بريدك الإلكتروني",
   phoneLabel: "رقم الهاتف",
   phonePlaceholder: "05xxxxxxxx",
-  passwordLabel: "كلمة المرور",
-  passwordPlaceholder: "إدخال كلمة المرور",
-  togglePasswordShow: "إظهار كلمة المرور",
-  togglePasswordHide: "إخفاء كلمة المرور",
   registerButton: "إنشاء الحساب",
   haveAccount: "لديك حساب بالفعل؟",
   loginLink: "تسجيل الدخول",
-   summaryTitle: "ملخص السلة",
-    subtotal: "الإجمالي الفرعي:",
-    couponPlaceholder: "أدخل كود الخصم هنا",
-    applyCoupon: "تطبيق الكوبون",
-    discount: "الخصم:",
-    total: "الإجمالي:",
-    checkout: "إتمام الشراء",
-    noProduct: " لا توجد منتجات في السلة حاليًا",
-    Your: " الخاصة بك",
-    Cart: "سلة التسوق",
-    title: "تسجيل الدخول أو المتابعة كضيف",
-    login: "تسجيل الدخول",
-    register: "إنشاء حساب جديد",
-    guest: "الاستكمال بدون حساب",
-    close: "إغلاق",
-    loginTitle: "تسجيل الدخول",
-    registerTitle: "إنشاء حساب جديد",
-    guestTitle: "معلومات التواصل",
-    email: "البريد الإلكتروني",
-    password: "كلمة المرور",
-    fullName: "الاسم الكامل",
-    phone: "رقم الهاتف",
-    address: "العنوان بالتفصيل",
-    whatsapp: "رقم واتساب",
-    loginBtn: "تسجيل الدخول",
-    registerBtn: "إنشاء حساب",
-    guestBtn: "تأكيد الطلب",
-    close: "إغلاق",
+  summaryTitle: "ملخص السلة",
+  subtotal: "الإجمالي الفرعي:",
+  couponPlaceholder: "أدخل كود الخصم هنا",
+  applyCoupon: "تطبيق الكوبون",
+  discount: "الخصم:",
+  total: "الإجمالي:",
+  checkout: "إتمام الشراء",
+  noProduct: " لا توجد منتجات في السلة حاليًا",
+  Your: " الخاصة بك",
+  Cart: "سلة التسوق",
+  title: "تسجيل الدخول أو المتابعة كضيف",
+  login: "تسجيل الدخول",
+  register: "إنشاء حساب جديد",
+  guest: "الاستكمال بدون حساب",
+  close: "إغلاق",
+  guestTitle: "معلومات التواصل",
+  email: "البريد الإلكتروني",
+  password: "كلمة المرور",
+  fullName: "الاسم الكامل",
+  phone: "رقم الهاتف",
+  address: "العنوان بالتفصيل",
+  whatsapp: "رقم واتساب",
+  loginBtn: "تسجيل الدخول",
+  registerBtn: "إنشاء حساب",
+  guestBtn: "تأكيد الطلب",
+  // Admin Dashboard
+  adminDashboard: "لوحة التحكم",
+  adminUsers: "المستخدمون",
+  adminOrders: "الطلبات",
+  adminProducts: "المنتجات",
+  adminOffers: "العروض",
+  adminCoupons: "كوبونات الخصم",
+  // User Management
+  allUsers: "جميع المستخدمين",
+  userDetails: "تفاصيل المستخدم",
+  deleteUser: "حذف المستخدم",
+  searchUser: "ابحث بالاسم أو البريد الإلكتروني...",
+  userName: "الاسم",
+  userEmail: "البريد الإلكتروني",
+  userPhone: "الهاتف",
+  userActions: "الإجراءات",
+  view: "عرض",
+  delete: "حذف",
+  noUsersFound: "لم يتم العثور على مستخدمين.",
+  back: "العودة",
+  basicInfo: "المعلومات الأساسية",
+  name: "الاسم",
+  email: "البريد الإلكتروني",
+  phone: "رقم الهاتف",
+  role: "الدور",
+  admin: "مدير",
+  user: "مستخدم",
+  createdAt: "تاريخ الإنشاء",
+  lastModified: "آخر تعديل",
+  changePassword: "تغيير كلمة المرور",
+  newPassword: "كلمة المرور الجديدة",
+  confirmPassword: "تأكيد كلمة المرور",
+  enterNewPassword: "أدخل كلمة المرور الجديدة (8 أحرف على الأقل)",
+  reEnterPassword: "أعد إدخال كلمة المرور",
+  savePassword: "حفظ كلمة المرور",
+  cancel: "إلغاء",
+  userOrders: "الطلبات",
+  noOrdersForUser: "لا توجد طلبات لهذا المستخدم",
+  orderNumber: "رقم الطلب",
+  orderDate: "تاريخ الطلب",
+  productsCount: "عدد المنتجات",
+  total: "الإجمالي",
+  status: "الحالة",
+  // Products
+  allProducts: "جميع المنتجات",
+  addNewProduct: "إضافة منتج جديد",
+  productImage: "الصورة",
+  productName: "الاسم",
+  productPrice: "السعر",
+  productDiscount: "الخصم",
+  productCategory: "القسم",
+  noProducts: "لا توجد منتجات",
+  edit: "تعديل",
+  productDetails: "تفاصيل المنتج",
+  updateProduct: "تحديث المنتج",
+  addProduct: "إضافة منتج جديد",
+  productTitle: "اسم المنتج",
+  enterProductName: "أدخل اسم المنتج",
+  sellingPrice: "سعر البيع",
+  enterSellingPrice: "أدخل سعر البيع",
+  purchasePrice: "سعر الشراء",
+  enterPurchasePrice: "أدخل سعر الشراء",
+  discount: "التخفيض",
+  enterDiscount: "أدخل قيمة التخفيض",
+  shippingPrice: "سعر الشحن",
+  enterShippingPrice: "أدخل سعر الشحن",
+  stock: "الكمية المتاحة (المخزون)",
+  enterStock: "أدخل الكمية المتاحة",
+  category: "الفئة",
+  selectCategory: "اختر الفئة",
+  brand: "الماركة",
+  enterBrand: "أدخل الماركة",
+  description: "الوصف",
+  enterDescription: "أدخل وصف المنتج",
+  mainImage: "الصورة الأساسية",
+  galleryImages: "صور المعرض",
+  submitProduct: "إضافة المنتج",
+  addingProduct: "جاري الإضافة...",
+  addNewProductTitle: "إضافة منتج جديد",
+  categoryPerfumes: "العطور",
+  categoryOudCharcoal: "فحم العود",
+  categoryIncense: "البخور",
+  categoryAccessories: "الإكسسوارات",
+  errorAddingProduct: "حدث خطأ أثناء إضافة المنتج",
+  productNotFound: "المنتج غير موجود",
+  finalPrice: "السعر النهائي",
+  availableQuantity: "الكمية المتاحة",
+  inStock: "متوفر",
+  outOfStock: "غير متوفر",
+  additionalInfo: "معلومات إضافية",
+  // Orders
+  ordersManagement: "لوحة إدارة الطلبات",
+  totalOrders: "إجمالي الطلبات",
+  pending: "قيد الانتظار",
+  accepted: "مقبول ومعالج",
+  delivered: "تم التسليم",
+  completed: "مكتمل",
+  rejected: "مرفوض",
+  cancelled: "ملغي",
+  searchAll: "البحث في الكل",
+  searchByOrderNumber: "ابحث برقم الطلب...",
+  searchByCustomer: "ابحث بالعميل...",
+  searchByProducts: "ابحث بالمنتجات...",
+  showFilters: "إظهار الفلاتر",
+  hideFilters: "إخفاء",
+  clearAllFilters: "مسح جميع الفلاتر",
+  orderStatus: "حالة الطلب",
+  allStatuses: "جميع الحالات",
+  customerType: "نوع العميل",
+  allTypes: "الكل",
+  registered: "مسجل",
+  guest: "زائر",
+  fromDate: "من تاريخ",
+  toDate: "إلى تاريخ",
+  minPrice: "السعر الأدنى",
+  maxPrice: "السعر الأعلى",
+  selectedOrders: "طلب محدد",
+  noOrdersSelected: "لم يتم اختيار أي طلب",
+  acceptAndProcess: "قبول ومعالجة",
+  deliver: "التوصيل قيد التنفيذ",
+  delivered: "تم التسليم",
+  reject: "رفض",
+  selectAll: "تحديد الكل",
+  orderDateCol: "تاريخ الطلب",
+  customerUserGuest: "العميل / المستخدم / الزائر",
+  products: "المنتجات",
+  noResults: "لا توجد نتائج تطابق الفلاتر المحددة",
+  noOrdersYet: "لا توجد طلبات بعد",
+  myOrders: "طلباتي",
+  backToProfile: "العودة إلى الملف الشخصي",
+  actions: "الإجراءات",
+  cancelOrder: "إلغاء الطلب",
+  cannotCancelOrder: "لا يمكن إلغاء هذا الطلب",
+  cancelOrderConfirmation: "هل تريد إلغاء هذا الطلب؟ لن تتمكن من التراجع عن هذا الإجراء.",
+  yesCancelOrder: "نعم، إلغاء الطلب",
+  orderCancelledSuccessfully: "تم إلغاء الطلب بنجاح!",
+  failedToCancelOrder: "فشل في إلغاء الطلب!",
+  loadingOrders: "جاري تحميل الطلبات...",
+  filteredResults: "النتائج المفلترة",
+  of: "من",
+  orderDetail: "تفاصيل الطلب",
+  orderInfo: "معلومات الطلب",
+  totalQuantity: "الكمية الإجمالية",
+  finalPriceOrder: "السعر النهائي",
+  paymentMethod: "طريقة الدفع",
+  couponCode: "كود الخصم",
+  discountOrder: "الخصم",
+  userInfo: "معلومات المستخدم",
+  deliveryAddress: "عنوان التوصيل",
+  recipientName: "اسم المستلم",
+  governorate: "المحافظة",
+  city: "المدينة",
+  street: "الشارع",
+  streetNumber: "رقم الشارع",
+  buildingNumber: "رقم المبنى",
+  orderItems: "منتجات الطلب",
+  product: "منتج",
+  items: "قطعة",
+  productUnavailable: "منتج غير متوفر (تم حذفه)",
+  quantity: "الكمية",
+  price: "السعر",
+  itemTotal: "المجموع",
+  productsCountSummary: "عدد المنتجات",
+  totalQuantitySummary: "الكمية الإجمالية",
+  totalAmount: "المجموع الكلي",
+  clickToViewProfile: "انقر لعرض الملف الشخصي",
+  clickHere: "← اضغط هنا",
+  backToOrders: "← العودة إلى الطلبات",
+  orderDetailsHeader: "تفاصيل الطلب",
+  orderCreatedAt: "تاريخ الطلب",
+  productInfo: "معلومات المنتج",
+  productNameLabel: "اسم المنتج",
+  productDescriptionLabel: "الوصف",
+  productCategoryLabel: "الفئة",
+  productBrandLabel: "الماركة",
+  orderProductsCount: "منتجات الطلب",
+  productUnavailableText: "المنتج غير متوفر",
+  failedToLoadOrder: "فشل في تحميل بيانات الطلب",
+  areYouSure: "هل أنت متأكد؟",
+  // Offers
+  offersManagement: "إدارة العروض",
+  addNewOffer: "إضافة عرض جديد",
+  offerImage: "الصورة",
+  productNameOffer: "اسم المنتج",
+  offerName: "اسم العرض",
+  offerType: "نوع العرض",
+  startDate: "تاريخ البداية",
+  endDate: "تاريخ النهاية",
+  noOffers: "لا توجد عروض حالياً",
+  viewDetails: "عرض التفاصيل",
+  offerDetails: "تفاصيل العرض",
+  directDiscount: "خصم مباشر",
+  coupon: "كوبون",
+  originalPrice: "السعر الأصلي",
+  priceAfterDiscount: "السعر بعد الخصم",
+  offerDescription: "الوصف",
+  closeOffer: "إغلاق",
+  editOffer: "تعديل العرض",
+  offerTitle: "اسم العرض",
+  enterOfferName: "أدخل اسم العرض",
+  selectOfferType: "نوع العرض",
+  directDiscountType: "خصم مباشر",
+  couponType: "كوبون",
+  selectCoupon: "اختر الكوبون",
+  chooseCoupon: "اختر كوبون",
+  discountType: "نوع الخصم",
+  percentage: "نسبة مئوية (%)",
+  fixedAmount: "مبلغ ثابت ($)",
+  discountValue: "قيمة الخصم",
+  enterPercentage: "أدخل النسبة (مثال: 20)",
+  enterAmount: "أدخل المبلغ (مثال: 10)",
+  selectProducts: "اختر المنتجات",
+  searchProduct: "ابحث عن منتج بالاسم أو المعرف...",
+  selectAllProducts: "تحديد الكل",
+  noProductsMatch: "لا توجد منتجات تطابق البحث",
+  previewProducts: "معاينة المنتجات مع الخصم",
+  productNamePreview: "اسم المنتج",
+  originalPricePreview: "السعر الأصلي",
+  priceAfterDiscountPreview: "السعر بعد الخصم",
+  addingOffer: "جاري الإضافة...",
+  addOffer: "إضافة العرض",
+  active: "نشط",
+  upcoming: "قادم",
+  expired: "منتهي",
+  notSpecified: "غير محدد",
+  // Coupons
+  couponsManagement: "إدارة الكوبونات",
+  addCoupon: "إضافة كوبون",
+  couponCode: "الكود",
+  couponType: "النوع",
+  couponValue: "القيمة",
+  expiryDate: "تاريخ الانتهاء",
+  couponStatus: "الحالة",
+  controls: "التحكم",
+  percentageType: "نسبة %",
+  fixedAmountType: "مبلغ ثابت",
+  valid: "ساري",
+  expiredCoupon: "منتهي",
+  editCoupon: "تعديل الكوبون",
+  addNewCoupon: "إضافة كوبون جديد",
+  enterCouponCode: "كود الكوبون",
+  couponName: "اسم الكوبون",
+  enterCouponName: "أدخل اسم الكوبون",
+  discountCode: "كود الخصم",
+  enterDiscountCode: "أدخل كود الخصم",
+  couponApplied: "تم تطبيق الكوبون بنجاح!",
+  invalidCouponCode: "كود الكوبون غير صحيح",
+  couponNotApplicable: "هذا الكوبون غير قابل للتطبيق على المنتجات في السلة",
+  selectDiscountType: "نوع الخصم",
+  percentageDiscount: "نسبة مئوية",
+  amountDiscount: "مبلغ ثابت",
+  enterDiscountValue: "قيمة الخصم",
+  enterExpiryDate: "تاريخ الانتهاء",
+  save: "حفظ",
+  noCoupons: "لا توجد كوبونات حالياً",
+  // Overview
+  storeAnalytics: "لوحة تحليلات المتجر",
+  comprehensiveOverview: "نظرة شاملة على أداء متجرك",
+  normalProducts: "المنتجات العادية",
+  featuredProducts: "منتجات مميزة",
+  specialOffers: "عروض خاصه",
+  exclusiveOnline: "حصري علي الموقع",
+  coupons: "الكوبونات",
+  wishlist: "قائمة الرغبات",
+  totalOrdersOverview: "إجمالي الطلبات",
+  storeSummary: "ملخص المتجر",
+  orderStatusChart: "حالة الطلبات",
+  activityOverview: "نظرة عامة على النشاط",
+  // Common
+  confirm: "هل أنت متأكد؟",
+  cannotUndo: "لن تتمكن من التراجع عن هذا!",
+  yesDelete: "نعم، احذف!",
+  yesDeleteUser: "نعم، احذف المستخدم!",
+  yesDeleteProduct: "نعم، احذف المنتج!",
+  deleted: "تم الحذف!",
+  deletedSuccessfully: "تم حذف بنجاح.",
+  success: "تم بنجاح",
+  failed: "فشل",
+  failedToLoad: "فشل في تحميل",
+  failedToDelete: "فشل في حذف",
+  failedToUpdate: "فشل في تحديث",
+  failedToAdd: "فشل في إضافة",
+  successMessage: "تم بنجاح!",
+  passwordChanged: "تم تغيير كلمة المرور بنجاح!",
+  passwordMismatch: "كلمات المرور غير متطابقة",
+  passwordMinLength: "كلمة المرور يجب أن تكون 8 أحرف على الأقل",
+  willChangePassword: "سيتم تغيير كلمة مرور المستخدم",
+  yesChangePassword: "نعم، غير كلمة المرور",
+  productAdded: "تم إضافة المنتج بنجاح!",
+  productUpdated: "تم تحديث المنتج بنجاح!",
+  productDeleted: "تم حذف المنتج بنجاح!",
+  offerAdded: "تم إضافة العرض بنجاح!",
+  offerDeleted: "تم حذف العرض بنجاح!",
+  offerUpdated: "تم تحديث العرض بنجاح!",
+  couponCreated: "تم إنشاء الكوبون بنجاح 🎉",
+  couponUpdated: "تم تعديل الكوبون بنجاح ✅",
+  couponDeleted: "تم حذف الكوبون 🗑️",
+  errorOccurred: "حدث خطأ",
+  errorLoadingCoupons: "حدث خطأ أثناء جلب الكوبونات",
+  errorSavingCoupon: "حدث خطأ أثناء حفظ الكوبون ❌",
+  errorDeleting: "حدث خطأ أثناء الحذف ❌",
+  fillRequiredFields: "يرجى ملء جميع الحقول المطلوبة",
+  selectCouponRequired: "يرجى اختيار كوبون",
+  selectAtLeastOneProduct: "يرجى اختيار منتج واحد على الأقل",
+  selectAtLeastOneOrder: "يرجى اختيار طلب واحد على الأقل",
+  someOrdersInvalid: "بعض الطلبات المحددة لا يمكن تنفيذ هذا الإجراء عليها. الحالة الحالية",
+  wantToAction: "هل تريد",
+  forSelectedOrders: "للطلبات المحددة",
+  yesAction: "نعم",
+  statusUpdated: "تم تحديث الحالة بنجاح!",
+  errorUpdatingStatus: "حدث خطأ أثناء التحديث!",
+  orderNotFound: "الطلب غير موجود",
+  invalidOrderId: "معرف الطلب غير صحيح",
+  loading: "جارِ التحميل...",
+  userNotFound: "المستخدم غير موجود",
+  userDeleted: "تم حذف المستخدم بنجاح!",
+  userDeletedSuccess: "تم حذف المستخدم بنجاح.",
+  userDeletedSuccessfully: "تم حذف المستخدم بنجاح!",
+  failedToLoadUsers: "فشل في تحميل المستخدمين",
+  failedToDeleteUser: "فشل في حذف المستخدم!",
+  passwordsDoNotMatch: "كلمات المرور غير متطابقة",
+  passwordWillBeChanged: "سيتم تغيير كلمة مرور المستخدم",
+  passwordChangedSuccessfully: "تم تغيير كلمة المرور بنجاح!",
+  failedToChangePassword: "فشل في تغيير كلمة المرور",
+  acceptedAndProcessed: "مقبول ومعالج",
+  cannotSelectCancelled: "لا يمكن اختيار الطلبات الملغاة",
+  productsSelected: "منتجات محدد",
+  pieces: "قطعة",
+  more: "أكثر",
+  noProductsInOrder: "لا توجد منتجات",
+  enterOfferDiscount: "أدخل قيمة التخفيض",
+  addOfferProduct: "إضافة منتج الأوفر جديد",
+  enterCategory: "أدخل الفئة",
+  enterStartDate: "تاريخ البداية",
+  enterEndDate: "تاريخ النهاية",
+  mainImageLabel: "الصورة الرئيسية",
+  galleryImagesLabel: "صور المعرض",
+  section: "القسم",
+  // Pagination
+  totalItems: "إجمالي العناصر",
+  show: "عرض",
+  previous: "السابق",
+  next: "التالي",
+  page: "الصفحة",
+  // Notifications
+  notifications: "الإشعارات",
+  noNotifications: "لا توجد إشعارات",
+  markAllAsRead: "تحديد الكل كمقروء",
+  viewAllNotifications: "عرض جميع الإشعارات",
+  // Product Details
+  brand: "الماركة",
+  availability: "التوفر",
+  shipping: "الشحن",
+  save: "وفر",
+  buyNow: "اشتري الآن",
+  noImageAvailable: "لا توجد صورة متاحة",
+  backToProducts: "العودة إلى المنتجات",
+  productNotFound: "المنتج غير موجود",
+  invalidProductId: "معرف المنتج غير صحيح",
+  productUnavailable: "المنتج غير متوفر",
+  addToCart: "أضف إلى السلة",
+  addToCartSuccess: "تمت إضافة المنتج إلى السلة بنجاح ✅",
+  productAlreadyInCart: "هذا المنتج موجود بالفعل في السلة ❤️",
+  errorAddingToCart: "حدث خطأ أثناء الإضافة إلى السلة",
+  nA: "غير متوفر",
 };

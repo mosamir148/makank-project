@@ -47,6 +47,7 @@ const OnlineDetails = () => {
           { withCredentials: true }
         );
         toast.success("تمت إضافة المنتج إلى المفضلة بنجاح ✅");
+        window.dispatchEvent(new Event("wishlistUpdated"));
       } else {
         let localWish = JSON.parse(localStorage.getItem("localWish")) || [];
 
@@ -65,10 +66,12 @@ const OnlineDetails = () => {
           brand: data.brand || "منتج بدون براند",
           category: data.category || "منتج بدون كاتيجوري",
           type: "online", // فرق نوع المنتج
+          quantity: 1,
         });
 
         localStorage.setItem("localWish", JSON.stringify(localWish));
         toast.success("✅ تمت إضافة المنتج للمفضلة بنجاح");
+        window.dispatchEvent(new Event("wishlistUpdated"));
       }
     } catch (err) {
       console.log(err);
@@ -115,8 +118,8 @@ const OnlineDetails = () => {
             <p className="description">{data.description || "منتج بدون وصف"}</p>
 
             <p className="price">
-              ${data.price || "غير محدد"}
-              <span className="discount">${data.discount || 0}</span>
+              {data.price || "غير محدد"}
+              <span className="discount">{data.discount || 0}</span>
             </p>
 
             <hr />

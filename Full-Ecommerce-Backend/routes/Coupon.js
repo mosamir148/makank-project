@@ -1,20 +1,14 @@
 const express = require("express");
+const { validateCoupon } = require("../controllers/Offer");
+
 const router = express.Router();
-const {
-  createCoupon,
-  updateCoupon,
-  deleteCoupon,
-  getAllCoupons,
-  validateCoupon,
-} = require("../controllers/CouponController");
 
-// 🔒 للادمن
-router.post("/", createCoupon);
-router.put("/:id", updateCoupon);
-router.delete("/:id", deleteCoupon);
-router.get("/", getAllCoupons);
-
-// 🟢 للمستخدم
+// Public route for coupon validation
 router.post("/validate", validateCoupon);
 
 module.exports = router;
+
+
+
+
+

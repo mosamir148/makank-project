@@ -1,12 +1,15 @@
 .why-choose-us {
-    background: var(--dark-gray);
-    color: var(--white);
+    background: linear-gradient(135deg, var(--beige) 0%, var(--warm-beige) 100%);
+    color: var(--dark-gray);
     overflow: hidden;
 }
 
-.why-choose-us .section-title,
+.why-choose-us .section-title {
+    color: var(--dark-gold);
+}
+
 .why-choose-us .section-subtitle {
-    color: var(--white);
+    color: rgba(0, 0, 0, 0.7);
 }
 
 .features-grid {
@@ -17,17 +20,19 @@
 
 .feature-card {
     text-align: center;
-    padding: 20px 30px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 15px;
-    border: 1px solid rgba(212, 175, 55, 0.2);
+    padding: 40px 30px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 16px;
+    border: 2px solid rgba(212, 175, 55, 0.5);
     transition: var(--transition);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 .feature-card:hover {
-    transform: translateY(-10px);
-    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-8px);
+    background: rgba(255, 255, 255, 0.95);
     border-color: var(--primary-gold);
+    box-shadow: 0 12px 40px rgba(212, 175, 55, 0.2);
 }
 
 .feature-icon {
@@ -38,11 +43,13 @@
 .feature-card h3 {
     font-size: 22px;
     margin-bottom: 15px;
-    color: var(--primary-gold);
+    color: var(--dark-gold);
+    font-weight: 700;
 }
 
 .feature-card p {
-    font-size: 14px;
-    opacity: 0.8;
-    line-height: 1.6;
+    font-size: 15px;
+    color: #666;
+    line-height: 1.7;
+    margin: 0;
 }

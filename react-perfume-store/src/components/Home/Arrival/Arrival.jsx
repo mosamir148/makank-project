@@ -50,7 +50,7 @@ const Arrival = () => {
                   <p className="product-category">{p.category}</p>
                   <p className="product-description">{p.description}</p>
                   <div className="product-footer">
-                    <p className="product-price">${p.price}</p>
+                    <p className="product-price">{p.price}</p>
                     <Link to={`/product/${p._id}`} className="buy-btn">{t("shopNow")}</Link>
                   </div>
                 </div>

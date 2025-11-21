@@ -45,6 +45,7 @@ const SpecialDetails = () => {
           { withCredentials: true }
         );
         toast.success("تمت إضافة المنتج إلى المفضلة بنجاح ✅");
+        window.dispatchEvent(new Event("wishlistUpdated"));
       } else {
         let localWish = JSON.parse(localStorage.getItem("localWish")) || [];
 
@@ -63,10 +64,12 @@ const SpecialDetails = () => {
           brand: data.brand || "منتج بدون براند",
           category: data.category || "منتج بدون كاتيجوري",
           type: "featured",
+          quantity: 1,
         });
 
         localStorage.setItem("localWish", JSON.stringify(localWish));
         toast.success("✅ تمت إضافة المنتج للمفضلة بنجاح");
+        window.dispatchEvent(new Event("wishlistUpdated"));
       }
     } catch (err) {
       console.log(err);
@@ -118,8 +121,8 @@ const SpecialDetails = () => {
             </p>
 
             <p className="price">
-              ${data.price || "غير محدد"}
-              <span className="discount">${data.discount || 0}</span>
+              {data.price || "غير محدد"}
+              <span className="discount">{data.discount || 0}</span>
             </p>
 
             <hr />

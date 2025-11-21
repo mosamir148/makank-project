@@ -88,8 +88,8 @@ const OnlineAllProduct = () => {
                     />
                   </td>
                   <td>{item.title}</td>
-                  <td>${item.price}</td>
-                  <td>${item.discount}</td>
+                  <td>{item.price}</td>
+                  <td>{item.discount}</td>
                   <td>{item.category}</td>
                   <td className="text-center">
                     <Link className="edit-btn" to={`update-product/${item._id}`}>

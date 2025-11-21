@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#D4AF37;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#B8960F;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="beigeGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#F5F5DC;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#E8E8D3;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Beige Background -->
+  <rect width="100" height="100" fill="url(#beigeGradient)"/>
+  
+  <!-- Perfume Bottle -->
+  <path d="M 35 25 L 35 20 L 40 20 L 40 22 L 42 22 L 42 20 L 47 20 L 47 25 L 50 25 L 50 70 L 35 70 Z" fill="url(#goldGradient)" stroke="#B8960F" stroke-width="0.5"/>
+  <path d="M 38 20 L 38 18 L 44 18 L 44 20" fill="#B8960F"/>
+  <ellipse cx="42.5" cy="18" rx="3" ry="1.5" fill="#B8960F"/>
+  
+  <!-- Bottle Cap -->
+  <rect x="39" y="15" width="7" height="5" fill="url(#goldGradient)"/>
+  <rect x="40" y="12" width="5" height="3" fill="#B8960F"/>
+  
+  <!-- Incense Smoke -->
+  <path d="M 42 15 Q 38 8 35 5 Q 32 2 38 0" fill="none" stroke="#D4AF37" stroke-width="1.5" opacity="0.6" stroke-linecap="round"/>
+  <path d="M 42 15 Q 45 8 48 5 Q 51 2 45 0" fill="none" stroke="#D4AF37" stroke-width="1.5" opacity="0.5" stroke-linecap="round"/>
+  <path d="M 42 15 Q 41 10 42 7 Q 43 4 42 2" fill="none" stroke="#D4AF37" stroke-width="1.2" opacity="0.7" stroke-linecap="round"/>
+  <circle cx="38" cy="3" r="1.5" fill="#D4AF37" opacity="0.4"/>
+  <circle cx="45" cy="2" r="1.2" fill="#D4AF37" opacity="0.3"/>
+</svg>

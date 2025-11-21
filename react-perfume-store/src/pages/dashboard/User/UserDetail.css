@@ -1,0 +1,520 @@
+.user-detail-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: var(--light-gray);
+  min-height: 100vh;
+}
+
+.user-detail-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: var(--light-gray);
+  min-height: 100vh;
+  transition: background-color var(--transition);
+}
+
+/* Dark mode section */
+body.dark .user-detail-section {
+  background-color: var(--dark-gray);
+}
+
+.user-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.user-detail-header h2 {
+  font-family: var(--arabic-font);
+  color: var(--dark-gold);
+  margin: 0;
+  transition: color var(--transition);
+}
+
+/* Dark mode header - h2 already uses --dark-gold which is fine */
+
+.back-btn {
+  padding: 0.5rem 1.5rem;
+  background: var(--primary-gold);
+  color: var(--black);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: var(--arabic-font);
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.back-btn:hover {
+  background: var(--dark-gold);
+  transform: translateX(-3px);
+}
+
+.header-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.delete-btn {
+  padding: 0.5rem 1.5rem;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: var(--arabic-font);
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.delete-btn:hover {
+  background: #c82333;
+  transform: translateY(-2px);
+}
+
+.user-detail-content {
+  display: grid;
+  gap: 2rem;
+}
+
+.user-info-card,
+.password-change-card {
+  background: var(--white);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: background-color var(--transition), box-shadow var(--transition);
+}
+
+/* Dark mode cards */
+body.dark .user-info-card,
+body.dark .password-change-card {
+  background: var(--medium-gray);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.user-info-card h3,
+.password-change-card h3 {
+  font-family: var(--arabic-font);
+  color: var(--dark-gold);
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  transition: color var(--transition);
+}
+
+/* Dark mode card headers - already use --dark-gold which is fine */
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.info-label {
+  font-family: var(--arabic-font);
+  font-weight: 600;
+  color: var(--dark-gray);
+  font-size: 0.9rem;
+  transition: color var(--transition);
+}
+
+/* Dark mode info label */
+body.dark .info-label {
+  color: #9ca3af;
+}
+
+.info-value {
+  font-family: var(--arabic-font);
+  color: var(--black);
+  font-size: 1.1rem;
+  padding: 0.5rem;
+  background: var(--beige);
+  border-radius: 6px;
+  transition: color var(--transition), background-color var(--transition);
+}
+
+/* Dark mode info value */
+body.dark .info-value {
+  color: var(--white);
+  background: var(--light-gray);
+}
+
+.role-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.role-badge.admin {
+  background: var(--primary-gold);
+  color: var(--black);
+}
+
+.role-badge.user {
+  background: var(--medium-gray);
+  color: var(--white);
+}
+
+/* Dark mode role badges */
+body.dark .role-badge.user {
+  background: rgba(79, 70, 229, 0.2);
+  color: #a5b4fc;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.toggle-btn {
+  padding: 0.5rem 1.5rem;
+  background: transparent;
+  border: 2px solid var(--primary-gold);
+  color: var(--dark-gold);
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: var(--arabic-font);
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.toggle-btn:hover {
+  background: var(--primary-gold);
+  color: var(--black);
+}
+
+/* Dark mode toggle button */
+body.dark .toggle-btn:hover {
+  color: var(--dark-gray);
+}
+
+.password-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-family: var(--arabic-font);
+  font-weight: 600;
+  color: var(--dark-gray);
+  transition: color var(--transition);
+}
+
+/* Dark mode form label */
+body.dark .form-group label {
+  color: #9ca3af;
+}
+
+.form-group input {
+  padding: 0.75rem;
+  border: 2px solid var(--primary-gold);
+  border-radius: 6px;
+  font-family: var(--arabic-font);
+  font-size: 1rem;
+  background: var(--white);
+  color: var(--black);
+  transition: var(--transition);
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--dark-gold);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+/* Dark mode form input */
+body.dark .form-group input {
+  background: var(--light-gray);
+  border-color: var(--primary-gold);
+  color: var(--white);
+}
+
+body.dark .form-group input::placeholder {
+  color: #9ca3af;
+}
+
+body.dark .form-group input:focus {
+  border-color: var(--dark-gold);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+}
+
+.submit-btn {
+  padding: 0.75rem 2rem;
+  background: var(--primary-gold);
+  color: var(--black);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: var(--arabic-font);
+  font-weight: 600;
+  font-size: 1rem;
+  transition: var(--transition);
+  align-self: flex-start;
+}
+
+.submit-btn:hover {
+  background: var(--dark-gold);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+
+.error-message {
+  text-align: center;
+  padding: 2rem;
+  color: #dc3545;
+  font-family: var(--arabic-font);
+  font-size: 1.2rem;
+  transition: color var(--transition);
+}
+
+/* Dark mode error message */
+body.dark .error-message {
+  color: #f87171;
+}
+
+/* Tabs */
+.user-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid rgba(212, 175, 55, 0.2);
+  transition: border-color var(--transition);
+}
+
+/* Dark mode tabs border */
+body.dark .user-tabs {
+  border-bottom-color: rgba(212, 175, 55, 0.3);
+}
+
+.tab-btn {
+  padding: 0.75rem 2rem;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--dark-gray);
+  font-family: var(--arabic-font);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+  bottom: -2px;
+}
+
+.tab-btn:hover {
+  color: var(--dark-gold);
+  background: rgba(212, 175, 55, 0.05);
+}
+
+.tab-btn.active {
+  color: var(--dark-gold);
+  border-bottom-color: var(--primary-gold);
+  background: rgba(212, 175, 55, 0.1);
+}
+
+/* Dark mode tabs */
+body.dark .tab-btn {
+  color: #9ca3af;
+}
+
+body.dark .tab-btn:hover {
+  color: var(--dark-gold);
+  background: rgba(212, 175, 55, 0.1);
+}
+
+body.dark .tab-btn.active {
+  color: var(--dark-gold);
+  background: rgba(212, 175, 55, 0.15);
+}
+
+/* User Orders Section */
+.user-orders-section {
+  background: var(--white);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.no-orders-message {
+  text-align: center;
+  padding: 3rem;
+  color: var(--medium-gray);
+  font-family: var(--arabic-font);
+  font-size: 1.1rem;
+}
+
+.orders-table-container {
+  overflow-x: auto;
+  margin-bottom: 2rem;
+}
+
+.user-orders-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--arabic-font);
+}
+
+.user-orders-table thead {
+  background: var(--light-gray);
+}
+
+.user-orders-table th {
+  padding: 1rem;
+  text-align: right;
+  font-weight: 600;
+  color: var(--dark-gray);
+  border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+}
+
+.user-orders-table td {
+  padding: 1rem;
+  text-align: right;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+}
+
+.user-orders-table tbody tr {
+  transition: var(--transition);
+}
+
+.user-orders-table tbody tr:hover {
+  background: rgba(212, 175, 55, 0.05);
+  transform: translateX(-3px);
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.status-badge.pending {
+  background: rgba(245, 158, 11, 0.2);
+  color: #d97706;
+}
+
+.status-badge.processing {
+  background: rgba(59, 130, 246, 0.2);
+  color: #2563eb;
+}
+
+.status-badge.delivered {
+  background: rgba(34, 197, 94, 0.2);
+  color: #16a34a;
+}
+
+.status-badge.completed {
+  background: rgba(34, 197, 94, 0.3);
+  color: #15803d;
+}
+
+.status-badge.rejected {
+  background: rgba(239, 68, 68, 0.2);
+  color: #dc2626;
+}
+
+@media (max-width: 768px) {
+  .user-detail-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Responsive Tabs */
+  .user-tabs {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .tab-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  /* Responsive Orders Table */
+  .user-orders-section {
+    padding: 1rem;
+  }
+
+  .orders-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .user-orders-table {
+    min-width: 600px;
+    font-size: 0.85rem;
+  }
+
+  .user-orders-table th,
+  .user-orders-table td {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  /* Card layout for mobile */
+  .user-orders-table thead {
+    display: none;
+  }
+
+  .user-orders-table tbody tr {
+    display: block;
+    margin-bottom: 1rem;
+    background: var(--light-gray);
+    border-radius: 8px;
+    padding: 1rem;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+  }
+
+  .user-orders-table tbody tr:hover {
+    transform: none;
+    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.15);
+  }
+
+  .user-orders-table tbody td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+    text-align: right;
+  }
+
+  .user-orders-table tbody td:last-child {
+    border-bottom: none;
+  }
+
+  .user-orders-table tbody td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: var(--dark-gray);
+    margin-left: 1rem;
+  }
+}
+

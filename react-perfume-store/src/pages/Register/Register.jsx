@@ -77,7 +77,7 @@ const Register = () => {
        <div className="auth-page">
       <div className="auth-container">
         <div className="auth-header">
-          <h1 className="auth-logo">LUXE PARFUM</h1>
+          <h1 className="auth-logo">Makanak</h1>
           <p className="auth-subtitle">{t("authSubtitle")}</p>
         </div>
 

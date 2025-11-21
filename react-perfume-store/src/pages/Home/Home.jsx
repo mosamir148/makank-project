@@ -2,33 +2,51 @@ import Category from '../../components/Home/Category/Category'
 import Hero from '../../components/Home/Hero/Hero'
 import Sales from '../../components/Home/Sales/Sales'
 import  './Home.css'
-import Special from '../../components/Home/Special/Special'
-import Online from '../../components/Home/Online/Online'
-import Arrival from '../../components/Home/Arrival/Arrival'
-import Faq from '../../components/Home/Faq/Faq'
-import Customer from '../../components/Home/Customer/Customer'
 import Why from '../../components/Home/Why/Why'
-import Offer from '../../components/Home/Offer/Offer'
 import Testimonials from '../../components/Home/Testimonials/Testimonials'
 import Newsletter from '../../components/Home/Newsletter/Newsletter'
+import CategoryProducts from '../../components/Home/CategoryProducts/CategoryProducts'
 import React from 'react'
 
 const Home = () => {
   return (
-   <>
+   <div className="home-page">
       <Hero />
       <Category />
-      <Offer />
-      <Special />
-      <Online />
-      <Sales />
-      <Arrival />
-      <Faq />
+      <CategoryProducts 
+        category="Oud Charcoal"
+        categoryKey="oud-charcoal"
+        titleAr="فحم العود"
+        titleEn="Oud Charcoal"
+      />
+      <CategoryProducts 
+        category="Incense"
+        categoryKey="incense"
+        titleAr="البخور"
+        titleEn="Incense"
+      />
+      <CategoryProducts 
+        category="Accessories"
+        categoryKey="accessories"
+        titleAr="الإكسسوارات"
+        titleEn="Accessories"
+      />
+      <CategoryProducts 
+        category="Offers"
+        categoryKey="offers"
+        titleAr="العروض"
+        titleEn="Offers"
+      />
+      <CategoryProducts 
+        category="Perfumes"
+        categoryKey="perfumes"
+        titleAr="العطور"
+        titleEn="Perfumes"
+      />
+      {/* <Sales /> */}
       <Testimonials />
-      <Customer />
       <Why />
-      <Newsletter />
-   </>
+   </div>
   )
 }
 
