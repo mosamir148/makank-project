@@ -786,7 +786,7 @@ const Checkout = () => {
                         {t("quantity") || "Quantity"}: <strong>{cartItem.quantity || 1}</strong>
                       </p>
                       <p className="order-item-price">
-                        {itemTotal.toFixed(2)} {t("currency") || "EGP"}
+                        {itemTotal.toFixed(2)}
                       </p>
                     </div>
                   </div>
@@ -803,19 +803,19 @@ const Checkout = () => {
             <div className="order-totals">
               <div className="total-row">
                 <span>{t("subtotal") || "Subtotal"}:</span>
-                <span>{total.toFixed(2)} {t("currency") || "EGP"}</span>
+                <span>{total.toFixed(2)}</span>
               </div>
               
               {discount > 0 && couponCode && (
                 <div className="total-row discount">
                   <span>{t("discount") || "Discount"} ({couponCode}):</span>
-                  <span>- {discount.toFixed(2)} {t("currency") || "EGP"}</span>
+                  <span>- {discount.toFixed(2)}</span>
                 </div>
               )}
 
               <div className="total-row total">
                 <strong>{t("total") || "Total"}:</strong>
-                <strong>{finalTotal.toFixed(2)} {t("currency") || "EGP"}</strong>
+                <strong>{finalTotal.toFixed(2)}</strong>
               </div>
             </div>
 

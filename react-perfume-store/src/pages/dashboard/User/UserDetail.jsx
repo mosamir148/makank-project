@@ -88,9 +88,9 @@ const UserDetail = () => {
           withCredentials: true,
           params: { page: ordersPage, limit: ordersPageSize },
         });
-        const allOrders = Array.isArray(res.data.orders) ? res.data.orders : res.data.orders || [];
+        const allOrders = Array.isArray(res.data.orders) ? res.data.orders : [];
         setOrders(allOrders);
-        setOrdersTotalItems(res.data.totalCount || allOrders.length);
+        setOrdersTotalItems(res.data.totalCount || 0);
       } catch (err) {
         console.error("❌ Error fetching user orders:", err);
         toast.error(t("failedToLoad") + " " + t("adminOrders"));
@@ -136,6 +136,7 @@ const UserDetail = () => {
     };
     return classMap[status] || "";
   };
+
 
   const handlePasswordChange = async (e) => {
     e.preventDefault();

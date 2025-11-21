@@ -635,12 +635,113 @@ exports.getCartById = async (req, res) => {
 exports.getUserOrders = async (req, res) => {
   try {
     const { userId } = req.params;
-    const orders = await Cart.find({ user: userId })
+    const { page = 1, limit = 10 } = req.query;
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    // Only fetch actual orders (those with orderNumber)
+    const query = { 
+      user: userId,
+      orderNumber: { $exists: true, $ne: null }
+    };
+
+    // Get total count for pagination
+    const totalCount = await Cart.countDocuments(query);
+
+    // Fetch orders with pagination
+    let orders = await Cart.find(query)
       .populate("user", "username email phone")
       .populate("items.product", "title description brand category price image")
-      .sort({ createdAt: -1 });
+      .populate("deliveryAddress")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
 
-    res.status(200).json(orders);
+    // Format orders similar to getAllCarts
+    orders = orders.map((item) => {
+      // Handle both old format (single product) and new format (items array)
+      let items = [];
+      let totalPrice = 0;
+      let totalBeforeDiscount = 0;
+      let totalItemDiscount = 0;
+
+      if (item.items && item.items.length > 0) {
+        // New format: items array
+        items = item.items.map(orderItem => ({
+          product: orderItem.product,
+          quantity: orderItem.quantity,
+          unitPrice: orderItem.unitPrice,
+          discountApplied: orderItem.discountApplied,
+          couponDiscount: orderItem.couponDiscount || 0,
+          finalPrice: orderItem.finalPrice
+        }));
+
+        // Calculate totals from items (finalPrice already includes coupon discount)
+        items.forEach(orderItem => {
+          const itemTotal = orderItem.finalPrice * orderItem.quantity;
+          totalPrice += itemTotal;
+          totalBeforeDiscount += orderItem.unitPrice * orderItem.quantity;
+          totalItemDiscount += orderItem.discountApplied * orderItem.quantity;
+        });
+      } else if (item.product) {
+        // Old format: single product
+        const quantity = item.quantity || 1;
+        const unitPrice = item.product?.price || 0;
+        const discountApplied = 0;
+        const finalPrice = unitPrice;
+
+        items = [{
+          product: item.product,
+          quantity: quantity,
+          unitPrice: unitPrice,
+          discountApplied: discountApplied,
+          finalPrice: finalPrice
+        }];
+
+        totalPrice = finalPrice * quantity;
+        totalBeforeDiscount = unitPrice * quantity;
+      }
+
+      // Calculate total coupon discount from items
+      let totalCouponDiscountFromItems = 0;
+      items.forEach(orderItem => {
+        totalCouponDiscountFromItems += (orderItem.couponDiscount || 0) * orderItem.quantity;
+      });
+      
+      const couponDiscount = totalCouponDiscountFromItems || item.couponDiscount || 0;
+      const deliveryFee = item.deliveryFee || 0;
+      const finalTotal = Math.max(0, totalPrice + deliveryFee);
+
+      return {
+        _id: item._id,
+        orderNumber: item.orderNumber || null,
+        user: item.user,
+        guest: item.guest,
+        items: items,
+        quantity: item.quantity || (items.length > 0 ? items.reduce((sum, i) => sum + i.quantity, 0) : 0),
+        status: item.status,
+        couponCode: item.couponCode || null,
+        couponDiscount: couponDiscount,
+        deliveryFee: deliveryFee,
+        paymentMethod: item.paymentMethod || "Cash",
+        deliveryAddress: item.deliveryAddress,
+        deliveryAddressInfo: item.deliveryAddressInfo,
+        totalBeforeDiscount: totalBeforeDiscount,
+        totalItemDiscount: totalItemDiscount,
+        totalDiscount: totalItemDiscount + couponDiscount,
+        totalPrice: finalTotal,
+        trackingToken: item.trackingToken || null,
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
+        product: item.product || null,
+      };
+    });
+
+    res.status(200).json({
+      orders,
+      totalCount,
+      currentPage: parseInt(page),
+      totalPages: Math.ceil(totalCount / parseInt(limit)),
+    });
   } catch (error) {
     console.error("GetUserOrders Error:", error);
     res.status(500).json({ message: "Error fetching user orders", error: error.message });

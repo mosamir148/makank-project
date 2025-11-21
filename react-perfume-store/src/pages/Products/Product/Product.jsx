@@ -7,7 +7,9 @@ import Loading from '../../../components/Loading/Loading'
 import { useLang } from '../../../context/LangContext'
 import { userContext } from '../../../context/UserContext'
 import toast from 'react-hot-toast'
-import { findMatchingCategory, getCategoryNameFromKey } from '../../../utils/categoryMapping'
+import { findMatchingCategory, getCategoryNameFromKey, getCategoryTranslationKey } from '../../../utils/categoryMapping'
+import { FaFilter, FaTag, FaLayerGroup } from 'react-icons/fa'
+import { RiStarFill } from 'react-icons/ri'
 
 const Product = () => {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -377,54 +379,89 @@ const Product = () => {
       <div className="products-container">
         {/* Sidebar Filters */}
         <aside className="filters-sidebar">
-          <div className="filter-section">
-            <h3 className="filter-title">{t("Categories")}</h3>
-            {/* Show Offers option only if there are active offers */}
-            {activeOffers.length > 0 && (
-              <div className="filter-option">
-                <input
-                  type="checkbox"
-                  checked={isOffersPage}
-                  onChange={() => {
-                    if (isOffersPage) {
-                      // If offers is selected, clear it
-                      setSearchParams({})
-                      setSelectedCategories([])
-                    } else {
-                      // Navigate to offers
-                      setSearchParams({ category: 'offers' })
-                      setSelectedCategories([])
-                    }
-                    setCurrentPage(1)
-                  }}
-                />
-                <label>{t("offers") || "Offers"}</label>
-              </div>
-            )}
-            {categories.map((category, i) => (
-              <div key={i} className="filter-option">
-                <input
-                  type="checkbox"
-                  checked={selectedCategories.includes(category)}
-                  onChange={() => handleCategoryChange(category)}
-                />
-                <label>{category}</label>
-              </div>
-            ))}
+          <div className="sidebar-header">
+            <FaFilter className="filter-icon-header" />
+            <h2 className="sidebar-title">{t("Filters") || "Filters"}</h2>
           </div>
 
           <div className="filter-section">
-            <h3 className="filter-title">{t("Brands")}</h3>
-            {brands.map((brand, i) => (
-              <div key={i} className="filter-option">
-                <input
-                  type="checkbox"
-                  checked={selectedBrandies.includes(brand)}
-                  onChange={() => handleBrandChange(brand)}
-                />
-                <label>{brand}</label>
-              </div>
-            ))}
+            <div className="filter-section-header">
+              <FaLayerGroup className="section-icon" />
+              <h3 className="filter-title">{t("Categories")}</h3>
+            </div>
+            <div className="filter-options-list">
+              {/* Show Offers option only if there are active offers */}
+              {activeOffers.length > 0 && (
+                <div className={`filter-option ${isOffersPage ? 'active' : ''}`}>
+                  <label className="filter-label">
+                    <input
+                      type="checkbox"
+                      checked={isOffersPage}
+                      onChange={() => {
+                        if (isOffersPage) {
+                          // If offers is selected, clear it
+                          setSearchParams({})
+                          setSelectedCategories([])
+                        } else {
+                          // Navigate to offers
+                          setSearchParams({ category: 'offers' })
+                          setSelectedCategories([])
+                        }
+                        setCurrentPage(1)
+                      }}
+                    />
+                    <span className="checkbox-custom"></span>
+                    <FaTag className="option-icon" />
+                    <span className="option-text">{t("offers") || "Offers"}</span>
+                  </label>
+                </div>
+              )}
+              {categories.map((category, i) => {
+                const translationKey = getCategoryTranslationKey(category);
+                // Get translation, if translation key equals the result, it means translation wasn't found, use category as fallback
+                const translation = t(translationKey);
+                const translatedName = (translation && translation !== translationKey) ? translation : category;
+                const isActive = selectedCategories.includes(category);
+                return (
+                  <div key={i} className={`filter-option ${isActive ? 'active' : ''}`}>
+                    <label className="filter-label">
+                      <input
+                        type="checkbox"
+                        checked={isActive}
+                        onChange={() => handleCategoryChange(category)}
+                      />
+                      <span className="checkbox-custom"></span>
+                      <span className="option-text">{translatedName}</span>
+                    </label>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="filter-section">
+            <div className="filter-section-header">
+              <RiStarFill className="section-icon" />
+              <h3 className="filter-title">{t("Brands")}</h3>
+            </div>
+            <div className="filter-options-list">
+              {brands.map((brand, i) => {
+                const isActive = selectedBrandies.includes(brand);
+                return (
+                  <div key={i} className={`filter-option ${isActive ? 'active' : ''}`}>
+                    <label className="filter-label">
+                      <input
+                        type="checkbox"
+                        checked={isActive}
+                        onChange={() => handleBrandChange(brand)}
+                      />
+                      <span className="checkbox-custom"></span>
+                      <span className="option-text">{brand}</span>
+                    </label>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </aside>
 

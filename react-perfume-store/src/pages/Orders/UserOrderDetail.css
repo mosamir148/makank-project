@@ -328,6 +328,128 @@
   font-size: 1.2rem;
 }
 
+/* Dark Mode Styles */
+body.dark .user-order-detail-page {
+  background: var(--dark-gray);
+}
+
+body.dark .user-order-info-card,
+body.dark .user-order-items-card,
+body.dark .user-order-product-card {
+  background: var(--medium-gray);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+body.dark .info-label {
+  color: var(--white);
+}
+
+body.dark .info-value {
+  background: var(--light-gray);
+  color: var(--white);
+}
+
+body.dark .info-value.price {
+  color: var(--primary-gold);
+}
+
+body.dark .user-order-item-row {
+  background: var(--light-gray);
+  border-color: rgba(212, 175, 55, 0.3);
+}
+
+body.dark .user-order-item-row:hover {
+  border-color: var(--primary-gold);
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.25);
+}
+
+body.dark .user-order-item-info h4 {
+  color: var(--white);
+}
+
+body.dark .user-order-item-quantity,
+body.dark .user-order-item-price,
+body.dark .user-order-item-total {
+  background: rgba(212, 175, 55, 0.15);
+  color: var(--white);
+}
+
+body.dark .user-order-item-total {
+  background: rgba(212, 175, 55, 0.25);
+  color: var(--primary-gold);
+}
+
+body.dark .summary-row {
+  background: var(--light-gray);
+  color: var(--white);
+}
+
+body.dark .summary-row strong {
+  color: var(--white);
+}
+
+body.dark .summary-row.total {
+  background: rgba(212, 175, 55, 0.2);
+  border-color: var(--primary-gold);
+  color: var(--primary-gold);
+}
+
+body.dark .summary-row.total strong {
+  color: var(--primary-gold);
+}
+
+body.dark .status-badge.pending {
+  background: rgba(245, 158, 11, 0.3);
+  color: #fbbf24;
+}
+
+body.dark .status-badge.processing {
+  background: rgba(59, 130, 246, 0.3);
+  color: #60a5fa;
+}
+
+body.dark .status-badge.delivered {
+  background: rgba(34, 197, 94, 0.3);
+  color: #4ade80;
+}
+
+body.dark .status-badge.completed {
+  background: rgba(34, 197, 94, 0.4);
+  color: #22c55e;
+}
+
+body.dark .status-badge.rejected {
+  background: rgba(239, 68, 68, 0.3);
+  color: #f87171;
+}
+
+body.dark .status-badge.cancelled {
+  background: rgba(239, 68, 68, 0.3);
+  color: #f87171;
+}
+
+body.dark .cancel-order-btn {
+  background: #ef4444;
+  color: var(--white);
+}
+
+body.dark .cancel-order-btn:hover {
+  background: #dc2626;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+body.dark .user-order-item-image img {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+body.dark .user-order-product-image {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+body.dark .error-message {
+  color: #f87171;
+}
+
 @media (max-width: 768px) {
   .user-order-detail-page {
     padding-top: 80px;
